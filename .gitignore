@@ -17,6 +17,7 @@ obj/
 
 # Test results
 TestResults/
+TestResults-*/
 tests/GymTron.IntegrationTests/TestResults/
 tests/GymTron.IntegrationTests/TestResults-*/
 
@@ -40,8 +41,10 @@ tests/GymTron.IntegrationTests/TestResults-*/
 # IDE and tooling
 .idea/
 *.iml
-/.atl/.skill-registry.cache.json
-/.atl/skill-registry.md
+.codegraph/
+.opencode/
+.atl/
+node_modules/
 
 # OS files
 .DS_Store
