@@ -83,7 +83,7 @@ public class AccountPageModelTests
     {
         var model = CreateLoginModel();
         model.Input.Identifier = "user";
-        model.Input.Password = "CorrectPass123";
+        model.Input.Password = "CorrectPass123"; // gitleaks:allow
         _authApiClient.LoginAsync("user", "CorrectPass123", Arg.Any<CancellationToken>())
             .Returns(new AuthResultDto(ValidTestToken, "refresh-123", 900, "Bearer"));
 
@@ -98,7 +98,7 @@ public class AccountPageModelTests
     {
         var model = CreateLoginModel();
         model.Input.Identifier = "user";
-        model.Input.Password = "CorrectPass123";
+        model.Input.Password = "CorrectPass123"; // gitleaks:allow
         _authApiClient.LoginAsync("user", "CorrectPass123", Arg.Any<CancellationToken>())
             .Returns(new AuthResultDto(ValidTestToken, "refresh-123", 900, "Bearer"));
         _urlHelper.IsLocalUrl("/ExerciseParameters/Index").Returns(true);
