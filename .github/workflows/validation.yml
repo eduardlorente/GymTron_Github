@@ -1,0 +1,124 @@
+name: Validation
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  unit-tests:
+    name: Domain and Application unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      - name: Restore unit tests
+        run: dotnet restore tests/GymTron.UnitTests/GymTron.UnitTests.csproj --source https://api.nuget.org/v3/index.json
+
+      - name: Build unit tests
+        run: dotnet build tests/GymTron.UnitTests/GymTron.UnitTests.csproj --configuration Release --no-restore
+
+      - name: Run unit tests with coverage
+        run: dotnet test tests/GymTron.UnitTests/GymTron.UnitTests.csproj --configuration Release --no-build --no-restore --settings tests/coverage.runsettings --collect "XPlat Code Coverage" --logger trx --results-directory TestResults
+
+      - name: Enforce Domain and Application coverage
+        shell: pwsh
+        run: ./eng/Assert-Coverage.ps1 -CoveragePath 'TestResults/**/coverage.cobertura.xml' -Threshold @('GymTron.Domain=100,100', 'GymTron.Application=80,80')
+
+      - name: Upload test and coverage artifacts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-results
+          path: TestResults/
+          if-no-files-found: error
+
+  integration-tests:
+    name: Infrastructure integration tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      - name: Restore integration tests
+        run: dotnet restore tests/GymTron.IntegrationTests/GymTron.IntegrationTests.csproj --source https://api.nuget.org/v3/index.json
+
+      - name: Build integration tests
+        run: dotnet build tests/GymTron.IntegrationTests/GymTron.IntegrationTests.csproj --configuration Release --no-restore
+
+      - name: Run integration tests with coverage
+        run: dotnet test tests/GymTron.IntegrationTests/GymTron.IntegrationTests.csproj --configuration Release --no-build --no-restore --settings tests/integration.coverage.runsettings --collect "XPlat Code Coverage" --logger trx --results-directory TestResults-Integration
+
+      - name: Enforce Infrastructure coverage
+        shell: pwsh
+        run: ./eng/Assert-Coverage.ps1 -CoveragePath 'TestResults-Integration/**/coverage.cobertura.xml' -Threshold @('GymTron.Infrastructure=50,25')
+
+      - name: Upload integration test and coverage artifacts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-test-results
+          path: TestResults-Integration/
+          if-no-files-found: error
+
+  secret-scanning:
+    name: Secret scanning
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Run gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  dependency-scanning:
+    name: Dependency vulnerability scanning
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      - name: Install MAUI workload
+        run: dotnet workload install maui-android
+
+      - name: Restore solution
+        run: dotnet restore --source https://api.nuget.org/v3/index.json
+
+      - name: Check for vulnerable packages
+        run: |
+          dotnet list package --vulnerable --include-transitive | tee vulnerabilities.txt
+          if grep -q "Critical\|High" vulnerabilities.txt; then
+            echo "::error::Critical or High vulnerabilities found"
+            exit 1
+          fi

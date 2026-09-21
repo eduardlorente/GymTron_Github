@@ -1,0 +1,6 @@
+Instruccions generar APK:
+1. Compilar en mode release
+2. Botó dret sobre projecte GymTron.App -> Publicar
+3. Un cop publicar, seleccionar "Distribuir"
+4. Seleccionar AD HOC
+5. El password de signat es troba a `src/GymTron.App/GymTron.Signing.local.props` (fitxer ignorat per Git) o al proveïdor de secrets de CI

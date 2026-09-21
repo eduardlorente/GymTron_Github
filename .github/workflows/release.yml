@@ -1,0 +1,126 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-android:
+    name: Build Android APK
+    runs-on: windows-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      - name: Install MAUI workloads
+        run: dotnet workload install maui-android
+
+      - name: Restore
+        run: dotnet restore src/GymTron.App/GymTron.App.csproj --source https://api.nuget.org/v3/index.json
+
+      - name: Create signing properties
+        shell: pwsh
+        run: |
+          $signingProps = @"
+          <Project>
+            <PropertyGroup>
+              <AndroidKeyStore>true</AndroidKeyStore>
+              <AndroidSigningKeyStore>${{ secrets.ANDROID_KEYSTORE_BASE64 }}</AndroidSigningKeyStore>
+              <AndroidSigningKeyAlias>${{ secrets.ANDROID_KEY_ALIAS }}</AndroidSigningKeyAlias>
+              <AndroidSigningKeyPass>${{ secrets.ANDROID_KEY_PASSWORD }}</AndroidSigningKeyPass>
+              <AndroidSigningStorePass>${{ secrets.ANDROID_STORE_PASSWORD }}</AndroidSigningStorePass>
+            </PropertyGroup>
+          </Project>
+          "@
+          $signingProps | Out-File -FilePath "src/GymTron.App/GymTron.Signing.local.props" -Encoding UTF8
+
+      - name: Build and publish APK
+        run: dotnet publish src/GymTron.App/GymTron.App.csproj -c Release -f net9.0-android --no-restore
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: src/GymTron.App/bin/Release/net9.0-android/*-Signed.apk
+
+  build-web:
+    name: Build Web
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      - name: Restore
+        run: dotnet restore src/GymTron.Web/GymTron.Web.csproj --source https://api.nuget.org/v3/index.json
+
+      - name: Publish Web
+        run: dotnet publish src/GymTron.Web/GymTron.Web.csproj -c Release --no-restore -o web-publish
+
+      - name: Upload Web artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-publish
+          path: web-publish/
+
+  create-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: [build-android, build-web]
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Download Android APK
+        uses: actions/download-artifact@v4
+        with:
+          name: android-apk
+          path: release-artifacts/
+
+      - name: Download Web publish
+        uses: actions/download-artifact@v4
+        with:
+          name: web-publish
+          path: release-artifacts/web/
+
+      - name: Create release notes
+        id: release_notes
+        run: |
+          echo "## GymTron ${{ github.ref_name }}" > release-notes.md
+          echo "" >> release-notes.md
+          echo "### Changes" >> release-notes.md
+          git log $(git describe --tags --abbrev=0 HEAD^)..HEAD --pretty=format:"- %s" >> release-notes.md
+          echo "" >> release-notes.md
+          echo "" >> release-notes.md
+          echo "### Artifacts" >> release-notes.md
+          echo "- **Android APK**: Download and install on Android device" >> release-notes.md
+          echo "- **Web**: Deploy to web server" >> release-notes.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: release-notes.md
+          files: |
+            release-artifacts/*.apk
+            release-artifacts/web/**/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

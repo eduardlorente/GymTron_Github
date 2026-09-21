@@ -1,0 +1,547 @@
+/* ==========================================================================
+   GymTron Theme — Modern Light Design System
+   ========================================================================== */
+
+:root {
+    /* Color Tokens */
+    --gt-bg: #fafbfc;
+    --gt-surface: #ffffff;
+    --gt-border: #e2e8f0;
+    --gt-border-hover: #cbd5e1;
+    --gt-text: #1e293b;
+    --gt-text-muted: #64748b;
+    --gt-primary: #3b82f6;
+    --gt-primary-hover: #2563eb;
+    --gt-primary-soft: #eff6ff;
+    --gt-primary-soft-border: #bfdbfe;
+    --gt-secondary: #0d9488;
+    --gt-secondary-soft: #ccfbf1;
+    --gt-danger: #ef4444;
+    --gt-danger-soft: #fee2e2;
+    --gt-warning: #f59e0b;
+    --gt-warning-soft: #fef3c7;
+    --gt-success: #10b981;
+    --gt-success-soft: #d1fae5;
+
+    /* Shadow & Geometry Tokens */
+    --gt-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --gt-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+    --gt-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --gt-radius: 0.75rem;
+    --gt-radius-sm: 0.5rem;
+    --gt-radius-pill: 9999px;
+    --gt-font: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+    /* Bootstrap Overrides */
+    --bs-body-font-family: var(--gt-font);
+    --bs-body-bg: var(--gt-bg);
+    --bs-body-color: var(--gt-text);
+    --bs-primary: var(--gt-primary);
+    --bs-primary-rgb: 59, 130, 246;
+    --bs-border-color: var(--gt-border);
+    --bs-border-radius: var(--gt-radius);
+    --bs-border-radius-sm: var(--gt-radius-sm);
+    --bs-card-border-color: var(--gt-border);
+    --bs-card-border-radius: var(--gt-radius);
+    --bs-card-bg: var(--gt-surface);
+}
+
+body {
+    background-color: var(--gt-bg);
+    color: var(--gt-text);
+    font-family: var(--gt-font);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================================================
+   Navigation Bar
+   ========================================================================== */
+.gt-navbar {
+    background-color: var(--gt-surface) !important;
+    border-bottom: 1px solid var(--gt-border);
+    box-shadow: var(--gt-shadow-sm);
+}
+
+.gt-brand {
+    font-weight: 700;
+    color: var(--gt-primary) !important;
+    font-size: 1.35rem;
+    letter-spacing: -0.02em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+.gt-brand:hover {
+    color: var(--gt-primary-hover) !important;
+}
+
+.gt-nav-link {
+    color: var(--gt-text-muted) !important;
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 0.5rem 0.85rem !important;
+    border-radius: var(--gt-radius-sm);
+    transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.gt-nav-link:hover,
+.gt-nav-link.active {
+    color: var(--gt-primary) !important;
+    background-color: var(--gt-primary-soft);
+}
+
+/* ==========================================================================
+   Typography & Page Headers
+   ========================================================================== */
+.gt-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.75rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.gt-page-header h1,
+.gt-page-header h2 {
+    margin: 0;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: var(--gt-text);
+    font-size: 1.75rem;
+}
+
+/* ==========================================================================
+   Cards & Containers
+   ========================================================================== */
+.gt-card {
+    background: var(--gt-surface);
+    border: 1px solid var(--gt-border);
+    border-radius: var(--gt-radius);
+    box-shadow: var(--gt-shadow-sm);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.gt-card:hover {
+    border-color: var(--gt-border-hover);
+    box-shadow: var(--gt-shadow);
+}
+
+.gt-form-card {
+    background: var(--gt-surface);
+    border: 1px solid var(--gt-border);
+    border-radius: var(--gt-radius);
+    box-shadow: var(--gt-shadow-sm);
+    padding: 2rem;
+    max-width: 680px;
+    margin: 0 auto 2rem auto;
+}
+
+/* Hero Section */
+.gt-hero {
+    background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
+    border: 1px solid var(--gt-border);
+    border-radius: var(--gt-radius);
+    padding: 2.75rem 2rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--gt-shadow-sm);
+    text-align: center;
+}
+
+.gt-hero h1 {
+    font-weight: 800;
+    color: var(--gt-text);
+    letter-spacing: -0.03em;
+    margin-bottom: 0.5rem;
+    font-size: 2.25rem;
+}
+
+.gt-hero p {
+    color: var(--gt-text-muted);
+    font-size: 1.15rem;
+    margin-bottom: 0;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Action Cards on Dashboard */
+.gt-action-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    border-radius: var(--gt-radius);
+    border: 1px solid var(--gt-border);
+    background: var(--gt-surface);
+    padding: 2rem;
+    box-shadow: var(--gt-shadow-sm);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.gt-action-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--gt-shadow-md);
+    border-color: var(--gt-border-hover);
+}
+
+.gt-card-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.gt-card-icon-blue {
+    background-color: var(--gt-primary-soft);
+    color: var(--gt-primary);
+}
+
+.gt-card-icon-teal {
+    background-color: var(--gt-secondary-soft);
+    color: var(--gt-secondary);
+}
+
+/* ==========================================================================
+   Tables
+   ========================================================================== */
+.gt-table-container {
+    background: var(--gt-surface);
+    border: 1px solid var(--gt-border);
+    border-radius: var(--gt-radius);
+    overflow: hidden;
+    box-shadow: var(--gt-shadow-sm);
+    margin-bottom: 1.5rem;
+}
+
+.gt-table {
+    margin-bottom: 0;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.gt-table thead th {
+    background-color: #f8fafc;
+    color: var(--gt-text-muted);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--gt-border);
+    padding: 0.85rem 1.25rem;
+    white-space: nowrap;
+}
+
+.gt-table tbody td {
+    padding: 0.95rem 1.25rem;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--gt-border);
+    font-size: 0.925rem;
+    color: var(--gt-text);
+}
+
+.gt-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.gt-table tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+.gt-table tbody tr:hover {
+    background-color: #f0f9ff;
+}
+
+/* ==========================================================================
+   Badges
+   ========================================================================== */
+.gt-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.785rem;
+    font-weight: 600;
+    border-radius: var(--gt-radius-pill);
+    line-height: 1;
+    gap: 0.35rem;
+}
+
+.gt-badge-blue {
+    background-color: var(--gt-primary-soft);
+    color: #1d4ed8;
+    border: 1px solid var(--gt-primary-soft-border);
+}
+
+.gt-badge-teal {
+    background-color: var(--gt-secondary-soft);
+    color: #0f766e;
+    border: 1px solid #99f6e4;
+}
+
+.gt-badge-gray {
+    background-color: #f1f5f9;
+    color: var(--gt-text-muted);
+    border: 1px solid var(--gt-border);
+}
+
+/* ==========================================================================
+   Buttons & Inputs
+   ========================================================================== */
+.btn {
+    border-radius: var(--gt-radius-sm);
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    font-size: 0.925rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all 0.15s ease;
+}
+
+.btn-primary {
+    background-color: var(--gt-primary);
+    border-color: var(--gt-primary);
+    color: #ffffff;
+    box-shadow: 0 1px 2px rgba(59, 130, 246, 0.2);
+}
+
+.btn-primary:hover {
+    background-color: var(--gt-primary-hover);
+    border-color: var(--gt-primary-hover);
+    color: #ffffff;
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+}
+
+.btn-secondary {
+    background-color: #f1f5f9;
+    border-color: var(--gt-border);
+    color: var(--gt-text);
+}
+
+.btn-secondary:hover {
+    background-color: #e2e8f0;
+    border-color: var(--gt-border-hover);
+    color: var(--gt-text);
+}
+
+.btn-outline-primary {
+    color: var(--gt-primary);
+    border-color: var(--gt-border);
+    background: var(--gt-surface);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--gt-primary-soft);
+    color: var(--gt-primary);
+    border-color: var(--gt-primary);
+}
+
+.btn-outline-warning {
+    color: #d97706;
+    border-color: #fde68a;
+    background: #fffbeb;
+}
+
+.btn-outline-warning:hover {
+    background-color: #fef3c7;
+    border-color: #f59e0b;
+    color: #b45309;
+}
+
+.btn-outline-danger {
+    color: var(--gt-danger);
+    border-color: #fecaca;
+    background: #fef2f2;
+}
+
+.btn-outline-danger:hover {
+    background-color: var(--gt-danger-soft);
+    border-color: var(--gt-danger);
+    color: #b91c1c;
+}
+
+.form-control,
+.form-select {
+    border-radius: var(--gt-radius-sm);
+    border-color: var(--gt-border);
+    padding: 0.55rem 0.85rem;
+    font-size: 0.925rem;
+    color: var(--gt-text);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--gt-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.form-label {
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: var(--gt-text);
+    margin-bottom: 0.4rem;
+}
+
+/* ==========================================================================
+   Weekday Pill Navigation (Routines)
+   ========================================================================== */
+.gt-day-nav {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+}
+
+.gt-day-pill {
+    border: none;
+    background: #f1f5f9;
+    color: var(--gt-text-muted);
+    padding: 0.6rem 1.25rem;
+    border-radius: var(--gt-radius-pill);
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.gt-day-pill:hover {
+    background: #e2e8f0;
+    color: var(--gt-text);
+}
+
+.gt-day-pill.active {
+    background: var(--gt-primary);
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(59, 130, 246, 0.35);
+}
+
+.gt-day-pill.active .badge {
+    background: rgba(255, 255, 255, 0.25) !important;
+    color: #ffffff !important;
+}
+
+/* Exercise item card/row */
+.gt-exercise-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--gt-border);
+    border-radius: var(--gt-radius-sm);
+    background: var(--gt-surface);
+    margin-bottom: 0.75rem;
+    transition: all 0.15s ease;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.gt-exercise-card:hover {
+    border-color: var(--gt-border-hover);
+    box-shadow: var(--gt-shadow-sm);
+    background-color: #fafbfc;
+}
+
+.gt-exercise-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.gt-exercise-name {
+    font-weight: 600;
+    color: var(--gt-text);
+    font-size: 0.975rem;
+    min-width: 140px;
+}
+
+.gt-exercise-metric {
+    font-size: 0.875rem;
+    color: var(--gt-secondary);
+    font-weight: 600;
+}
+
+.gt-exercise-rest {
+    font-size: 0.85rem;
+    color: var(--gt-text-muted);
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+.gt-footer {
+    background-color: var(--gt-surface);
+    border-top: 1px solid var(--gt-border);
+    color: var(--gt-text-muted);
+    font-size: 0.875rem;
+    padding: 1.25rem 0;
+    margin-top: auto;
+}
+
+/* ==========================================================================
+   Accessibility & Utilities
+   ========================================================================== */
+:focus-visible {
+    outline: 2px solid var(--gt-primary) !important;
+    outline-offset: 2px !important;
+}
+
+.visually-hidden-focusable:not(:focus):not(:focus-within) {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+a.visually-hidden-focusable:focus {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 1050;
+    padding: 0.5rem 1rem;
+    background: var(--gt-primary);
+    color: #ffffff;
+    border-radius: var(--gt-radius-sm);
+    box-shadow: var(--gt-shadow-md);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+@media print {
+    header,
+    footer,
+    .btn,
+    .gt-page-header .btn {
+        display: none !important;
+    }
+    body {
+        background: #ffffff !important;
+    }
+    .gt-card,
+    .gt-table-container {
+        box-shadow: none !important;
+        border: 1px solid #cbd5e1 !important;
+    }
+}

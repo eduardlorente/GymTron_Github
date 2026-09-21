@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GymTron.App.Pages.ExercisesHistoryPage"
+             Shell.BackgroundColor="#ffbd59"
+             xmlns:ext="clr-namespace:GymTron.App.Extensions"
+             xmlns:converters="clr-namespace:GymTron.App.Converters"
+             xmlns:vm="clr-namespace:GymTron.App.ViewModels.Pages"
+             xmlns:vmEntities="clr-namespace:GymTron.App.ViewModels.Entities"
+             x:DataType="vm:ExercisesHistoryPageViewModel"
+             Title="{ext:Translate ExercisesHistory_Title}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:LocalizedFormatConverter x:Key="LocalizedFormatConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20">
+            <Picker Title="{ext:Translate ExercisesHistory_SelectExercise}"
+                    ItemsSource="{Binding DistinctExerciseNames}"
+                    SelectedItem="{Binding SelectedExerciseName}"
+                    FontSize="16"
+                    Margin="0,0,0,20"
+                    BackgroundColor="White"
+                    TextColor="Black"
+                    IsEnabled="{Binding ExercisesLoaded}"/>
+
+            <CollectionView ItemsSource="{Binding SelectedExerciseExecutions}"
+                            Margin="0,10,0,0">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vmEntities:ExerciseViewModel">
+                        <Frame BorderColor="#dddddd"
+                               BackgroundColor="#ffffff"
+                               CornerRadius="10"
+                               Padding="15"
+                               Margin="0,10">
+                            <VerticalStackLayout Spacing="5">
+                                <Label Text="{Binding CreatedOn, Converter={StaticResource LocalizedFormatConverter}, ConverterParameter='ExercisesHistory_Date'}"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="Black" />
+                                <Label Text="{Binding Weight, Converter={StaticResource LocalizedFormatConverter}, ConverterParameter='ExercisesHistory_Weight'}"
+                                       FontSize="16"
+                                       IsVisible="{Binding HasWeight}"
+                                       TextColor="#666666" />
+                                <Label Text="{Binding CurrentRepetitions, Converter={StaticResource LocalizedFormatConverter}, ConverterParameter='ExercisesHistory_Reps'}"
+                                       FontSize="16"
+                                       IsVisible="{Binding HasWeight}"
+                                       TextColor="#666666" />
+                                <Label Text="{Binding DurationInSeconds, Converter={StaticResource LocalizedFormatConverter}, ConverterParameter='ExercisesHistory_Duration'}"
+                                       FontSize="16"
+                                       IsVisible="{Binding HasDuration}"
+                                       TextColor="#666666" />
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

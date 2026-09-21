@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Routines_Create_PageTitle" xml:space="preserve">
+    <value>Crear Rutina</value>
+  </data>
+  <data name="Routines_Create_Title" xml:space="preserve">
+    <value>Crear Rutina</value>
+  </data>
+  <data name="Routines_Create_Name" xml:space="preserve">
+    <value>Nom</value>
+  </data>
+  <data name="Routines_Create_Exercises" xml:space="preserve">
+    <value>Exercicis</value>
+  </data>
+  <data name="Routines_Create_Day" xml:space="preserve">
+    <value>Dia</value>
+  </data>
+  <data name="Routines_Create_Monday" xml:space="preserve">
+    <value>Dilluns</value>
+  </data>
+  <data name="Routines_Create_Tuesday" xml:space="preserve">
+    <value>Dimarts</value>
+  </data>
+  <data name="Routines_Create_Wednesday" xml:space="preserve">
+    <value>Dimecres</value>
+  </data>
+  <data name="Routines_Create_Thursday" xml:space="preserve">
+    <value>Dijous</value>
+  </data>
+  <data name="Routines_Create_Friday" xml:space="preserve">
+    <value>Divendres</value>
+  </data>
+  <data name="Routines_Create_Saturday" xml:space="preserve">
+    <value>Dissabte</value>
+  </data>
+  <data name="Routines_Create_Sunday" xml:space="preserve">
+    <value>Diumenge</value>
+  </data>
+  <data name="Routines_Create_Exercise" xml:space="preserve">
+    <value>Exercici</value>
+  </data>
+  <data name="Routines_Create_Series" xml:space="preserve">
+    <value>Sèries</value>
+  </data>
+  <data name="Routines_Create_Repetitions" xml:space="preserve">
+    <value>Repeticions</value>
+  </data>
+  <data name="Routines_Create_Duration" xml:space="preserve">
+    <value>Durada (seg)</value>
+  </data>
+  <data name="Routines_Create_Rest" xml:space="preserve">
+    <value>Descans (seg)</value>
+  </data>
+  <data name="Routines_Create_Order" xml:space="preserve">
+    <value>Ordre</value>
+  </data>
+  <data name="Routines_Create_AlternatingSeries" xml:space="preserve">
+    <value>Sèries alternades</value>
+  </data>
+  <data name="Routines_Create_Remove" xml:space="preserve">
+    <value>Eliminar</value>
+  </data>
+  <data name="Routines_Create_AddExercise" xml:space="preserve">
+    <value>Afegir exercici</value>
+  </data>
+  <data name="Routines_Create_Save" xml:space="preserve">
+    <value>Desar</value>
+  </data>
+  <data name="Routines_Create_Back" xml:space="preserve">
+    <value>Tornar</value>
+  </data>
+</root>

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GymTron.App.Pages.TrainingSummaryPage"
+             Shell.BackgroundColor="#ffbd59"
+             xmlns:ext="clr-namespace:GymTron.App.Extensions"
+             xmlns:vm="clr-namespace:GymTron.App.ViewModels.Pages"
+             xmlns:vmEntities="clr-namespace:GymTron.App.ViewModels.Entities"
+             x:DataType="vm:TrainingSummaryPageViewModel"
+             Title="{Binding Title}">
+
+    <Grid RowDefinitions="*, Auto" Margin="15">
+        <!-- SCROLLABLE CONTENT -->
+        <ScrollView Grid.Row="0" VerticalScrollBarVisibility="Never">
+            <VerticalStackLayout Spacing="15" Padding="0,5,0,15">
+
+                <!-- CELEBRATION HEADER -->
+                <Frame BorderColor="Transparent"
+                       BackgroundColor="#FFF8E1"
+                       CornerRadius="14"
+                       Padding="15"
+                       HasShadow="True">
+                    <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
+                        <Label Text="🎉" FontSize="36" HorizontalOptions="Center" />
+                        <Label Text="{Binding CongratulationsText}"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               TextColor="#E65100"
+                               HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- METRICS 2x2 GRID -->
+                <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto" RowSpacing="10" ColumnSpacing="10">
+                    <!-- DURATION CARD -->
+                    <Frame Grid.Row="0" Grid.Column="0"
+                           BorderColor="#E0E0E0"
+                           BackgroundColor="#FFFFFF"
+                           CornerRadius="12"
+                           Padding="12"
+                           HasShadow="True">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="{Binding DurationLabel}" FontSize="12" TextColor="#757575" />
+                            <Label Text="{Binding DurationDisplay}" FontSize="18" FontAttributes="Bold" TextColor="#1A1A1A" />
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!-- EXERCISES CARD -->
+                    <Frame Grid.Row="0" Grid.Column="1"
+                           BorderColor="#E0E0E0"
+                           BackgroundColor="#FFFFFF"
+                           CornerRadius="12"
+                           Padding="12"
+                           HasShadow="True">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="{Binding ExercisesLabel}" FontSize="12" TextColor="#757575" />
+                            <Label Text="{Binding ExercisesDisplay}" FontSize="18" FontAttributes="Bold" TextColor="#1A1A1A" />
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!-- TOTAL VOLUME CARD -->
+                    <Frame Grid.Row="1" Grid.Column="0"
+                           BorderColor="#E0E0E0"
+                           BackgroundColor="#FFFFFF"
+                           CornerRadius="12"
+                           Padding="12"
+                           HasShadow="True">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="{Binding TotalVolumeLabel}" FontSize="12" TextColor="#757575" />
+                            <Label Text="{Binding VolumeDisplay}" FontSize="18" FontAttributes="Bold" TextColor="#2E7D32" />
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!-- TOTAL REPS CARD -->
+                    <Frame Grid.Row="1" Grid.Column="1"
+                           BorderColor="#E0E0E0"
+                           BackgroundColor="#FFFFFF"
+                           CornerRadius="12"
+                           Padding="12"
+                           HasShadow="True">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="{Binding TotalRepsLabel}" FontSize="12" TextColor="#757575" />
+                            <Label Text="{Binding RepsDisplay}" FontSize="18" FontAttributes="Bold" TextColor="#1565C0" />
+                        </VerticalStackLayout>
+                    </Frame>
+                </Grid>
+
+                <!-- COMPLETED EXERCISES SECTION -->
+                <Label Text="{Binding CompletedExercisesLabel}"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       TextColor="#1A1A1A"
+                       Margin="0,5,0,0" />
+
+                <CollectionView ItemsSource="{Binding CompletedExercises}" SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="vmEntities:CompletedExerciseSummaryItem">
+                            <Frame BorderColor="#E0E0E0"
+                                   BackgroundColor="#FFFFFF"
+                                   CornerRadius="10"
+                                   Padding="12"
+                                   Margin="0,4"
+                                   HasShadow="True">
+                                <VerticalStackLayout Spacing="6">
+                                    <Grid ColumnDefinitions="*, Auto">
+                                        <Label Text="{Binding Name}"
+                                               FontSize="15"
+                                               FontAttributes="Bold"
+                                               TextColor="#1A1A1A"
+                                               Grid.Column="0"
+                                               LineBreakMode="WordWrap" />
+                                        <Label Text="{Binding MetricDisplay}"
+                                               FontSize="13"
+                                               FontAttributes="Bold"
+                                               TextColor="#2E7D32"
+                                               Grid.Column="1"
+                                               HorizontalOptions="End" />
+                                    </Grid>
+                                    <Label Text="{Binding Observations}"
+                                           FontSize="12"
+                                           FontAttributes="Italic"
+                                           TextColor="#757575"
+                                           IsVisible="{Binding HasObservations}" />
+                                </VerticalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!-- PENDING EXERCISES SECTION (IF ANY) -->
+                <VerticalStackLayout Spacing="6" IsVisible="{Binding HasPendingExercises}" Margin="0,5,0,0">
+                    <Label Text="{Binding PendingExercisesLabel}"
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           TextColor="#D32F2F" />
+
+                    <CollectionView ItemsSource="{Binding PendingExercises}" SelectionMode="None">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="x:String">
+                                <Frame BorderColor="#FFCDD2"
+                                       BackgroundColor="#FFEBEE"
+                                       CornerRadius="8"
+                                       Padding="10"
+                                       Margin="0,3">
+                                    <Label Text="{Binding .}"
+                                           FontSize="13"
+                                           TextColor="#C62828" />
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- DONE BUTTON -->
+        <Button Grid.Row="1"
+                Text="{Binding DoneButtonText}"
+                Command="{Binding DoneCommand}"
+                BackgroundColor="Green"
+                TextColor="White"
+                CornerRadius="10"
+                HeightRequest="50"
+                FontSize="16"
+                FontAttributes="Bold"
+                Margin="0,10,0,0" />
+    </Grid>
+
+</ContentPage>

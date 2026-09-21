@@ -1,0 +1,33 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GymTron.App.Pages.Modals.AddBodyWeightModal"
+             Shell.BackgroundColor="#ffbd59"
+             xmlns:converters="clr-namespace:GymTron.App.Converters"
+             xmlns:ext="clr-namespace:GymTron.App.Extensions"
+             xmlns:vm="clr-namespace:GymTron.App.ViewModels.Pages.Modals"
+             x:DataType="vm:AddBodyWeightModalViewModel"
+             Title="{ext:Translate AddBodyWeight_Title}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+
+            <Frame BorderColor="Gray" CornerRadius="10" Padding="15" Margin="0,20">
+                <StackLayout Spacing="10">
+                    <Label Text="{ext:Translate AddBodyWeight_Weight}" FontSize="18" />
+                    <Entry Keyboard="Numeric" Text="{Binding Weight}" Margin="0,5,0,0" Placeholder="Introdueix pes"/>
+                    <Label Text="{ext:Translate AddBodyWeight_BodyFat}" FontSize="18" />
+                    <Entry Keyboard="Numeric" Text="{Binding BodyFatPercentage}" Margin="0,5,0,0" Placeholder="Introdueix Percentatge greix corporal" />
+                </StackLayout>
+            </Frame>
+
+            <Button Text="{ext:Translate AddBodyWeight_Complete}" Command="{Binding AddBodyWeightCommand}" BackgroundColor="Green" TextColor="White" CornerRadius="10" Margin="0,0,0,0" HorizontalOptions="Center"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

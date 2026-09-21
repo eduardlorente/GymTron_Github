@@ -1,0 +1,72 @@
+@GymTron.Api_HostAddress = https://localhost:7053
+@Identifier = trainer
+@Email = trainer@gymtron.com
+@Password = SuperSecretPassword123!
+
+### 1. Register a new user
+# @name register
+POST {{GymTron.Api_HostAddress}}/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "{{Identifier}}",
+  "email": "{{Email}}",
+  "password": "{{Password}}"
+}
+
+### 2. Login to obtain Access Token and Refresh Token
+# @name login
+POST {{GymTron.Api_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "identifier": "{{Identifier}}",
+  "password": "{{Password}}"
+}
+
+### Store tokens from login response
+@accessToken = {{login.response.body.accessToken}}
+@refreshToken = {{login.response.body.refreshToken}}
+
+### 3. Call protected endpoint WITHOUT token (Expects 401 Unauthorized)
+GET {{GymTron.Api_HostAddress}}/api/routines
+Accept: application/json
+
+### 4. Call protected endpoint WITH valid Bearer token (Expects 200 OK)
+GET {{GymTron.Api_HostAddress}}/api/routines
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### 5. Refresh Access Token using Refresh Token (Rotation: new tokens issued)
+# @name refresh
+POST {{GymTron.Api_HostAddress}}/api/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### Store new tokens from refresh response
+@newAccessToken = {{refresh.response.body.accessToken}}
+@newRefreshToken = {{refresh.response.body.refreshToken}}
+
+### 6. Call protected endpoint with NEW Access Token (Expects 200 OK)
+GET {{GymTron.Api_HostAddress}}/api/routines
+Authorization: Bearer {{newAccessToken}}
+Accept: application/json
+
+### 7. Attempt to REUSE the old refresh token (Reuse Detection: terminates all sessions, expects 401)
+POST {{GymTron.Api_HostAddress}}/api/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### 8. Explicit Logout / Revoke Refresh Token
+POST {{GymTron.Api_HostAddress}}/api/auth/revoke
+Content-Type: application/json
+
+{
+  "refreshToken": "{{newRefreshToken}}"
+}

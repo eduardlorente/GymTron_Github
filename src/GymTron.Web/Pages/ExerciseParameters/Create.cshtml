@@ -1,0 +1,69 @@
+@page
+@model GymTron.Web.Pages.ExerciseParameters.CreateModel
+@using GymTron.Domain.Enums
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["ExerciseParameters_Create_PageTitle"];
+}
+
+<div class="gt-form-card">
+    <div class="d-flex align-items-center gap-3 mb-4 pb-2 border-bottom">
+        <a asp-page="Index" class="btn btn-secondary btn-sm p-2" aria-label="Back">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+        <h1 class="h3 fw-bold mb-0">@Localizer["ExerciseParameters_Create_Title"]</h1>
+    </div>
+
+    <form method="post">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4" role="alert"></div>
+        
+        <div class="mb-3">
+            <label asp-for="Exercise.Name" class="form-label">@Localizer["ExerciseParameters_Create_Name"]</label>
+            <input asp-for="Exercise.Name" class="form-control" placeholder="e.g. Press banca" />
+            <span asp-validation-for="Exercise.Name" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Exercise.Description" class="form-label">@Localizer["ExerciseParameters_Create_Description"]</label>
+            <textarea asp-for="Exercise.Description" class="form-control" rows="3" placeholder="Descripción de la técnica, agarre..."></textarea>
+            <span asp-validation-for="Exercise.Description" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Exercise.Pattern" class="form-label">@Localizer["ExerciseParameters_Create_Pattern"]</label>
+            <input asp-for="Exercise.Pattern" class="form-control" placeholder="e.g. Empuje horizontal" />
+            <span asp-validation-for="Exercise.Pattern" class="text-danger small"></span>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-6">
+                <label asp-for="Exercise.Type" class="form-label">@Localizer["ExerciseParameters_Create_Type"]</label>
+                <select asp-for="Exercise.Type" class="form-select">
+                    <option value="@ExerciseTypes.WEIGHT">@Localizer["ExerciseParameters_Create_TypeWeight"]</option>
+                    <option value="@ExerciseTypes.DURATION">@Localizer["ExerciseParameters_Create_TypeDuration"]</option>
+                </select>
+                <span asp-validation-for="Exercise.Type" class="text-danger small"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Exercise.ReplaysInReserve" class="form-label">@Localizer["ExerciseParameters_Create_RIR"]</label>
+                <input asp-for="Exercise.ReplaysInReserve" class="form-control" type="number" min="0" max="10" />
+                <span asp-validation-for="Exercise.ReplaysInReserve" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+            <a asp-page="Index" class="btn btn-secondary">
+                @Localizer["ExerciseParameters_Create_Cancel"]
+            </a>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check2"></i> @Localizer["ExerciseParameters_Create_Save"]
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

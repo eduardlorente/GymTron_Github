@@ -1,0 +1,3 @@
+# Gitleaks ignore file for false positives
+688e620c0f53cf23ed1472d32381e577736dc307:tests/GymTron.Web.Tests/Pages/Account/AccountPageModelTests.cs:generic-api-key:86
+688e620c0f53cf23ed1472d32381e577736dc307:tests/GymTron.Web.Tests/Pages/Account/AccountPageModelTests.cs:generic-api-key:101

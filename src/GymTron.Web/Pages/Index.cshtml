@@ -1,0 +1,47 @@
+@page
+@model IndexModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["Index_Title"];
+}
+
+<div class="gt-hero">
+    <h1>@Localizer["Index_Welcome"]</h1>
+    <p>@Localizer["Index_Lead"]</p>
+</div>
+
+<div class="row g-4 mt-2">
+    <div class="col-md-6">
+        <div class="gt-action-card">
+            <div>
+                <div class="gt-card-icon gt-card-icon-blue">
+                    <i class="bi bi-clipboard-check"></i>
+                </div>
+                <h3 class="h4 fw-bold mb-2">@Localizer["Index_Routines"]</h3>
+                <p class="text-muted mb-4">@Localizer["Index_RoutinesDescription"]</p>
+            </div>
+            <div>
+                <a asp-page="/Routines/Index" class="btn btn-primary w-100 justify-content-center">
+                    <i class="bi bi-arrow-right-circle"></i> @Localizer["Index_ViewRoutines"]
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="gt-action-card">
+            <div>
+                <div class="gt-card-icon gt-card-icon-teal">
+                    <i class="bi bi-list-check"></i>
+                </div>
+                <h3 class="h4 fw-bold mb-2">@Localizer["Index_Exercises"]</h3>
+                <p class="text-muted mb-4">@Localizer["Index_ExercisesDescription"]</p>
+            </div>
+            <div>
+                <a asp-page="/ExerciseParameters/Index" class="btn btn-primary w-100 justify-content-center">
+                    <i class="bi bi-arrow-right-circle"></i> @Localizer["Index_ViewExercises"]
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

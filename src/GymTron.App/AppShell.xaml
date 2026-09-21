@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="GymTron.App.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:GymTron.App"
+    xmlns:pages="clr-namespace:GymTron.App.Pages"
+    Shell.BackgroundColor="White"
+    Shell.TitleColor="Black"
+    Shell.ForegroundColor="Black"
+    Shell.FlyoutBehavior="Disabled">
+
+    <ShellContent
+        Title="Inicio"
+        ContentTemplate="{DataTemplate local:MainPage}"
+        Route="MainPage"
+        Icon="home.svg" />
+
+    <FlyoutItem Title="Training" Icon="training.svg">
+        <ShellContent
+            Title="Training"
+            Route="TrainingHandler"
+            ContentTemplate="{DataTemplate pages:StartTrainingPage}" />
+    </FlyoutItem>
+
+    <ShellContent 
+        Title="Trainings History"
+        ContentTemplate="{DataTemplate pages:TrainingsHistoryPage}"
+        Route="TrainingsHistoryHandler"
+        Icon="history.svg" />
+
+    <ShellContent 
+        Title="Exercises History"
+        ContentTemplate="{DataTemplate pages:ExercisesHistoryPage}"
+        Route="ExercisesHistoryHandler"
+        Icon="charthistogram.svg" />
+
+    <ShellContent
+        Title="Body Weights History"
+        ContentTemplate="{DataTemplate pages:BodyWeightsHistoryPage}"
+        Route="BodyWeightsHistoryHandler"
+        Icon="scale.svg" />
+
+    <!--<ShellContent 
+        Title="Settings"
+        ContentTemplate="{DataTemplate pages:SettingsPage}"
+        Route="Settings"
+        Icon="cog.svg" />-->
+</Shell>

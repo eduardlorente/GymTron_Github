@@ -1,0 +1,10 @@
+<Project>
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <NoWarn>$(NoWarn);NU1301;CS8600;CS8601;CS8602;CS8603;CS8604;CS8612;CS8618;CS8619;CS8620;CS8622;CS8625;CS8629;CS8633;CS8714;CS8767;CS8769;CS0618;XC0103</NoWarn>
+  </PropertyGroup>
+</Project>
