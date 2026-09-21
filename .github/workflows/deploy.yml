@@ -1,0 +1,69 @@
+name: Deploy to MonsterASP.NET
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy-api:
+    name: Deploy API
+    runs-on: windows-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      - name: Restore API
+        run: dotnet restore src/GymTron.Api/GymTron.Api.csproj --source https://api.nuget.org/v3/index.json
+
+      - name: Publish API
+        run: dotnet publish src/GymTron.Api/GymTron.Api.csproj -c Release --no-restore -o publish-api
+
+      - name: Deploy API via WebDeploy
+        uses: rasmusbuchholdt/simply-web-deploy@2.2.0
+        with:
+          website-name: ${{ secrets.MONSTERASP_API_SITE_NAME }}
+          server-computer-name: ${{ secrets.MONSTERASP_API_SERVER }}
+          server-username: ${{ secrets.MONSTERASP_API_USERNAME }}
+          server-password: ${{ secrets.MONSTERASP_API_PASSWORD }}
+          source-path: 'publish-api\'
+
+  deploy-web:
+    name: Deploy Web
+    runs-on: windows-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      - name: Restore Web
+        run: dotnet restore src/GymTron.Web/GymTron.Web.csproj --source https://api.nuget.org/v3/index.json
+
+      - name: Publish Web
+        run: dotnet publish src/GymTron.Web/GymTron.Web.csproj -c Release --no-restore -o publish-web
+
+      - name: Deploy Web via WebDeploy
+        uses: rasmusbuchholdt/simply-web-deploy@2.2.0
+        with:
+          website-name: ${{ secrets.MONSTERASP_WEB_SITE_NAME }}
+          server-computer-name: ${{ secrets.MONSTERASP_WEB_SERVER }}
+          server-username: ${{ secrets.MONSTERASP_WEB_USERNAME }}
+          server-password: ${{ secrets.MONSTERASP_WEB_PASSWORD }}
+          source-path: 'publish-web\'
