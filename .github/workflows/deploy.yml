@@ -31,23 +31,20 @@ jobs:
         run: dotnet publish src/GymTron.Api/GymTron.Api.csproj -c Release --no-restore -o publish-api
 
       - name: Deploy API via MSDeploy
-        shell: pwsh
+        shell: cmd
+        env:
+          MSDEPLOY_SOURCE: ${{ github.workspace }}\publish-api
+          MSDEPLOY_SITE: ${{ secrets.MONSTERASP_API_SITE_NAME }}
+          MSDEPLOY_SERVER: ${{ secrets.MONSTERASP_API_SERVER }}
+          MSDEPLOY_USER: ${{ secrets.MONSTERASP_API_USERNAME }}
+          MSDEPLOY_PASSWORD: ${{ secrets.MONSTERASP_API_PASSWORD }}
         run: |
-          $msdeploy = "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe"
-          if (-not (Test-Path $msdeploy)) {
-              $msdeploy = "C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe"
-          }
-          $sourcePath = (Resolve-Path ./publish-api).Path
-          $destUrl = "https://${{ secrets.MONSTERASP_API_SERVER }}:8172/msdeploy.axd?site=${{ secrets.MONSTERASP_API_SITE_NAME }}"
-
-          & $msdeploy `
-            -verb:sync `
-            -source:contentPath="$sourcePath" `
-            -dest:contentPath="${{ secrets.MONSTERASP_API_SITE_NAME }}",computerName="$destUrl",userName="${{ secrets.MONSTERASP_API_USERNAME }}",password="${{ secrets.MONSTERASP_API_PASSWORD }}",authtype="Basic",includeAcls="False" `
-            -allowUntrusted `
-            -disableLink:AppPoolExtension `
-            -disableLink:ContentExtension `
-            -disableLink:CertificateExtension
+          if exist "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" (
+            set "MSDEPLOY_EXE=C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe"
+          ) else (
+            set "MSDEPLOY_EXE=C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe"
+          )
+          "%MSDEPLOY_EXE%" -verb:sync -source:contentPath="%MSDEPLOY_SOURCE%" -dest:contentPath="%MSDEPLOY_SITE%",computerName="https://%MSDEPLOY_SERVER%:8172/msdeploy.axd?site=%MSDEPLOY_SITE%",userName="%MSDEPLOY_USER%",password="%MSDEPLOY_PASSWORD%",authtype="Basic",includeAcls="False" -allowUntrusted -disableLink:AppPoolExtension -disableLink:ContentExtension -disableLink:CertificateExtension
 
   deploy-web:
     name: Deploy Web
@@ -70,20 +67,17 @@ jobs:
         run: dotnet publish src/GymTron.Web/GymTron.Web.csproj -c Release --no-restore -o publish-web
 
       - name: Deploy Web via MSDeploy
-        shell: pwsh
+        shell: cmd
+        env:
+          MSDEPLOY_SOURCE: ${{ github.workspace }}\publish-web
+          MSDEPLOY_SITE: ${{ secrets.MONSTERASP_WEB_SITE_NAME }}
+          MSDEPLOY_SERVER: ${{ secrets.MONSTERASP_WEB_SERVER }}
+          MSDEPLOY_USER: ${{ secrets.MONSTERASP_WEB_USERNAME }}
+          MSDEPLOY_PASSWORD: ${{ secrets.MONSTERASP_WEB_PASSWORD }}
         run: |
-          $msdeploy = "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe"
-          if (-not (Test-Path $msdeploy)) {
-              $msdeploy = "C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe"
-          }
-          $sourcePath = (Resolve-Path ./publish-web).Path
-          $destUrl = "https://${{ secrets.MONSTERASP_WEB_SERVER }}:8172/msdeploy.axd?site=${{ secrets.MONSTERASP_WEB_SITE_NAME }}"
-
-          & $msdeploy `
-            -verb:sync `
-            -source:contentPath="$sourcePath" `
-            -dest:contentPath="${{ secrets.MONSTERASP_WEB_SITE_NAME }}",computerName="$destUrl",userName="${{ secrets.MONSTERASP_WEB_USERNAME }}",password="${{ secrets.MONSTERASP_WEB_PASSWORD }}",authtype="Basic",includeAcls="False" `
-            -allowUntrusted `
-            -disableLink:AppPoolExtension `
-            -disableLink:ContentExtension `
-            -disableLink:CertificateExtension
+          if exist "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" (
+            set "MSDEPLOY_EXE=C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe"
+          ) else (
+            set "MSDEPLOY_EXE=C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe"
+          )
+          "%MSDEPLOY_EXE%" -verb:sync -source:contentPath="%MSDEPLOY_SOURCE%" -dest:contentPath="%MSDEPLOY_SITE%",computerName="https://%MSDEPLOY_SERVER%:8172/msdeploy.axd?site=%MSDEPLOY_SITE%",userName="%MSDEPLOY_USER%",password="%MSDEPLOY_PASSWORD%",authtype="Basic",includeAcls="False" -allowUntrusted -disableLink:AppPoolExtension -disableLink:ContentExtension -disableLink:CertificateExtension
