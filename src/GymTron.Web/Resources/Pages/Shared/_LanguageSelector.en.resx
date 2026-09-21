@@ -58,18 +58,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  
-  <!-- Layout -->
-  <data name="Layout_Home" xml:space="preserve">
-    <value>Inici</value>
-  </data>
-  <data name="Layout_Routines" xml:space="preserve">
-    <value>Rutines</value>
-  </data>
-  <data name="Layout_Exercises" xml:space="preserve">
-    <value>Exercicis</value>
-  </data>
-  
+
   <!-- Language Selector -->
   <data name="Language_Catalan" xml:space="preserve">
     <value>Català</value>
@@ -79,11 +68,5 @@
   </data>
   <data name="Language_English" xml:space="preserve">
     <value>English</value>
-  </data>
-  <data name="Layout_SignIn" xml:space="preserve">
-    <value>Iniciar sessió</value>
-  </data>
-  <data name="Layout_Logout" xml:space="preserve">
-    <value>Tancar sessió</value>
   </data>
 </root>

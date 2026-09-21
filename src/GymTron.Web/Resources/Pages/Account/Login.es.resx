@@ -58,32 +58,21 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  
-  <!-- Layout -->
-  <data name="Layout_Home" xml:space="preserve">
-    <value>Inici</value>
+
+  <!-- Login Page -->
+  <data name="Login_Title" xml:space="preserve">
+    <value>Iniciar sesión</value>
   </data>
-  <data name="Layout_Routines" xml:space="preserve">
-    <value>Rutines</value>
+  <data name="Login_Subtitle" xml:space="preserve">
+    <value>Introduce tus credenciales para acceder a GymTron</value>
   </data>
-  <data name="Layout_Exercises" xml:space="preserve">
-    <value>Exercicis</value>
+  <data name="Login_Identifier" xml:space="preserve">
+    <value>Nombre de usuario o correo electrónico</value>
   </data>
-  
-  <!-- Language Selector -->
-  <data name="Language_Catalan" xml:space="preserve">
-    <value>Català</value>
+  <data name="Login_Password" xml:space="preserve">
+    <value>Contraseña</value>
   </data>
-  <data name="Language_Spanish" xml:space="preserve">
-    <value>Español</value>
-  </data>
-  <data name="Language_English" xml:space="preserve">
-    <value>English</value>
-  </data>
-  <data name="Layout_SignIn" xml:space="preserve">
-    <value>Iniciar sessió</value>
-  </data>
-  <data name="Layout_Logout" xml:space="preserve">
-    <value>Tancar sessió</value>
+  <data name="Login_SubmitButton" xml:space="preserve">
+    <value>Iniciar sesión</value>
   </data>
 </root>
