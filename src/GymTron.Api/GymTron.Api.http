@@ -1,4 +1,6 @@
-@GymTron.Api_HostAddress = https://localhost:7053
+# Local: https://localhost:7053
+# Production / Remote: http://gymtronapi.runasp.net
+@GymTron.Api_HostAddress = http://gymtronapi.runasp.net
 @Identifier = trainer
 @Email = trainer@gymtron.com
 @Password = SuperSecretPassword123!
