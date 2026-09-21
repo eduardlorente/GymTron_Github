@@ -1,0 +1,53 @@
+################################################################################
+# GymTron .gitignore
+################################################################################
+
+# Build outputs
+**/bin/
+**/obj/
+bin/
+obj/
+
+# Visual Studio
+*.suo
+*.user
+.vs/
+*.vspscc
+*.vssscc
+
+# Test results
+TestResults/
+tests/GymTron.IntegrationTests/TestResults/
+tests/GymTron.IntegrationTests/TestResults-*/
+
+# Local secrets and signing material (GymTron)
+/.env
+/.env.*
+!/.env.example
+/src/GymTron.App/Resources/Json/appsettings.Secrets.json
+/Directory.Build.local.props
+/src/GymTron.App/GymTron.Signing.local.props
+/src/GymTron.Web/Properties/PublishProfiles/site53146-WebDeploy.local.props
+
+# Certificate and key files
+*.pfx
+*.p12
+*.pem
+*.key
+*.keystore
+*.jks
+
+# IDE and tooling
+.idea/
+*.iml
+/.atl/.skill-registry.cache.json
+/.atl/skill-registry.md
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Misc
+*.log
+*.orig
+vwd.webinfo
