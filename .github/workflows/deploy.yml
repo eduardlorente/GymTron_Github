@@ -44,7 +44,7 @@ jobs:
           ) else (
             set "MSDEPLOY_EXE=C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe"
           )
-          "%MSDEPLOY_EXE%" -verb:sync -source:contentPath="%MSDEPLOY_SOURCE%" -dest:contentPath="%MSDEPLOY_SITE%",computerName="https://%MSDEPLOY_SERVER%:8172/msdeploy.axd?site=%MSDEPLOY_SITE%",userName="%MSDEPLOY_USER%",password="%MSDEPLOY_PASSWORD%",authtype="Basic",includeAcls="False" -enableRule:AppOffline -allowUntrusted -disableLink:AppPoolExtension -disableLink:ContentExtension -disableLink:CertificateExtension
+          "%MSDEPLOY_EXE%" -verb:sync -source:contentPath="%MSDEPLOY_SOURCE%" -dest:contentPath="%MSDEPLOY_SITE%",computerName="https://%MSDEPLOY_SERVER%:8172/msdeploy.axd?site=%MSDEPLOY_SITE%",userName="%MSDEPLOY_USER%",password="%MSDEPLOY_PASSWORD%",authtype="Basic",includeAcls="False" -enableRule:AppOffline -retryAttempts:10 -retryInterval:5000 -allowUntrusted -disableLink:AppPoolExtension -disableLink:ContentExtension -disableLink:CertificateExtension
 
   deploy-web:
     name: Deploy Web
@@ -80,4 +80,4 @@ jobs:
           ) else (
             set "MSDEPLOY_EXE=C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe"
           )
-          "%MSDEPLOY_EXE%" -verb:sync -source:contentPath="%MSDEPLOY_SOURCE%" -dest:contentPath="%MSDEPLOY_SITE%",computerName="https://%MSDEPLOY_SERVER%:8172/msdeploy.axd?site=%MSDEPLOY_SITE%",userName="%MSDEPLOY_USER%",password="%MSDEPLOY_PASSWORD%",authtype="Basic",includeAcls="False" -enableRule:AppOffline -allowUntrusted -disableLink:AppPoolExtension -disableLink:ContentExtension -disableLink:CertificateExtension
+          "%MSDEPLOY_EXE%" -verb:sync -source:contentPath="%MSDEPLOY_SOURCE%" -dest:contentPath="%MSDEPLOY_SITE%",computerName="https://%MSDEPLOY_SERVER%:8172/msdeploy.axd?site=%MSDEPLOY_SITE%",userName="%MSDEPLOY_USER%",password="%MSDEPLOY_PASSWORD%",authtype="Basic",includeAcls="False" -enableRule:AppOffline -retryAttempts:10 -retryInterval:5000 -allowUntrusted -disableLink:AppPoolExtension -disableLink:ContentExtension -disableLink:CertificateExtension
