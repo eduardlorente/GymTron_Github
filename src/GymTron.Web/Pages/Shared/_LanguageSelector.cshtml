@@ -1,0 +1,32 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    var currentCulture = System.Globalization.CultureInfo.CurrentUICulture.Name;
+    var returnUrl = Context.Request.Path + Context.Request.QueryString;
+}
+
+<div class="dropdown">
+    <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="bi bi-globe"></i>
+        @switch (currentCulture)
+        {
+            case "ca":
+                @Localizer["Language_Catalan"]
+                break;
+            case "es":
+                @Localizer["Language_Spanish"]
+                break;
+            case "en":
+                @Localizer["Language_English"]
+                break;
+            default:
+                @currentCulture
+                break;
+        }
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="languageDropdown">
+        <li><a class="dropdown-item @(currentCulture == "ca" ? "active" : "")" href="/SetLanguage?culture=ca&returnUrl=@Uri.EscapeDataString(returnUrl)">@Localizer["Language_Catalan"]</a></li>
+        <li><a class="dropdown-item @(currentCulture == "es" ? "active" : "")" href="/SetLanguage?culture=es&returnUrl=@Uri.EscapeDataString(returnUrl)">@Localizer["Language_Spanish"]</a></li>
+        <li><a class="dropdown-item @(currentCulture == "en" ? "active" : "")" href="/SetLanguage?culture=en&returnUrl=@Uri.EscapeDataString(returnUrl)">@Localizer["Language_English"]</a></li>
+    </ul>
+</div>

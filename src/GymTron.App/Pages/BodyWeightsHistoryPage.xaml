@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GymTron.App.Pages.BodyWeightsHistoryPage"
+             Shell.BackgroundColor="#ffbd59"
+             xmlns:ext="clr-namespace:GymTron.App.Extensions"
+             xmlns:vm="clr-namespace:GymTron.App.ViewModels.Pages"
+             xmlns:vmEntities="clr-namespace:GymTron.App.ViewModels.Entities"
+             x:DataType="vm:BodyWeightsHistoryPageViewModel"
+             Title="{ext:Translate BodyWeights_Title}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Button Text="{ext:Translate BodyWeights_Add}"
+                BackgroundColor="Green" TextColor="White" CornerRadius="10"
+                HorizontalOptions="Center" Margin="0,30,0,15"
+                Grid.Row="0"
+                Command="{Binding AddBodyWeightCommand}" />
+        
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="20, 0">
+                <CollectionView ItemsSource="{Binding BodyWeightsHistoryItems}" Margin="0,0,0,0">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="vmEntities:BodyWeightHistoryItemViewModel">
+                            <Frame BorderColor="#E0E0E0"
+                                   BackgroundColor="#FFFFFF"
+                                   CornerRadius="12"
+                                   Padding="15"
+                                   Margin="0,10">
+                                <VerticalStackLayout Spacing="8">
+                                    <Label Text="{Binding CreatedOn}"
+                                           FontSize="18"
+                                           FontAttributes="Bold"
+                                           TextColor="#666666" />
+                                    <HorizontalStackLayout>
+                                        <Label Text="{Binding Weight}"
+                                               FontSize="18"
+                                               TextColor="{Binding WeightColor}" />
+                                        <Label Text="{Binding BodyFatPercentage}"
+                                               FontSize="18"
+                                               TextColor="{Binding BodyFatPercentageColor}"
+                                               Margin="50,0,0,0"/>
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+
+</ContentPage>

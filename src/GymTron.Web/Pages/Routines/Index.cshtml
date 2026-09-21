@@ -1,0 +1,60 @@
+@page
+@model GymTron.Web.Pages.Routines.IndexModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["Routines_Index_Title"];
+}
+
+<div class="gt-page-header">
+    <div>
+        <h1>@Localizer["Routines_Index_Title"]</h1>
+        <p class="text-muted mb-0">Gestión y planificación de tus rutinas de entrenamiento</p>
+    </div>
+    <div>
+        <a asp-page="Create" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> @Localizer["Routines_Index_CreateNew"]
+        </a>
+    </div>
+</div>
+
+<div class="gt-table-container">
+    <div class="table-responsive">
+        <table class="gt-table" aria-label="@Localizer["Routines_Index_Title"]">
+            <thead>
+                <tr>
+                    <th>@Localizer["Routines_Index_Name"]</th>
+                    <th>@Localizer["Routines_Index_Exercises"]</th>
+                    <th class="text-end">@Localizer["Routines_Index_Actions"]</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var routine in Model.Routines)
+                {
+                    <tr>
+                        <td class="fw-semibold">
+                            <a asp-page="Details" asp-route-id="@routine.Id" class="text-decoration-none text-dark">
+                                @routine.Name
+                            </a>
+                        </td>
+                        <td>
+                            <span class="gt-badge gt-badge-blue">
+                                <i class="bi bi-activity"></i> @routine.Items.Count @Localizer["Routines_Index_ExercisesCount"]
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <div class="d-inline-flex gap-2">
+                                <a asp-page="Details" asp-route-id="@routine.Id" class="btn btn-sm btn-outline-primary" aria-label="@Localizer["Routines_Index_Details"] @routine.Name">
+                                    <i class="bi bi-eye"></i> @Localizer["Routines_Index_Details"]
+                                </a>
+                                <a asp-page="Edit" asp-route-id="@routine.Id" class="btn btn-sm btn-outline-warning" aria-label="@Localizer["Routines_Index_Edit"] @routine.Name">
+                                    <i class="bi bi-pencil"></i> @Localizer["Routines_Index_Edit"]
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

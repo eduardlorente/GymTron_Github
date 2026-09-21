@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:GymTron.App.ViewModels.Pages"
+             x:Class="GymTron.App.MainPage"
+             x:DataType="viewModels:MainPageViewModel"
+             BackgroundImageSource="background_image.png"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Shell.NavBarIsVisible="False">
+
+    <ContentPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="White" StatusBarStyle="DarkContent" />
+    </ContentPage.Behaviors>
+
+    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="20">
+
+        <!-- Language Selector -->
+        <Picker x:Name="LanguagePicker"
+                Title="{Binding LanguageTitle}"
+                ItemsSource="{Binding LanguageNames}"
+                SelectedIndex="{Binding SelectedLanguageIndex}"
+                WidthRequest="200"
+                HeightRequest="50"
+                FontSize="16"
+                BackgroundColor="White"
+                TextColor="Black" />
+
+        <!-- Buttons -->
+        <Button 
+            x:Name="TrainingButton"
+            Text="{Binding TrainingText}" 
+            Command="{Binding NavigateTrainingCommand}"
+            BackgroundColor="#ffbd59"
+            TextColor="Black"
+            CornerRadius="20"
+            WidthRequest="300"
+            HeightRequest="50"
+            FontSize="18" />
+
+        <Button 
+            x:Name="TrainingHistoryButton"
+            Text="{Binding TrainingHistoryText}" 
+            Command="{Binding NavigateTrainingHistoryCommand}"
+            BackgroundColor="#ffbd59"
+            TextColor="Black"
+            CornerRadius="20"
+            WidthRequest="300"
+            HeightRequest="50"
+            FontSize="18" />
+
+        <Button 
+            x:Name="ExerciseHistoryButton"
+            Text="{Binding ExerciseHistoryText}" 
+            Command="{Binding NavigateExerciseHistoryCommand}"
+            BackgroundColor="#ffbd59"
+            TextColor="Black"
+            CornerRadius="20"
+            WidthRequest="300"
+            HeightRequest="50"
+            FontSize="18" />
+
+        <Button 
+            x:Name="BodyWeightHistoryButton"
+            Text="{Binding BodyWeightHistoryText}" 
+            Command="{Binding NavigateBodyWeightHistoryCommand}"
+            BackgroundColor="#ffbd59"
+            TextColor="Black"
+            CornerRadius="20"
+            WidthRequest="300"
+            HeightRequest="50"
+            FontSize="18" />
+
+        <!--<Button 
+            Text="Settings" 
+            BackgroundColor="OrangeRed"
+            TextColor="White"
+            CornerRadius="20"
+            WidthRequest="200"
+            HeightRequest="50"
+            FontSize="18"
+            Clicked="Settings_Clicked" />-->
+        
+    </VerticalStackLayout>
+</ContentPage>

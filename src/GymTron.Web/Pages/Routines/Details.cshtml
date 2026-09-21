@@ -1,0 +1,125 @@
+@page "{id:int}"
+@model GymTron.Web.Pages.Routines.DetailsModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = $"{Localizer["Routines_Details_RoutinePrefix"].Value}: {Model.Routine.Name}";
+    var dayNames = new[] { "", Localizer["Routines_Details_Day1"].Value, Localizer["Routines_Details_Day2"].Value, Localizer["Routines_Details_Day3"].Value, Localizer["Routines_Details_Day4"].Value, Localizer["Routines_Details_Day5"].Value, Localizer["Routines_Details_Day6"].Value, Localizer["Routines_Details_Day7"].Value };
+    
+    // Find the first day that has exercises, default to 1
+    var firstActiveDay = Model.Routine.WorkByDays.Keys.OrderBy(k => k).FirstOrDefault(k => k >= 1 && k <= 7);
+    if (firstActiveDay == 0) firstActiveDay = 1;
+}
+
+<div class="gt-page-header">
+    <div>
+        <div class="d-flex align-items-center gap-2 mb-1">
+            <span class="gt-badge gt-badge-blue">@Localizer["Routines_Details_RoutinePrefix"]</span>
+        </div>
+        <h1>@Model.Routine.Name</h1>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-page="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> @Localizer["Routines_Details_Back"]
+        </a>
+        <a asp-page="Edit" asp-route-id="@Model.Routine.Id" class="btn btn-primary">
+            <i class="bi bi-pencil"></i> @Localizer["Routines_Details_Edit"]
+        </a>
+    </div>
+</div>
+
+<ul class="nav gt-day-nav" id="routineDaysTab" role="tablist">
+    @for (int dayNum = 1; dayNum <= 7; dayNum++)
+    {
+        var hasExercises = Model.Routine.WorkByDays.TryGetValue(dayNum, out var dayItems);
+        var count = hasExercises && dayItems != null ? dayItems.Count : 0;
+        var isActive = dayNum == firstActiveDay;
+
+        <li class="nav-item" role="presentation">
+            <button class="gt-day-pill @(isActive ? "active" : "")" 
+                    id="day-@dayNum-tab" 
+                    data-bs-toggle="pill" 
+                    data-bs-target="#day-@dayNum" 
+                    type="button" 
+                    role="tab" 
+                    aria-controls="day-@dayNum" 
+                    aria-selected="@(isActive ? "true" : "false")">
+                @dayNames[dayNum]
+                @if (count > 0)
+                {
+                    <span class="badge rounded-pill bg-light text-dark">@count</span>
+                }
+            </button>
+        </li>
+    }
+</ul>
+
+<div class="tab-content" id="routineDaysTabContent">
+    @for (int dayNum = 1; dayNum <= 7; dayNum++)
+    {
+        var hasExercises = Model.Routine.WorkByDays.TryGetValue(dayNum, out var dayItems);
+        var isActive = dayNum == firstActiveDay;
+
+        <div class="tab-pane fade @(isActive ? "show active" : "")" 
+             id="day-@dayNum" 
+             role="tabpanel" 
+             aria-labelledby="day-@dayNum-tab">
+            @if (hasExercises && dayItems != null && dayItems.Count > 0)
+            {
+                <div class="gt-table-container">
+                    <div class="table-responsive">
+                        <table class="gt-table" aria-label="@dayNames[dayNum]">
+                            <thead>
+                                <tr>
+                                    <th>@Localizer["Routines_Details_Exercise"]</th>
+                                    <th>@Localizer["Routines_Details_Series"]</th>
+                                    <th>@Localizer["Routines_Details_Repetitions"]</th>
+                                    <th>@Localizer["Routines_Details_Rest"]</th>
+                                    <th>@Localizer["Routines_Details_Alternating"]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in dayItems)
+                                {
+                                    <tr>
+                                        <td class="fw-semibold">
+                                            <i class="bi bi-heptagon text-primary me-1"></i> @item.ExerciseName
+                                        </td>
+                                        <td>
+                                            <span class="gt-badge gt-badge-blue">@item.Series series</span>
+                                        </td>
+                                        <td>
+                                            <span class="gt-exercise-metric">@item.RepetitionsMin - @item.RepetitionsMax reps</span>
+                                        </td>
+                                        <td class="text-muted">
+                                            <i class="bi bi-clock me-1"></i>@item.MinRestTimeInSeconds - @(item.MaxRestTimeInSeconds ?? item.MinRestTimeInSeconds) @Localizer["Routines_Details_Seconds"]
+                                        </td>
+                                        <td>
+                                            @if (item.AlternatingSeries)
+                                            {
+                                                <span class="gt-badge gt-badge-teal">
+                                                    <i class="bi bi-arrow-repeat"></i> @Localizer["Routines_Details_Yes"]
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted small">@Localizer["Routines_Details_No"]</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="gt-card text-center py-5">
+                    <i class="bi bi-calendar-x text-muted display-6 d-block mb-2"></i>
+                    <p class="text-muted mb-0">No hay ejercicios programados para @dayNames[dayNum].</p>
+                </div>
+            }
+        </div>
+    }
+</div>

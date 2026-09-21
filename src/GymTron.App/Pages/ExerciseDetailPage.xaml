@@ -1,0 +1,105 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GymTron.App.Pages.ExerciseDetailPage"
+             Shell.BackgroundColor="#ffbd59"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:ext="clr-namespace:GymTron.App.Extensions"
+             xmlns:vm="clr-namespace:GymTron.App.ViewModels.Pages"
+             x:DataType="vm:ExerciseDetailPageViewModel"
+             Title="{ext:Translate ExerciseDetail_Title}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <StackLayout Spacing="5" Padding="20">
+
+            <Label Text="{ext:Translate ExerciseDetail_Exercise}" FontSize="18" />
+            <Label Text="{Binding ExerciseName}" FontSize="16" FontAttributes="Bold" Margin="0,0,0,20"/>
+            <Label Text="{Binding Description}" 
+                   FontSize="14" 
+                   FontAttributes="Italic" 
+                   TextColor="#555555"
+                   LineBreakMode="WordWrap"
+                   Margin="0,0,0,20"/>
+
+            <Frame BorderColor="Gray" CornerRadius="10" Padding="15">
+                <StackLayout Spacing="5">
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="{ext:Translate ExerciseDetail_Series}" FontSize="18" />
+                        <Label Text="{Binding Series}" FontSize="16" FontAttributes="Bold" HorizontalOptions="EndAndExpand"/>
+                    </StackLayout>
+                    <Label Text="{ext:Translate ExerciseDetail_AlternatingSeries}" FontSize="18" TextColor="Red" IsVisible="{Binding AlternatingSeries}" Margin="0,0,0,10"/>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="{Binding RepetitionsTitle}" FontSize="18" />
+                        <Label Text="{Binding Repetitions}" FontSize="16" FontAttributes="Bold" HorizontalOptions="EndAndExpand"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="{ext:Translate ExerciseDetail_RIR}" FontSize="18" IsVisible="{Binding IsDurationExercise, Converter={StaticResource InvertedBoolConverter}}" />
+                        <Label Text="{Binding ReplaysInReserve}" FontSize="16" FontAttributes="Bold" HorizontalOptions="EndAndExpand" IsVisible="{Binding IsDurationExercise, Converter={StaticResource InvertedBoolConverter}}" />
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="{ext:Translate ExerciseDetail_Rest}" FontSize="18" />
+                        <Label Text="{Binding RestTime}" FontSize="16" FontAttributes="Bold" HorizontalOptions="EndAndExpand" />
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="{ext:Translate ExerciseDetail_Pattern}" FontSize="18" />
+                        <Label Text="{Binding Pattern}" FontSize="16" FontAttributes="Bold" HorizontalOptions="EndAndExpand"/>
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
+
+            <Frame BorderColor="Gray" CornerRadius="10" Padding="15" Margin="0,20,0,0">
+                <StackLayout Spacing="5">
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="{ext:Translate ExerciseDetail_LastWeight}" FontSize="18" IsVisible="{Binding IsDurationExercise, Converter={StaticResource InvertedBoolConverter}}" />
+                        <Label Text="{Binding LastWeightWithSuffix}" FontSize="16" FontAttributes="Bold" HorizontalOptions="EndAndExpand" IsVisible="{Binding IsDurationExercise, Converter={StaticResource InvertedBoolConverter}}" />
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="{ext:Translate ExerciseDetail_LastReps}" FontSize="18" IsVisible="{Binding IsDurationExercise, Converter={StaticResource InvertedBoolConverter}}" />
+                        <Label Text="{Binding LastRepetitions}" FontSize="16" FontAttributes="Bold" HorizontalOptions="EndAndExpand" IsVisible="{Binding IsDurationExercise, Converter={StaticResource InvertedBoolConverter}}" />
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="{ext:Translate ExerciseDetail_LastDuration}" FontSize="18" IsVisible="{Binding IsDurationExercise}" />
+                        <Label Text="{Binding LastDurationWithSufix}" FontSize="16" FontAttributes="Bold" HorizontalOptions="EndAndExpand" IsVisible="{Binding IsDurationExercise}" />
+                    </StackLayout>
+
+                    <Label Text="{ext:Translate ExerciseDetail_LastObservations}" FontSize="18" Margin="0,10,0,0"/>
+                    <CollectionView ItemsSource="{Binding Observations}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="x:String">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Label Text="•" 
+                                           FontSize="16" 
+                                           Margin="0,0,5,0"  VerticalOptions="Start"
+                                           Grid.Row="0"
+                                           Grid.Column="0"/>
+                                    <Label Text="{Binding .}" 
+                                           FontSize="16"
+                                           LineBreakMode="WordWrap"
+                                           VerticalOptions="Start"
+                                           Grid.Row="0"
+                                           Grid.Column="1"/>
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+            </Frame>
+
+
+            <Button Text="{ext:Translate ExerciseDetail_Complete}" Command="{Binding CompleteExerciseCommand}" BackgroundColor="Green" TextColor="White" CornerRadius="10" Margin="0,20,0,0"/>
+
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

@@ -1,0 +1,77 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<!DOCTYPE html>
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#3b82f6" />
+    <title>@ViewData["Title"] - GymTron</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/gymtron-theme.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <a href="#main-content" class="visually-hidden-focusable">Skip to content</a>
+    <header>
+        <nav class="navbar navbar-expand-sm gt-navbar">
+            <div class="container">
+                <a class="gt-brand" asp-page="/Index">
+                    <i class="bi bi-activity"></i> GymTron
+                </a>
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link gt-nav-link" asp-page="/Index">@Localizer["Layout_Home"]</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link gt-nav-link" asp-page="/Routines/Index">@Localizer["Layout_Routines"]</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link gt-nav-link" asp-page="/ExerciseParameters/Index">@Localizer["Layout_Exercises"]</a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav me-3">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item d-flex align-items-center me-2">
+                                <span class="text-light small"><i class="bi bi-person-circle"></i> @User.Identity.Name</span>
+                            </li>
+                            <li class="nav-item">
+                                <form method="post" asp-page="/Account/Logout" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-light">Logout</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link gt-nav-link" asp-page="/Account/Login"><i class="bi bi-box-arrow-in-right"></i> Sign In</a>
+                            </li>
+                        }
+                    </ul>
+                    <partial name="_LanguageSelector" />
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container my-4">
+        <main id="main-content" role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="gt-footer footer">
+        <div class="container text-center">
+            &copy; @DateTime.Now.Year - GymTron
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

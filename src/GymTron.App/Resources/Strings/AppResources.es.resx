@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  
+  <!-- MainPage -->
+  <data name="MainPage_Training" xml:space="preserve">
+    <value>ENTRENAMIENTO</value>
+  </data>
+  <data name="MainPage_TrainingHistory" xml:space="preserve">
+    <value>HISTÓRICO ENTRENAMIENTOS</value>
+  </data>
+  <data name="MainPage_ExerciseHistory" xml:space="preserve">
+    <value>HISTÓRICO EJERCICIOS</value>
+  </data>
+  <data name="MainPage_Measures" xml:space="preserve">
+    <value>MEDIDAS</value>
+  </data>
+  
+  <!-- Language Selector -->
+  <data name="Language_Title" xml:space="preserve">
+    <value>Idioma</value>
+  </data>
+  <data name="Language_Catalan" xml:space="preserve">
+    <value>Català</value>
+  </data>
+  <data name="Language_Spanish" xml:space="preserve">
+    <value>Español</value>
+  </data>
+  <data name="Language_English" xml:space="preserve">
+    <value>English</value>
+  </data>
+  
+  <!-- CurrentTrainingPage -->
+  <data name="CurrentTraining_Title" xml:space="preserve">
+    <value>Entrenamiento en curso</value>
+  </data>
+  <data name="CurrentTraining_Cancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="CurrentTraining_StartDate" xml:space="preserve">
+    <value>Fecha de inicio:</value>
+  </data>
+  <data name="CurrentTraining_ElapsedTime" xml:space="preserve">
+    <value>Tiempo transcurrido:</value>
+  </data>
+  <data name="CurrentTraining_Exercises" xml:space="preserve">
+    <value>Ejercicios:</value>
+  </data>
+  <data name="CurrentTraining_Finish" xml:space="preserve">
+    <value>Finalizar entrenamiento</value>
+  </data>
+  
+  <!-- StartTrainingPage -->
+  <data name="StartTraining_Title" xml:space="preserve">
+    <value>Comenzar entrenamiento</value>
+  </data>
+  <data name="StartTraining_SelectRoutine" xml:space="preserve">
+    <value>Selecciona una rutina:</value>
+  </data>
+  <data name="StartTraining_SelectDay" xml:space="preserve">
+    <value>Selecciona un día:</value>
+  </data>
+  <data name="StartTraining_Exercises" xml:space="preserve">
+    <value>Ejercicios:</value>
+  </data>
+  <data name="StartTraining_Start" xml:space="preserve">
+    <value>Comenzar entrenamiento</value>
+  </data>
+  
+  <!-- ExerciseDetailPage -->
+  <data name="ExerciseDetail_Title" xml:space="preserve">
+    <value>Detalle del ejercicio</value>
+  </data>
+  <data name="ExerciseDetail_Exercise" xml:space="preserve">
+    <value>Ejercicio:</value>
+  </data>
+  <data name="ExerciseDetail_Series" xml:space="preserve">
+    <value>Series:</value>
+  </data>
+  <data name="ExerciseDetail_AlternatingSeries" xml:space="preserve">
+    <value>¡Es serie alterna!</value>
+  </data>
+  <data name="ExerciseDetail_RIR" xml:space="preserve">
+    <value>RIR:</value>
+  </data>
+  <data name="ExerciseDetail_Rest" xml:space="preserve">
+    <value>Descanso:</value>
+  </data>
+  <data name="ExerciseDetail_Pattern" xml:space="preserve">
+    <value>Patrón:</value>
+  </data>
+  <data name="ExerciseDetail_LastWeight" xml:space="preserve">
+    <value>Peso último:</value>
+  </data>
+  <data name="ExerciseDetail_LastReps" xml:space="preserve">
+    <value>Repeticiones últimas:</value>
+  </data>
+  <data name="ExerciseDetail_LastDuration" xml:space="preserve">
+    <value>Duración última:</value>
+  </data>
+  <data name="ExerciseDetail_LastObservations" xml:space="preserve">
+    <value>Observaciones última vez:</value>
+  </data>
+  <data name="ExerciseDetail_Complete" xml:space="preserve">
+    <value>Completar ejercicio</value>
+  </data>
+  
+  <!-- CompleteExerciseModal -->
+  <data name="CompleteModal_Title" xml:space="preserve">
+    <value>Completa los valores del ejercicio</value>
+  </data>
+  <data name="CompleteModal_Duration" xml:space="preserve">
+    <value>Duración (en segundos):</value>
+  </data>
+  <data name="CompleteModal_Weight" xml:space="preserve">
+    <value>Peso (kg):</value>
+  </data>
+  <data name="CompleteModal_Reps" xml:space="preserve">
+    <value>Repeticiones:</value>
+  </data>
+  <data name="CompleteModal_Difficulty" xml:space="preserve">
+    <value>Dificultad:</value>
+  </data>
+  <data name="CompleteModal_IncreaseWeight" xml:space="preserve">
+    <value>Subir peso</value>
+  </data>
+  <data name="CompleteModal_IncreaseReps" xml:space="preserve">
+    <value>Subir repeticiones</value>
+  </data>
+  <data name="CompleteModal_Observations" xml:space="preserve">
+    <value>Observaciones:</value>
+  </data>
+  <data name="CompleteModal_Complete" xml:space="preserve">
+    <value>Completar</value>
+  </data>
+  
+  <!-- AddBodyWeightModal -->
+  <data name="AddBodyWeight_Title" xml:space="preserve">
+    <value>Añadir medida</value>
+  </data>
+  <data name="AddBodyWeight_Weight" xml:space="preserve">
+    <value>Peso (kg):</value>
+  </data>
+  <data name="AddBodyWeight_BodyFat" xml:space="preserve">
+    <value>Porcentaje grasa corporal (%):</value>
+  </data>
+  <data name="AddBodyWeight_Complete" xml:space="preserve">
+    <value>Completar</value>
+  </data>
+  
+  <!-- BodyWeightsHistoryPage -->
+  <data name="BodyWeights_Title" xml:space="preserve">
+    <value>Histórico de medidas</value>
+  </data>
+  <data name="BodyWeights_Add" xml:space="preserve">
+    <value>Añadir nueva medida</value>
+  </data>
+  
+  <!-- TrainingsHistoryPage -->
+  <data name="TrainingsHistory_Title" xml:space="preserve">
+    <value>Histórico de Entrenamientos</value>
+  </data>
+  <data name="TrainingsHistory_Total" xml:space="preserve">
+    <value>Entrenamientos totales: {0}</value>
+  </data>
+  
+  <!-- ExercisesHistoryPage -->
+  <data name="ExercisesHistory_Title" xml:space="preserve">
+    <value>Historial de Ejercicios</value>
+  </data>
+  <data name="ExercisesHistory_SelectExercise" xml:space="preserve">
+    <value>Selecciona un ejercicio</value>
+  </data>
+  <data name="ExercisesHistory_Date" xml:space="preserve">
+    <value>Fecha: {0:dd/MM/yyyy}</value>
+  </data>
+  <data name="ExercisesHistory_Weight" xml:space="preserve">
+    <value>Peso: {0} kg</value>
+  </data>
+  <data name="ExercisesHistory_Reps" xml:space="preserve">
+    <value>Repeticiones: {0}</value>
+  </data>
+  <data name="ExercisesHistory_Duration" xml:space="preserve">
+    <value>Duración: {0} segundos</value>
+  </data>
+  
+  <!-- TrainingsHistoryPage StringFormats -->
+  <data name="TrainingsHistory_TotalFormat" xml:space="preserve">
+    <value>Entrenamientos totales: {0}</value>
+  </data>
+  <data name="TrainingsHistory_DayFormat" xml:space="preserve">
+    <value>Día {0}</value>
+  </data>
+  <data name="TrainingsHistory_CountFormat" xml:space="preserve">
+    <value>Total: {0}</value>
+  </data>
+  
+  <!-- Dialogs and Notifications -->
+  <data name="Dialog_Confirmation" xml:space="preserve">
+    <value>Confirmación</value>
+  </data>
+  <data name="Dialog_Yes" xml:space="preserve">
+    <value>Sí</value>
+  </data>
+  <data name="Dialog_No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="Dialog_Ok" xml:space="preserve">
+    <value>Aceptar</value>
+  </data>
+  <data name="CurrentTraining_ConfirmFinish" xml:space="preserve">
+    <value>¿Estás seguro de que quieres finalizar el entrenamiento?</value>
+  </data>
+  <data name="CurrentTraining_FinishedToast" xml:space="preserve">
+    <value>¡Enhorabuena, entrenamiento registrado correctamente!</value>
+  </data>
+  <data name="CurrentTraining_ConfirmCancel" xml:space="preserve">
+    <value>¿Estás seguro de que quieres cancelar el entrenamiento?</value>
+  </data>
+  <data name="CurrentTraining_CancelledToast" xml:space="preserve">
+    <value>Entrenamiento cancelado</value>
+  </data>
+  <data name="ExerciseDetail_NoTrainingInProgress" xml:space="preserve">
+    <value>No hay ningún entrenamiento en curso.</value>
+  </data>
+  <data name="Common_UnexpectedError" xml:space="preserve">
+    <value>Se ha producido un error inesperado.</value>
+  </data>
+  
+  <!-- TrainingSummaryPage -->
+  <data name="TrainingSummary_Title" xml:space="preserve">
+    <value>Resumen del entrenamiento</value>
+  </data>
+  <data name="TrainingSummary_Congratulations" xml:space="preserve">
+    <value>¡Gran trabajo!</value>
+  </data>
+  <data name="TrainingSummary_Duration" xml:space="preserve">
+    <value>Duración</value>
+  </data>
+  <data name="TrainingSummary_Exercises" xml:space="preserve">
+    <value>Ejercicios</value>
+  </data>
+  <data name="TrainingSummary_TotalVolume" xml:space="preserve">
+    <value>Volumen total</value>
+  </data>
+  <data name="TrainingSummary_TotalReps" xml:space="preserve">
+    <value>Repeticiones totales</value>
+  </data>
+  <data name="TrainingSummary_CompletedExercises" xml:space="preserve">
+    <value>Ejercicios completados</value>
+  </data>
+  <data name="TrainingSummary_PendingExercises" xml:space="preserve">
+    <value>Ejercicios pendientes</value>
+  </data>
+  <data name="TrainingSummary_Done" xml:space="preserve">
+    <value>Volver al inicio</value>
+  </data>
+</root>

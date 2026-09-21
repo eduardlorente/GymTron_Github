@@ -1,0 +1,77 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GymTron.App.Pages.StartTrainingPage"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Shell.BackgroundColor="#ffbd59"
+             xmlns:converters="clr-namespace:GymTron.App.Converters"
+             xmlns:ext="clr-namespace:GymTron.App.Extensions"
+             xmlns:vm="clr-namespace:GymTron.App.ViewModels.Pages"
+             xmlns:vmEntities="clr-namespace:GymTron.App.ViewModels.Entities"
+             x:DataType="vm:StartTrainingPageViewModel"
+             Title="{ext:Translate StartTraining_Title}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+            <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior
+            EventName="Appearing"
+            Command="{Binding LoadRoutinesCommand}" />
+    </ContentPage.Behaviors>
+
+    <Grid RowDefinitions="*, Auto" Margin="20">
+        <!-- CONTINGUT SCROLLABLE -->
+        <ScrollView Grid.Row="0">
+            <StackLayout Spacing="5">
+                <!-- SELECTOR ROUTINE -->
+                <Label Text="{ext:Translate StartTraining_SelectRoutine}" FontSize="18" />
+                <Picker ItemsSource="{Binding Routines}" 
+                        ItemDisplayBinding="{Binding Name, x:DataType=vmEntities:RoutineViewModel}" 
+                        SelectedItem="{Binding SelectedRoutine}"
+                        IsEnabled="{Binding RoutinesLoaded}"
+                        Margin="0,0,0,20"/>
+
+                <!-- SELECTOR DAY -->
+                <Label Text="{ext:Translate StartTraining_SelectDay}" FontSize="18" 
+                       IsVisible="{Binding SelectedRoutine, Converter={StaticResource NullToBoolConverter}}" />
+                <Picker ItemsSource="{Binding RoutineDays}" 
+                        SelectedItem="{Binding SelectedDay}" 
+                        IsVisible="{Binding SelectedRoutine, Converter={StaticResource NullToBoolConverter}}"
+                        Margin="0,0,0,20"/>
+
+                <!-- EXERCISES -->
+                <Label Text="{ext:Translate StartTraining_Exercises}" FontSize="18" 
+                       IsVisible="{Binding SelectedDay, TargetNullValue=false}" />
+                <CollectionView ItemsSource="{Binding RoutineItems}" IsVisible="{Binding SelectedDay, TargetNullValue=false}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="vmEntities:RoutineItemViewModel">
+                            <Frame CornerRadius="8" Padding="8" Margin="5" BackgroundColor="#f2f2f2" HasShadow="True">
+                                <Label Text="{Binding ExerciseParameters.Name}"
+                                       FontSize="12" 
+                                       FontAttributes="Bold" 
+                                       VerticalOptions="Center" 
+                                       HorizontalOptions="StartAndExpand" 
+                                       LineBreakMode="WordWrap" />
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+        </ScrollView>
+
+        <!-- START TRAINING BUTTON -->
+        <Button Grid.Row="1"
+                Text="{ext:Translate StartTraining_Start}" 
+                Command="{Binding StartTrainingCommand}" 
+                IsEnabled="{Binding SelectedDay}" 
+                BackgroundColor="Green" 
+                TextColor="White" 
+                CornerRadius="10"
+                IsVisible="{Binding SelectedDay, TargetNullValue=false}" />
+    </Grid>
+
+</ContentPage>

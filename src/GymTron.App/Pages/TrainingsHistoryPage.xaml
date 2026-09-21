@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GymTron.App.Pages.TrainingsHistoryPage"
+             Shell.BackgroundColor="#ffbd59"
+             xmlns:ext="clr-namespace:GymTron.App.Extensions"
+             xmlns:converters="clr-namespace:GymTron.App.Converters"
+             xmlns:vm="clr-namespace:GymTron.App.ViewModels.Pages"
+             xmlns:vmEntities="clr-namespace:GymTron.App.ViewModels.Entities"
+             x:DataType="vm:TrainingsHistoryPageViewModel"
+             Title="{ext:Translate TrainingsHistory_Title}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:LocalizedFormatConverter x:Key="LocalizedFormatConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+            <CollectionView ItemsSource="{Binding TrainingHistoryItems}" Margin="0,10,0,0">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vmEntities:TrainingHistoryItemViewModel">
+                        <Frame BorderColor="#E0E0E0"
+                           BackgroundColor="#FFFFFF"
+                           CornerRadius="12"
+                           Padding="15"
+                           Margin="0,10">
+                            <VerticalStackLayout Spacing="8">
+
+                                <!-- MES I ANY -->
+                                <Label Text="{Binding Month}"
+                                   FontSize="20"
+                                   FontAttributes="Bold"
+                                   TextColor="#000000" />
+                                <Label Text="{Binding Year}"
+                                   FontSize="16"
+                                   TextColor="#666666" />
+
+                                <!-- TOTAL MENSUAL -->
+                                <Label Text="{Binding Count, Converter={StaticResource LocalizedFormatConverter}, ConverterParameter='TrainingsHistory_TotalFormat'}"
+                                   FontSize="16"
+                                   TextColor="#333333" />
+
+                                <!-- PER DAY OF WEEK -->
+                                <CollectionView ItemsSource="{Binding TrainingDays}"
+                                             Margin="10,5,0,0"
+                                             ItemsLayout="HorizontalList">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate x:DataType="vmEntities:TrainingDayItemViewModel">
+                                            <Frame BorderColor="#DDDDDD"
+                                               CornerRadius="8"
+                                               Padding="5"
+                                               Margin="0,0,5,0"
+                                               BackgroundColor="#F7F7F7">
+                                                <VerticalStackLayout>
+                                                    <Label Text="{Binding Key, Converter={StaticResource LocalizedFormatConverter}, ConverterParameter='TrainingsHistory_DayFormat'}"
+                                                       FontSize="14"
+                                                       TextColor="#555555" />
+                                                    <Label Text="{Binding Value, Converter={StaticResource LocalizedFormatConverter}, ConverterParameter='TrainingsHistory_CountFormat'}"
+                                                       FontSize="14"
+                                                       FontAttributes="Bold"
+                                                       TextColor="#000000" />
+                                                </VerticalStackLayout>
+                                            </Frame>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
