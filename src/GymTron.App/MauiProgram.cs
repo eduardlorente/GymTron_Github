@@ -5,8 +5,10 @@ using GymTron.App.Services;
 using GymTron.App.Services.Api;
 using GymTron.App.Services.Api.Auth;
 using GymTron.App.Services.Auth;
+using GymTron.App.Services.Biometrics;
 using GymTron.App.ViewModels.Pages;
 using GymTron.App.ViewModels.Pages.Modals;
+using Maui.Biometric;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
@@ -21,6 +23,7 @@ public static class MauiProgram
         builder
             .UseMauiApp<App>()
             .UseMauiCommunityToolkit()
+            .UseBiometricAuthentication()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -91,6 +94,8 @@ public static class MauiProgram
         });
 
         // App services
+        builder.Services.AddSingleton<IBiometricService, BiometricService>();
+        builder.Services.AddSingleton<ISessionManager, SessionManager>();
         builder.Services.AddSingleton<IAuthService, AuthService>();
         builder.Services.AddSingleton<ITrainingService, TrainingService>();
         builder.Services.AddTransient<IRoutineService, RoutineService>();
@@ -98,6 +103,7 @@ public static class MauiProgram
         builder.Services.AddTransient<IBodyWeightService, BodyWeightService>();
 
         // View models
+        builder.Services.AddTransient<LoginViewModel>();
         builder.Services.AddTransient<MainPageViewModel>();
         builder.Services.AddTransient<StartTrainingPageViewModel>();
         builder.Services.AddTransient<CurrentTrainingPageViewModel>();
@@ -108,6 +114,7 @@ public static class MauiProgram
         builder.Services.AddTransient<TrainingSummaryPageViewModel>();
 
         // Pages
+        builder.Services.AddTransient<LoginPage>();
         builder.Services.AddTransient<MainPage>();
         builder.Services.AddTransient<StartTrainingPage>();
         builder.Services.AddTransient<CurrentTrainingPage>();

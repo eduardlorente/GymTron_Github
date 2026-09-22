@@ -319,4 +319,17 @@ VALUES
     (8, 102.3, 0, '2024-11-06 18:00:00', 0),
     (9, 101.3, 0, '2024-12-10 18:00:00', 0),
     (10, 101.2, 36.1, '2025-02-10 18:00:00', 0);
+
+-- SEED TEST USER (Local Environment) --
+-- Credentials: Username='user' | Email='user@gymtron.local' | Password='password'
+INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `is_active`, `created_at`)
+VALUES 
+    (1, 'user', 'user@gymtron.local', 'GkRdnMxtr1jvD87kEmZPfw==:wRrYCQAK2CyLUFDru+eXqIK1QBi5sOXhTvuP1AhWIBc=:100000:SHA256', 1, '2026-01-01 00:00:00')
+ON DUPLICATE KEY UPDATE `password_hash` = VALUES(`password_hash`);
+
+-- Assign initial seed routines, trainings, and body weights to test user 1
+UPDATE `routines` SET `user_id` = 1 WHERE `user_id` IS NULL;
+UPDATE `trainings` SET `user_id` = 1 WHERE `user_id` IS NULL;
+UPDATE `body_weights` SET `user_id` = 1 WHERE `user_id` IS NULL;
+
 	

@@ -312,4 +312,57 @@
   <data name="TrainingSummary_Done" xml:space="preserve">
     <value>Done</value>
   </data>
+
+  <!-- Login & Biometrics -->
+  <data name="Login_Title" xml:space="preserve">
+    <value>Log in</value>
+  </data>
+  <data name="Login_Subtitle" xml:space="preserve">
+    <value>Enter your credentials to access GymTron</value>
+  </data>
+  <data name="Login_Identifier" xml:space="preserve">
+    <value>Username or email</value>
+  </data>
+  <data name="Login_Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="Login_SubmitButton" xml:space="preserve">
+    <value>Log in</value>
+  </data>
+  <data name="Login_BiometricButton" xml:space="preserve">
+    <value>Log in with fingerprint</value>
+  </data>
+  <data name="Login_Error_RequiredFields" xml:space="preserve">
+    <value>Please enter your username/email and password.</value>
+  </data>
+  <data name="Login_Error_InvalidCredentials" xml:space="preserve">
+    <value>Invalid credentials. Please check your username or password.</value>
+  </data>
+  <data name="Login_Biometric_Title" xml:space="preserve">
+    <value>Biometric Authentication</value>
+  </data>
+  <data name="Login_Biometric_Reason" xml:space="preserve">
+    <value>Scan your fingerprint to quickly access GymTron</value>
+  </data>
+  <data name="Login_Biometric_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Login_BiometricEnroll_Title" xml:space="preserve">
+    <value>Quick Fingerprint Access</value>
+  </data>
+  <data name="Login_BiometricEnroll_Message" xml:space="preserve">
+    <value>Do you want to enable fingerprint login for future sessions?</value>
+  </data>
+  <data name="Login_BiometricEnroll_Confirm" xml:space="preserve">
+    <value>Enable</value>
+  </data>
+  <data name="Login_BiometricEnroll_Cancel" xml:space="preserve">
+    <value>Later</value>
+  </data>
+  <data name="Login_BiometricFailed" xml:space="preserve">
+    <value>Fingerprint verification failed. Please use your password.</value>
+  </data>
+  <data name="Login_Error_Network" xml:space="preserve">
+    <value>Server connection error. Please check your network.</value>
+  </data>
 </root>
