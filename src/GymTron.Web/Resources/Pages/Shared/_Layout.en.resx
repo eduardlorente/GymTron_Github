@@ -80,4 +80,10 @@
   <data name="Language_English" xml:space="preserve">
     <value>English</value>
   </data>
+  <data name="Layout_SignIn" xml:space="preserve">
+    <value>Sign In</value>
+  </data>
+  <data name="Layout_Logout" xml:space="preserve">
+    <value>Logout</value>
+  </data>
 </root>

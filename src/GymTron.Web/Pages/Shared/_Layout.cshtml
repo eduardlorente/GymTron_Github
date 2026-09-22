@@ -43,14 +43,14 @@
                             </li>
                             <li class="nav-item">
                                 <form method="post" asp-page="/Account/Logout" class="d-inline">
-                                    <button type="submit" class="btn btn-sm btn-outline-light">Logout</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-light">@Localizer["Layout_Logout"]</button>
                                 </form>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link gt-nav-link" asp-page="/Account/Login"><i class="bi bi-box-arrow-in-right"></i> Sign In</a>
+                                <a class="nav-link gt-nav-link" asp-page="/Account/Login"><i class="bi bi-box-arrow-in-right"></i> @Localizer["Layout_SignIn"]</a>
                             </li>
                         }
                     </ul>
