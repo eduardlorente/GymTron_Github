@@ -1,0 +1,53 @@
+name: Deploy API to MonsterASP.NET
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/GymTron.Api/**'
+      - 'src/GymTron.Application/**'
+      - 'src/GymTron.Infrastructure/**'
+      - 'src/GymTron.Domain/**'
+      - '.github/workflows/deploy-api.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy-api:
+    name: Deploy API
+    runs-on: windows-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      - name: Restore API
+        run: dotnet restore src/GymTron.Api/GymTron.Api.csproj --source https://api.nuget.org/v3/index.json
+
+      - name: Publish API
+        run: dotnet publish src/GymTron.Api/GymTron.Api.csproj -c Release --no-restore -o publish-api
+
+      - name: Deploy API via MSDeploy
+        shell: cmd
+        env:
+          MSDEPLOY_SOURCE: ${{ github.workspace }}\publish-api
+          MSDEPLOY_SITE: ${{ secrets.MONSTERASP_API_SITE_NAME }}
+          MSDEPLOY_SERVER: ${{ secrets.MONSTERASP_API_SERVER }}
+          MSDEPLOY_USER: ${{ secrets.MONSTERASP_API_USERNAME }}
+          MSDEPLOY_PASSWORD: ${{ secrets.MONSTERASP_API_PASSWORD }}
+        run: |
+          if exist "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" (
+            set "MSDEPLOY_EXE=C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe"
+          ) else (
+            set "MSDEPLOY_EXE=C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe"
+          )
+          "%MSDEPLOY_EXE%" -verb:sync -source:contentPath="%MSDEPLOY_SOURCE%" -dest:contentPath="%MSDEPLOY_SITE%",computerName="https://%MSDEPLOY_SERVER%:8172/msdeploy.axd?site=%MSDEPLOY_SITE%",userName="%MSDEPLOY_USER%",password="%MSDEPLOY_PASSWORD%",authtype="Basic",includeAcls="False" -enableRule:AppOffline -retryAttempts:10 -retryInterval:5000 -allowUntrusted -disableLink:AppPoolExtension -disableLink:ContentExtension -disableLink:CertificateExtension
