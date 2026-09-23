@@ -319,4 +319,39 @@ VALUES
     (8, 102.3, 0, '2024-11-06 18:00:00', 0),
     (9, 101.3, 0, '2024-12-10 18:00:00', 0),
     (10, 101.2, 36.1, '2025-02-10 18:00:00', 0);
+
+-- SEED TEST USER (Local Environment) --
+-- Credentials: Username='user' | Email='user@gymtron.local' | Password='password'
+INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `is_active`, `created_at`)
+VALUES 
+    (1, 'user', 'user@gymtron.local', 'GkRdnMxtr1jvD87kEmZPfw==:wRrYCQAK2CyLUFDru+eXqIK1QBi5sOXhTvuP1AhWIBc=:100000:SHA256', 1, '2026-01-01 00:00:00')
+ON DUPLICATE KEY UPDATE `password_hash` = VALUES(`password_hash`);
+
+-- Assign initial seed routines, trainings, and body weights to test user 1
+UPDATE `routines` SET `user_id` = 1 WHERE `user_id` IS NULL;
+UPDATE `trainings` SET `user_id` = 1 WHERE `user_id` IS NULL;
+UPDATE `body_weights` SET `user_id` = 1 WHERE `user_id` IS NULL;
+
+-- SEED SAMPLE COMPLETED TRAININGS & EXERCISES (Local Environment) --
+INSERT INTO `trainings` (`id`, `user_id`, `routine_id`, `day_of_week`, `started_on`, `completed_on`, `status`)
+VALUES
+    (1, 1, 1, 1, '2026-03-02 09:00:00', '2026-03-02 10:15:00', 6),
+    (2, 1, 1, 3, '2026-03-04 09:00:00', '2026-03-04 10:20:00', 6),
+    (3, 1, 1, 5, '2026-03-06 09:00:00', '2026-03-06 10:10:00', 6)
+ON DUPLICATE KEY UPDATE `status` = VALUES(`status`);
+
+INSERT INTO `exercises` (`id`, `training_id`, `exercise_parameters_id`, `weight`, `duration`, `repetitions`, `created_on`, `observations`)
+VALUES
+    (1, 1, 17, 80.00, NULL, 10, '2026-03-02 09:20:00', ''),
+    (2, 1, 18, 55.00, NULL, 12, '2026-03-02 09:35:00', ''),
+    (3, 1, 5, 14.00, NULL, 10, '2026-03-02 09:50:00', ''),
+    (4, 2, 17, 82.50, NULL, 10, '2026-03-04 09:25:00', ''),
+    (5, 2, 18, 60.00, NULL, 12, '2026-03-04 09:40:00', ''),
+    (6, 2, 5, 14.00, NULL, 12, '2026-03-04 09:55:00', ''),
+    (7, 3, 17, 85.00, NULL, 10, '2026-03-06 09:20:00', ''),
+    (8, 3, 18, 62.50, NULL, 12, '2026-03-06 09:35:00', ''),
+    (9, 3, 5, 16.00, NULL, 10, '2026-03-06 09:50:00', '')
+ON DUPLICATE KEY UPDATE `weight` = VALUES(`weight`);
+
+
 	

@@ -1,4 +1,4 @@
-﻿using GymTron.App.Services;
+using GymTron.App.Services;
 using GymTron.App.ViewModels.Entities;
 using System.Collections.ObjectModel;
 
@@ -39,6 +39,10 @@ public partial class TrainingsHistoryPageViewModel : PageBaseViewModel
             {
                 TrainingHistoryItems.Add(item);
             }
+        }
+        catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        {
+            // Session expired; AuthHttpMessageHandler navigates to Login, suppress alert
         }
         catch (Exception ex)
         {

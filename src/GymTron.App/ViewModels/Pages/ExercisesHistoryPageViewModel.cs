@@ -1,4 +1,4 @@
-﻿using GymTron.App.Services;
+using GymTron.App.Services;
 using GymTron.App.ViewModels.Entities;
 using System.Collections.ObjectModel;
 
@@ -67,6 +67,10 @@ public partial class ExercisesHistoryPageViewModel : PageBaseViewModel
             DistinctExerciseNames = new ObservableCollection<string>(exercises.Select(e => e.Name).Distinct());
             ExercisesLoaded = true;
         }
+        catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        {
+            // Session expired; AuthHttpMessageHandler navigates to Login, suppress alert
+        }
         catch (Exception ex)
         {
             await Shell.Current.DisplayAlert("Error", $"Failed to load exercises: {ex.Message}", "OK");
@@ -92,6 +96,10 @@ public partial class ExercisesHistoryPageViewModel : PageBaseViewModel
                 .OrderByDescending(e => e.CreatedOn)];
 
             SelectedExerciseExecutions = new ObservableCollection<ExerciseViewModel>(filteredExercises);
+        }
+        catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        {
+            // Session expired; AuthHttpMessageHandler navigates to Login, suppress alert
         }
         catch (Exception ex)
         {

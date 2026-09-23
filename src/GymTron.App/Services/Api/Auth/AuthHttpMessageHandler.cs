@@ -88,6 +88,14 @@ public class AuthHttpMessageHandler(
     {
         await _tokenStorage.ClearTokensAsync();
         SessionExpired?.Invoke(null, EventArgs.Empty);
+
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            if (Application.Current is App app)
+            {
+                app.SwitchToLogin();
+            }
+        });
     }
 
     private static async Task<HttpRequestMessage> CloneHttpRequestMessageAsync(HttpRequestMessage req)

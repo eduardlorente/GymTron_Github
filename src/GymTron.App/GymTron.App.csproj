@@ -83,6 +83,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui" Version="7.0.1" />
+		<PackageReference Include="Oscore.Maui.Biometric" Version="2.4.1" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.9" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.9" />
 		<PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.9" />
@@ -136,6 +137,9 @@
 	  <Compile Update="Pages\CurrentTrainingPage.xaml.cs">
 	    <DependentUpon>CurrentTrainingPage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Pages\LoginPage.xaml.cs">
+	    <DependentUpon>LoginPage.xaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -167,6 +171,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\CurrentTrainingPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\LoginPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

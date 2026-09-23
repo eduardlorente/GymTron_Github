@@ -12,7 +12,7 @@ public static class GetCurrentTrainingEndpoint
         app.MapGet("/api/trainings/current", async (ClaimsPrincipal user, IMediator mediator, CancellationToken ct) =>
         {
             var training = await mediator.Send(new CurrentTrainingQuery(Guid.NewGuid(), user.GetUserId()), ct);
-            return Results.Ok(training);
+            return training is null ? Results.NoContent() : Results.Ok(training);
         })
         .WithTags("Trainings")
         .WithName("GetCurrentTraining")

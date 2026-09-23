@@ -22,6 +22,14 @@ public class SecurityServiceTests
     }
 
     [Fact]
+    public void PasswordHasher_Verify_SucceedsForKnownTestUserHash()
+    {
+        var hasher = new PasswordHasherService();
+        const string knownHash = "GkRdnMxtr1jvD87kEmZPfw==:wRrYCQAK2CyLUFDru+eXqIK1QBi5sOXhTvuP1AhWIBc=:100000:SHA256";
+        Assert.True(hasher.VerifyPassword("password", knownHash));
+    }
+
+    [Fact]
     public void PasswordHasher_Verify_FailsForWrongPassword()
     {
         var hasher = new PasswordHasherService();

@@ -72,6 +72,54 @@
   <data name="MainPage_Measures" xml:space="preserve">
     <value>MEDIDAS</value>
   </data>
+  <data name="MainPage_Settings" xml:space="preserve">
+    <value>CONFIGURACIÓN</value>
+  </data>
+  <data name="MainPage_UserPrefix" xml:space="preserve">
+    <value>Usuario: </value>
+  </data>
+  <data name="Settings_Title" xml:space="preserve">
+    <value>Configuración</value>
+  </data>
+  <data name="Settings_Language" xml:space="preserve">
+    <value>Idioma de la aplicación</value>
+  </data>
+  <data name="Settings_Logout" xml:space="preserve">
+    <value>CERRAR SESIÓN</value>
+  </data>
+  <data name="Settings_Logout_ConfirmTitle" xml:space="preserve">
+    <value>Cerrar sesión</value>
+  </data>
+  <data name="Settings_Logout_ConfirmMessage" xml:space="preserve">
+    <value>¿Estás seguro de que deseas cerrar la sesión?</value>
+  </data>
+  <data name="Settings_Security" xml:space="preserve">
+    <value>Seguridad y acceso</value>
+  </data>
+  <data name="Settings_Biometrics" xml:space="preserve">
+    <value>Acceso con huella dactilar</value>
+  </data>
+  <data name="Settings_Biometrics_Desc" xml:space="preserve">
+    <value>Inicia sesión rápidamente con tu huella en lugar de escribir tu contraseña.</value>
+  </data>
+  <data name="Settings_Biometrics_NotSupported" xml:space="preserve">
+    <value>La biometría no está disponible en este dispositivo.</value>
+  </data>
+  <data name="Settings_Biometrics_Prompt_Title" xml:space="preserve">
+    <value>Confirmar activación</value>
+  </data>
+  <data name="Settings_Biometrics_Prompt_Message" xml:space="preserve">
+    <value>Introduce tu contraseña actual para habilitar el acceso con huella:</value>
+  </data>
+  <data name="Settings_Biometrics_Enabled" xml:space="preserve">
+    <value>Acceso biométrico activado correctamente.</value>
+  </data>
+  <data name="Common_Yes" xml:space="preserve">
+    <value>Sí</value>
+  </data>
+  <data name="Common_No" xml:space="preserve">
+    <value>No</value>
+  </data>
   
   <!-- Language Selector -->
   <data name="Language_Title" xml:space="preserve">
@@ -311,5 +359,58 @@
   </data>
   <data name="TrainingSummary_Done" xml:space="preserve">
     <value>Volver al inicio</value>
+  </data>
+
+  <!-- Login & Biometrics -->
+  <data name="Login_Title" xml:space="preserve">
+    <value>Iniciar sesión</value>
+  </data>
+  <data name="Login_Subtitle" xml:space="preserve">
+    <value>Introduce tus credenciales para acceder a GymTron</value>
+  </data>
+  <data name="Login_Identifier" xml:space="preserve">
+    <value>Nombre de usuario o correo electrónico</value>
+  </data>
+  <data name="Login_Password" xml:space="preserve">
+    <value>Contraseña</value>
+  </data>
+  <data name="Login_SubmitButton" xml:space="preserve">
+    <value>Iniciar sesión</value>
+  </data>
+  <data name="Login_BiometricButton" xml:space="preserve">
+    <value>Entrar con huella</value>
+  </data>
+  <data name="Login_Error_RequiredFields" xml:space="preserve">
+    <value>Por favor, introduce el usuario/correo y la contraseña.</value>
+  </data>
+  <data name="Login_Error_InvalidCredentials" xml:space="preserve">
+    <value>Credenciales no válidas. Comprueba el usuario o contraseña.</value>
+  </data>
+  <data name="Login_Biometric_Title" xml:space="preserve">
+    <value>Autenticación biométrica</value>
+  </data>
+  <data name="Login_Biometric_Reason" xml:space="preserve">
+    <value>Escanea tu huella para acceder rápidamente a GymTron</value>
+  </data>
+  <data name="Login_Biometric_Cancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="Login_BiometricEnroll_Title" xml:space="preserve">
+    <value>Acceso rápido con huella</value>
+  </data>
+  <data name="Login_BiometricEnroll_Message" xml:space="preserve">
+    <value>¿Deseas activar el inicio de sesión con huella para las próximas veces?</value>
+  </data>
+  <data name="Login_BiometricEnroll_Confirm" xml:space="preserve">
+    <value>Activar</value>
+  </data>
+  <data name="Login_BiometricEnroll_Cancel" xml:space="preserve">
+    <value>Más tarde</value>
+  </data>
+  <data name="Login_BiometricFailed" xml:space="preserve">
+    <value>No se ha podido verificar la huella. Usa tu contraseña.</value>
+  </data>
+  <data name="Login_Error_Network" xml:space="preserve">
+    <value>Error de conexión con el servidor. Por favor, comprueba tu conexión.</value>
   </data>
 </root>

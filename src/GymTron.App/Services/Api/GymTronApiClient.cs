@@ -1,4 +1,6 @@
+using System.Net;
 using System.Net.Http.Json;
+using System.Text.Json;
 using GymTron.App.Services.Api.Models;
 
 namespace GymTron.App.Services.Api;
@@ -33,7 +35,26 @@ public class GymTronApiClient(HttpClient httpClient) : IGymTronApiClient
 
     public async Task<TrainingDto?> GetCurrentTrainingAsync(CancellationToken ct = default)
     {
-        return await _httpClient.GetFromJsonAsync<TrainingDto?>("api/trainings/current", ct);
+        using var response = await _httpClient.GetAsync("api/trainings/current", ct);
+        if (response.StatusCode == HttpStatusCode.NoContent || response.StatusCode == HttpStatusCode.NotFound)
+        {
+            return null;
+        }
+
+        response.EnsureSuccessStatusCode();
+
+        if (response.Content.Headers.ContentLength == 0)
+        {
+            return null;
+        }
+
+        var content = await response.Content.ReadAsStringAsync(ct);
+        if (string.IsNullOrWhiteSpace(content) || content == "null")
+        {
+            return null;
+        }
+
+        return JsonSerializer.Deserialize<TrainingDto>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
     }
 
     public async Task<List<TrainingHistoryDto>> GetTrainingHistoryAsync(CancellationToken ct = default)

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:GymTron.App.ViewModels.Pages"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="GymTron.App.Pages.LoginPage"
+             x:DataType="viewModels:LoginViewModel"
+             BackgroundImageSource="background_image.png"
+             Shell.NavBarIsVisible="False">
+
+    <ContentPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="White" StatusBarStyle="DarkContent" />
+    </ContentPage.Behaviors>
+
+    <ScrollView>
+        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="24" Padding="24" MaximumWidthRequest="420">
+
+            <!-- Header -->
+            <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                <Image Source="icon_app.png"
+                       WidthRequest="80"
+                       HeightRequest="80"
+                       HorizontalOptions="Center" />
+
+                <Label Text="{Binding TitleText}"
+                       FontSize="28"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       TextColor="Black" />
+
+                <Label Text="{Binding SubtitleText}"
+                       FontSize="14"
+                       TextColor="{StaticResource Gray600}"
+                       HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center" />
+            </VerticalStackLayout>
+
+            <!-- Form Card -->
+            <Border StrokeShape="RoundRectangle 20"
+                    StrokeThickness="1"
+                    Stroke="{StaticResource Gray200}"
+                    BackgroundColor="White"
+                    Padding="24">
+                <VerticalStackLayout Spacing="16">
+
+                    <!-- Identifier Field -->
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="{Binding IdentifierPlaceholder}"
+                               FontSize="13"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource Gray900}" />
+                        <Border StrokeShape="RoundRectangle 12"
+                                StrokeThickness="1"
+                                Stroke="{StaticResource Gray300}"
+                                BackgroundColor="White"
+                                Padding="12,0">
+                            <Entry Text="{Binding Identifier}"
+                                   Placeholder="{Binding IdentifierPlaceholder}"
+                                   Keyboard="Email"
+                                   ClearButtonVisibility="WhileEditing"
+                                   TextColor="Black"
+                                   ReturnType="Next"
+                                   HeightRequest="48" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Password Field -->
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="{Binding PasswordPlaceholder}"
+                               FontSize="13"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource Gray900}" />
+                        <Border StrokeShape="RoundRectangle 12"
+                                StrokeThickness="1"
+                                Stroke="{StaticResource Gray300}"
+                                BackgroundColor="White"
+                                Padding="12,0">
+                            <Entry Text="{Binding Password}"
+                                   Placeholder="{Binding PasswordPlaceholder}"
+                                   IsPassword="True"
+                                   ClearButtonVisibility="WhileEditing"
+                                   TextColor="Black"
+                                   ReturnType="Done"
+                                   ReturnCommand="{Binding LoginCommand}"
+                                   HeightRequest="48" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Error message -->
+                    <Label Text="{Binding ErrorMessage}"
+                           TextColor="Red"
+                           FontSize="13"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           IsVisible="{Binding HasError}" />
+
+                    <!-- Loading Indicator -->
+                    <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                       IsVisible="{Binding IsBusy}"
+                                       Color="#ffbd59"
+                                       HorizontalOptions="Center" />
+
+                    <!-- Submit Button -->
+                    <Button Text="{Binding SubmitButtonText}"
+                            Command="{Binding LoginCommand}"
+                            BackgroundColor="#ffbd59"
+                            TextColor="Black"
+                            FontAttributes="Bold"
+                            CornerRadius="20"
+                            HeightRequest="50"
+                            FontSize="16" />
+
+                    <!-- Biometric Button -->
+                    <Button Text="{Binding BiometricButtonText}"
+                            Command="{Binding BiometricLoginCommand}"
+                            IsVisible="{Binding CanUseBiometric}"
+                            BackgroundColor="Transparent"
+                            BorderColor="#ffbd59"
+                            BorderWidth="2"
+                            TextColor="Black"
+                            FontAttributes="Bold"
+                            CornerRadius="20"
+                            HeightRequest="50"
+                            FontSize="16" />
+
+                </VerticalStackLayout>
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
