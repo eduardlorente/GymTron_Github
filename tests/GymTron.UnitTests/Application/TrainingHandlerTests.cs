@@ -58,34 +58,37 @@ public class TrainingHandlerTests
 
 
 
-    [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public async Task EndTraining_WhenValid_PersistsStatusAndCompletedExercises(bool cancel)
+    [Fact]
+    public async Task FinishTraining_WhenValid_PersistsStatusAndCompletedExercises()
     {
         GymTron.Application.Common.Events.IDomainEventDispatcher eventDispatcher = Substitute.For<GymTron.Application.Common.Events.IDomainEventDispatcher>();
         ITrainingRepository trainings = Substitute.For<ITrainingRepository>();
         IExerciseRepository exercises = Substitute.For<IExerciseRepository>();
         Training training = ApplicationTestData.CreateTraining(completedWorkout: [Exercise.New(5, 11, "Squat", 90, 0, 8, [])]);
 
-        if (cancel)
-        {
-            IExceptionLogger<CancelTrainingCommand> logger = Substitute.For<IExceptionLogger<CancelTrainingCommand>>();
-            await new CancelTrainingCommandHandler(eventDispatcher, trainings, exercises, logger, new FakeClock())
-                .Handle(new CancelTrainingCommand(Guid.NewGuid(), training), CancellationToken.None);
-            Assert.Equal(EntityStatusTypes.CANCELLED, training.Status.Status);
-        }
-        else
-        {
-            IExceptionLogger<FinishTrainingCommand> logger = Substitute.For<IExceptionLogger<FinishTrainingCommand>>();
-            await new FinishTrainingCommandHandler(eventDispatcher, trainings, exercises, logger, new FakeClock())
-                .Handle(new FinishTrainingCommand(Guid.NewGuid(), training), CancellationToken.None);
-            Assert.True(training.Status.IsCompleted);
-            Assert.NotNull(training.CompletedOn);
-        }
+        IExceptionLogger<FinishTrainingCommand> logger = Substitute.For<IExceptionLogger<FinishTrainingCommand>>();
+        await new FinishTrainingCommandHandler(eventDispatcher, trainings, exercises, logger, new FakeClock())
+            .Handle(new FinishTrainingCommand(Guid.NewGuid(), training), CancellationToken.None);
 
+        Assert.True(training.Status.IsCompleted);
+        Assert.NotNull(training.CompletedOn);
         await trainings.Received(1).Update(training);
         await exercises.Received(1).AddRange(training.CompletedWorkout);
+    }
+
+    [Fact]
+    public async Task CancelTraining_WhenValid_PersistsCancelledStatusAndDoesNotPersistExercises()
+    {
+        GymTron.Application.Common.Events.IDomainEventDispatcher eventDispatcher = Substitute.For<GymTron.Application.Common.Events.IDomainEventDispatcher>();
+        ITrainingRepository trainings = Substitute.For<ITrainingRepository>();
+        Training training = ApplicationTestData.CreateTraining(completedWorkout: [Exercise.New(5, 11, "Squat", 90, 0, 8, [])]);
+
+        IExceptionLogger<CancelTrainingCommand> logger = Substitute.For<IExceptionLogger<CancelTrainingCommand>>();
+        await new CancelTrainingCommandHandler(eventDispatcher, trainings, logger, new FakeClock())
+            .Handle(new CancelTrainingCommand(Guid.NewGuid(), training), CancellationToken.None);
+
+        Assert.Equal(EntityStatusTypes.CANCELLED, training.Status.Status);
+        await trainings.Received(1).Update(training);
     }
 
     [Fact]
