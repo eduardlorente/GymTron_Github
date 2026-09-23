@@ -101,6 +101,7 @@ public static class MauiProgram
         builder.Services.AddTransient<IRoutineService, RoutineService>();
         builder.Services.AddTransient<IExerciseService, ExerciseService>();
         builder.Services.AddTransient<IBodyWeightService, BodyWeightService>();
+        builder.Services.AddSingleton<IShare>(Share.Default);
 
         // View models
         builder.Services.AddTransient<LoginViewModel>();

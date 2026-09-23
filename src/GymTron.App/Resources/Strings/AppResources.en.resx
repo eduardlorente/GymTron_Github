@@ -114,6 +114,18 @@
   <data name="Settings_Biometrics_Enabled" xml:space="preserve">
     <value>Biometric login successfully enabled.</value>
   </data>
+  <data name="Settings_Backup" xml:space="preserve">
+    <value>Backup</value>
+  </data>
+  <data name="Settings_Backup_Desc" xml:space="preserve">
+    <value>Export all your data (routines, workouts, and weights) in JSON format to save or share.</value>
+  </data>
+  <data name="Settings_Backup_Button" xml:space="preserve">
+    <value>Create and share backup</value>
+  </data>
+  <data name="Settings_Backup_Error" xml:space="preserve">
+    <value>Could not generate backup.</value>
+  </data>
   <data name="Common_Yes" xml:space="preserve">
     <value>Yes</value>
   </data>
