@@ -5,7 +5,8 @@
 		android:icon="@mipmap/icon_app" 
 		android:roundIcon="@mipmap/icon_app"
 		android:supportsRtl="true" 
-		android:label="GymTron">
+		android:label="GymTron"
+		android:usesCleartextTraffic="true">
 	</application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.INTERNET" />

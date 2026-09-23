@@ -92,15 +92,21 @@ builder.Services.AddRateLimiter(options =>
     });
 });
 
+// Health Checks
+builder.Services.AddHealthChecks();
+
 // OpenAPI documentation
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-app.UseForwardedHeaders(new ForwardedHeadersOptions
+var forwardedHeadersOptions = new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-});
+};
+forwardedHeadersOptions.KnownIPNetworks.Clear();
+forwardedHeadersOptions.KnownProxies.Clear();
+app.UseForwardedHeaders(forwardedHeadersOptions);
 
 app.UseExceptionHandler();
 
@@ -128,6 +134,10 @@ app.Use(async (context, next) =>
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Health Check endpoints
+app.MapHealthChecks("/health").AllowAnonymous();
+app.MapHealthChecks("/api/health").AllowAnonymous();
 
 // Map Minimal API Endpoints
 app.MapApiEndpoints();
