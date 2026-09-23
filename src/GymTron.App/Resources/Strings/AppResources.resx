@@ -114,6 +114,18 @@
   <data name="Settings_Biometrics_Enabled" xml:space="preserve">
     <value>Accés biomètric activat correctament.</value>
   </data>
+  <data name="Settings_Backup" xml:space="preserve">
+    <value>Còpia de seguretat</value>
+  </data>
+  <data name="Settings_Backup_Desc" xml:space="preserve">
+    <value>Exporta totes les teves dades (rutines, entrenaments i pesos) en format JSON per desar-les o compartir-les.</value>
+  </data>
+  <data name="Settings_Backup_Button" xml:space="preserve">
+    <value>Crear i compartir còpia</value>
+  </data>
+  <data name="Settings_Backup_Error" xml:space="preserve">
+    <value>No s'ha pogut generar la còpia de seguretat.</value>
+  </data>
   <data name="Common_Yes" xml:space="preserve">
     <value>Sí</value>
   </data>

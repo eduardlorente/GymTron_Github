@@ -87,4 +87,11 @@ public class GymTronApiClient(HttpClient httpClient) : IGymTronApiClient
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<TrainingDto>(cancellationToken: ct);
     }
+
+    public async Task<string> GetBackupJsonAsync(CancellationToken ct = default)
+    {
+        using var response = await _httpClient.GetAsync("api/backup", ct);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadAsStringAsync(ct);
+    }
 }

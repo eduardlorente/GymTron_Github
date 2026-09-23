@@ -14,4 +14,5 @@ public interface IGymTronApiClient
     Task FinishTrainingAsync(TrainingDto training, CancellationToken ct = default);
     Task CancelTrainingAsync(TrainingDto training, CancellationToken ct = default);
     Task<TrainingDto?> AddExerciseToTrainingAsync(AddExerciseToTrainingRequest request, CancellationToken ct = default);
+    Task<string> GetBackupJsonAsync(CancellationToken ct = default);
 }

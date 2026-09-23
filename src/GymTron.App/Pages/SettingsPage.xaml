@@ -77,6 +77,39 @@
                 </VerticalStackLayout>
             </Frame>
 
+            <!-- Backup Section -->
+            <Frame BorderColor="#dddddd"
+                   BackgroundColor="#ffffff"
+                   CornerRadius="12"
+                   Padding="20"
+                   HasShadow="True">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="{Binding BackupSectionTitle}"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="#333333" />
+
+                    <Label Text="{Binding BackupDesc}"
+                           FontSize="13"
+                           TextColor="#666666" />
+
+                    <Button Text="{Binding BackupButtonText}"
+                            Command="{Binding ExportBackupCommand}"
+                            IsEnabled="{Binding IsNotExportingBackup}"
+                            BackgroundColor="#ffbd59"
+                            TextColor="#333333"
+                            CornerRadius="20"
+                            HeightRequest="48"
+                            FontSize="16"
+                            FontAttributes="Bold" />
+
+                    <ActivityIndicator IsRunning="{Binding IsExportingBackup}"
+                                       IsVisible="{Binding IsExportingBackup}"
+                                       Color="#ffbd59"
+                                       HorizontalOptions="Center" />
+                </VerticalStackLayout>
+            </Frame>
+
             <!-- Account / Logout Section -->
             <Frame BorderColor="#f5c2c2"
                    BackgroundColor="#ffffff"

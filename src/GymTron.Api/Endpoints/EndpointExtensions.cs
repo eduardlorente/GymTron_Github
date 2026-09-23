@@ -1,4 +1,5 @@
 using GymTron.Api.Endpoints.Auth;
+using GymTron.Api.Endpoints.Backup;
 using GymTron.Api.Endpoints.BodyWeights;
 using GymTron.Api.Endpoints.Exercises;
 using GymTron.Api.Endpoints.ExerciseParameters;
@@ -43,6 +44,9 @@ public static class EndpointExtensions
         app.MapFinishTrainingEndpoint();
         app.MapCancelTrainingEndpoint();
         app.MapAddExerciseToTrainingEndpoint();
+
+        // Backup
+        app.MapExportBackupEndpoint();
 
         return app;
     }

@@ -1,8 +1,10 @@
 using System.Globalization;
 using System.Windows.Input;
 using GymTron.App.Services;
+using GymTron.App.Services.Api;
 using GymTron.App.Services.Auth;
 using GymTron.App.Services.Biometrics;
+using Microsoft.Maui.ApplicationModel.DataTransfer;
 
 namespace GymTron.App.ViewModels.Pages;
 
@@ -11,10 +13,13 @@ public sealed class SettingsPageViewModel : PageBaseViewModel, IDisposable
     private readonly IAuthService _authService;
     private readonly ISessionManager _sessionManager;
     private readonly IBiometricService _biometricService;
+    private readonly IGymTronApiClient _apiClient;
+    private readonly IShare _share;
     private readonly List<CultureInfo> _cultures;
     private int _selectedLanguageIndex;
     private bool _isBiometricsSupported;
     private bool _isTogglingBiometrics;
+    private bool _isExportingBackup;
     private bool _disposed;
 
     public List<string> LanguageNames { get; }
@@ -64,18 +69,40 @@ public sealed class SettingsPageViewModel : PageBaseViewModel, IDisposable
     public string BiometricsTitle => LocalizationService.GetString("Settings_Biometrics");
     public string BiometricsDesc => LocalizationService.GetString("Settings_Biometrics_Desc");
     public string BiometricsNotSupportedText => LocalizationService.GetString("Settings_Biometrics_NotSupported");
+    public string BackupSectionTitle => LocalizationService.GetString("Settings_Backup");
+    public string BackupDesc => LocalizationService.GetString("Settings_Backup_Desc");
+    public string BackupButtonText => LocalizationService.GetString("Settings_Backup_Button");
     public string LogoutText => LocalizationService.GetString("Settings_Logout");
 
+    public bool IsExportingBackup
+    {
+        get => _isExportingBackup;
+        private set
+        {
+            if (SetProperty(ref _isExportingBackup, value))
+            {
+                OnPropertyChanged(nameof(IsNotExportingBackup));
+            }
+        }
+    }
+
+    public bool IsNotExportingBackup => !IsExportingBackup;
+
     public ICommand LogoutCommand { get; }
+    public ICommand ExportBackupCommand { get; }
 
     public SettingsPageViewModel(
         IAuthService authService,
         ISessionManager sessionManager,
-        IBiometricService biometricService)
+        IBiometricService biometricService,
+        IGymTronApiClient apiClient,
+        IShare? share = null)
     {
         _authService = authService;
         _sessionManager = sessionManager;
         _biometricService = biometricService;
+        _apiClient = apiClient;
+        _share = share ?? Share.Default;
 
         LocalizationService.Initialize();
         _cultures = LocalizationService.GetSupportedCultures();
@@ -87,6 +114,7 @@ public sealed class SettingsPageViewModel : PageBaseViewModel, IDisposable
         LocalizationService.CultureChanged += OnCultureChanged;
 
         LogoutCommand = new Command(async () => await ExecuteLogoutAsync());
+        ExportBackupCommand = new Command(async () => await ExecuteExportBackupAsync());
 
         _ = CheckBiometricSupportAsync();
     }
@@ -201,6 +229,43 @@ public sealed class SettingsPageViewModel : PageBaseViewModel, IDisposable
         }
     }
 
+    private async Task ExecuteExportBackupAsync()
+    {
+        if (IsExportingBackup)
+        {
+            return;
+        }
+
+        IsExportingBackup = true;
+        try
+        {
+            string jsonContent = await _apiClient.GetBackupJsonAsync();
+            string fileName = $"gymtron_backup_{DateTime.UtcNow:yyyyMMdd_HHmmss}.json";
+            string filePath = Path.Combine(FileSystem.CacheDirectory, fileName);
+            await File.WriteAllTextAsync(filePath, jsonContent);
+
+            await _share.RequestAsync(new ShareFileRequest
+            {
+                Title = LocalizationService.GetString("Settings_Backup"),
+                File = new ShareFile(filePath)
+            });
+        }
+        catch (Exception ex)
+        {
+            if (Shell.Current != null)
+            {
+                await Shell.Current.DisplayAlert(
+                    LocalizationService.GetString("Settings_Backup"),
+                    $"{LocalizationService.GetString("Settings_Backup_Error")}: {ex.Message}",
+                    "OK");
+            }
+        }
+        finally
+        {
+            IsExportingBackup = false;
+        }
+    }
+
     private void OnCultureChanged(object? sender, EventArgs e)
     {
         OnPropertyChanged(nameof(Title));
@@ -210,6 +275,9 @@ public sealed class SettingsPageViewModel : PageBaseViewModel, IDisposable
         OnPropertyChanged(nameof(BiometricsTitle));
         OnPropertyChanged(nameof(BiometricsDesc));
         OnPropertyChanged(nameof(BiometricsNotSupportedText));
+        OnPropertyChanged(nameof(BackupSectionTitle));
+        OnPropertyChanged(nameof(BackupDesc));
+        OnPropertyChanged(nameof(BackupButtonText));
         OnPropertyChanged(nameof(LogoutText));
     }
 
