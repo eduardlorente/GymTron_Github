@@ -11,6 +11,7 @@ This file is the operational entry point for automated contributors. Detailed ru
 5. Use only commands already verified for the intended purpose. If verification is unavailable, report the limitation and the corresponding gap in `docs/requirements/technical-requirements.md`.
 6. Report discovered conflicts, uncertainty, and missing capabilities rather than inventing policy.
 7. Update the focused canonical document and `POINTS_OF_TRUTH.md` whenever durable guidance or navigation changes.
+8. Never create git commits or run git commit unless the user explicitly requests it in the prompt. Committing without explicit instruction is strictly forbidden.
 
 ## Language policy
 
