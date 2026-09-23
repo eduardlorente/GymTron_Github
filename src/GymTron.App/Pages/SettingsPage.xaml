@@ -1,7 +1,104 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:ext="clr-namespace:GymTron.App.Extensions"
+             xmlns:vm="clr-namespace:GymTron.App.ViewModels.Pages"
              x:Class="GymTron.App.Pages.SettingsPage"
+             x:DataType="vm:SettingsPageViewModel"
+             Title="{ext:Translate Settings_Title}"
              Shell.BackgroundColor="#ffbd59">
 
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="24">
+            <!-- Language Settings Section -->
+            <Frame BorderColor="#dddddd"
+                   BackgroundColor="#ffffff"
+                   CornerRadius="12"
+                   Padding="20"
+                   HasShadow="True">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="{Binding LanguageSectionTitle}"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="#333333" />
+
+                    <Label Text="{Binding LanguageTitle}"
+                           FontSize="14"
+                           TextColor="#666666" />
+
+                    <Picker ItemsSource="{Binding LanguageNames}"
+                            SelectedIndex="{Binding SelectedLanguageIndex}"
+                            FontSize="16"
+                            BackgroundColor="#f5f5f5"
+                            TextColor="Black"
+                            HeightRequest="48" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Security / Biometrics Section -->
+            <Frame BorderColor="#dddddd"
+                   BackgroundColor="#ffffff"
+                   CornerRadius="12"
+                   Padding="20"
+                   HasShadow="True">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="{Binding SecuritySectionTitle}"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="#333333" />
+
+                    <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto" ColumnSpacing="12" RowSpacing="6">
+                        <Label Grid.Row="0" Grid.Column="0"
+                               Text="{Binding BiometricsTitle}"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="#333333"
+                               VerticalOptions="Center" />
+
+                        <Switch Grid.Row="0" Grid.Column="1"
+                                IsToggled="{Binding IsBiometricsEnabled}"
+                                IsEnabled="{Binding IsBiometricsSupported}"
+                                OnColor="#ffbd59"
+                                ThumbColor="#ffffff"
+                                VerticalOptions="Center" />
+
+                        <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                               Text="{Binding BiometricsDesc}"
+                               FontSize="13"
+                               TextColor="#666666"
+                               IsVisible="{Binding IsBiometricsSupported}" />
+
+                        <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                               Text="{Binding BiometricsNotSupportedText}"
+                               FontSize="13"
+                               TextColor="#d93838"
+                               IsVisible="{Binding ShowBiometricsNotSupported}" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Account / Logout Section -->
+            <Frame BorderColor="#f5c2c2"
+                   BackgroundColor="#ffffff"
+                   CornerRadius="12"
+                   Padding="20"
+                   HasShadow="True">
+                <VerticalStackLayout Spacing="16">
+                    <Label Text="{Binding LogoutText}"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="#d93838" />
+
+                    <Button Text="{Binding LogoutText}"
+                            Command="{Binding LogoutCommand}"
+                            BackgroundColor="#d93838"
+                            TextColor="White"
+                            CornerRadius="20"
+                            HeightRequest="48"
+                            FontSize="16"
+                            FontAttributes="Bold" />
+                </VerticalStackLayout>
+            </Frame>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

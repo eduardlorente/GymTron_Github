@@ -72,6 +72,54 @@
   <data name="MainPage_Measures" xml:space="preserve">
     <value>MESURES</value>
   </data>
+  <data name="MainPage_Settings" xml:space="preserve">
+    <value>CONFIGURACIÓ</value>
+  </data>
+  <data name="MainPage_UserPrefix" xml:space="preserve">
+    <value>Usuari: </value>
+  </data>
+  <data name="Settings_Title" xml:space="preserve">
+    <value>Configuració</value>
+  </data>
+  <data name="Settings_Language" xml:space="preserve">
+    <value>Idioma de l'aplicació</value>
+  </data>
+  <data name="Settings_Logout" xml:space="preserve">
+    <value>TANCAR SESSIÓ</value>
+  </data>
+  <data name="Settings_Logout_ConfirmTitle" xml:space="preserve">
+    <value>Tancar sessió</value>
+  </data>
+  <data name="Settings_Logout_ConfirmMessage" xml:space="preserve">
+    <value>Segur que vols tancar la sessió?</value>
+  </data>
+  <data name="Settings_Security" xml:space="preserve">
+    <value>Seguretat i accés</value>
+  </data>
+  <data name="Settings_Biometrics" xml:space="preserve">
+    <value>Accés amb empremta dactilar</value>
+  </data>
+  <data name="Settings_Biometrics_Desc" xml:space="preserve">
+    <value>Inicia sessió ràpidament amb la teva empremta en comptes d'escriure la contrasenya.</value>
+  </data>
+  <data name="Settings_Biometrics_NotSupported" xml:space="preserve">
+    <value>La biometria no està disponible en aquest dispositiu.</value>
+  </data>
+  <data name="Settings_Biometrics_Prompt_Title" xml:space="preserve">
+    <value>Confirmar activació</value>
+  </data>
+  <data name="Settings_Biometrics_Prompt_Message" xml:space="preserve">
+    <value>Introdueix la teva contrasenya actual per habilitar l'accés amb empremta:</value>
+  </data>
+  <data name="Settings_Biometrics_Enabled" xml:space="preserve">
+    <value>Accés biomètric activat correctament.</value>
+  </data>
+  <data name="Common_Yes" xml:space="preserve">
+    <value>Sí</value>
+  </data>
+  <data name="Common_No" xml:space="preserve">
+    <value>No</value>
+  </data>
   
   <!-- Language Selector -->
   <data name="Language_Title" xml:space="preserve">

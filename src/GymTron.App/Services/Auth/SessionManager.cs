@@ -13,12 +13,21 @@ public class SessionManager(
     private const string LastAuthMethodKey = "gymtron_last_auth_method";
     private const string LastUnlockUtcKey = "gymtron_last_unlock_utc";
     private const string BiometricsPromptShownKey = "gymtron_biometrics_prompt_shown";
+    private const string LastUsernameKey = "gymtron_last_username";
+    private const string BioUsernameKey = "gymtron_bio_username";
+    private const string BioPasswordKey = "gymtron_bio_password";
 
     private readonly ITokenStorage _tokenStorage = tokenStorage;
     private readonly IBiometricService _biometricService = biometricService;
     private readonly ILogger<SessionManager>? _logger = logger;
 
     public TimeSpan SessionTimeout { get; set; } = TimeSpan.FromHours(12);
+
+    public string LastUsername
+    {
+        get => Preferences.Get(LastUsernameKey, string.Empty);
+        set => Preferences.Set(LastUsernameKey, value);
+    }
 
     public bool IsBiometricsEnabled
     {
@@ -114,5 +123,52 @@ public class SessionManager(
         Lock();
         await _tokenStorage.ClearTokensAsync();
         _logger?.LogInformation("Session invalidated and tokens cleared.");
+    }
+
+    public async Task EnableBiometricsAsync(string username, string password)
+    {
+        try
+        {
+            await SecureStorage.Default.SetAsync(BioUsernameKey, username);
+            await SecureStorage.Default.SetAsync(BioPasswordKey, password);
+            IsBiometricsEnabled = true;
+            LastUsername = username;
+            _logger?.LogInformation("Biometrics enabled and credentials securely stored for user {Username}.", username);
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException("Failed to save biometric credentials in SecureStorage.", ex);
+        }
+    }
+
+    public Task DisableBiometricsAsync()
+    {
+        try
+        {
+            SecureStorage.Default.Remove(BioUsernameKey);
+            SecureStorage.Default.Remove(BioPasswordKey);
+            IsBiometricsEnabled = false;
+            _logger?.LogInformation("Biometrics disabled and credentials cleared.");
+        }
+        catch (Exception ex)
+        {
+            _logger?.LogWarning(ex, "Error while clearing biometric credentials from SecureStorage.");
+        }
+        return Task.CompletedTask;
+    }
+
+    public async Task<(string? Username, string? Password)> GetBiometricCredentialsAsync()
+    {
+        try
+        {
+            string? username = await SecureStorage.Default.GetAsync(BioUsernameKey);
+            string? password = await SecureStorage.Default.GetAsync(BioPasswordKey);
+            return (username, password);
+        }
+        catch (Exception ex)
+        {
+            _logger?.LogWarning(ex, "Failed to retrieve biometric credentials from SecureStorage.");
+            return (null, null);
+        }
     }
 }

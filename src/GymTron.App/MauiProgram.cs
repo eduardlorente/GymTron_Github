@@ -112,6 +112,7 @@ public static class MauiProgram
         builder.Services.AddTransient<ExercisesHistoryPageViewModel>();
         builder.Services.AddTransient<BodyWeightsHistoryPageViewModel>();
         builder.Services.AddTransient<TrainingSummaryPageViewModel>();
+        builder.Services.AddTransient<SettingsPageViewModel>();
 
         // Pages
         builder.Services.AddTransient<LoginPage>();

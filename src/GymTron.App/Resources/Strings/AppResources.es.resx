@@ -72,6 +72,54 @@
   <data name="MainPage_Measures" xml:space="preserve">
     <value>MEDIDAS</value>
   </data>
+  <data name="MainPage_Settings" xml:space="preserve">
+    <value>CONFIGURACIÓN</value>
+  </data>
+  <data name="MainPage_UserPrefix" xml:space="preserve">
+    <value>Usuario: </value>
+  </data>
+  <data name="Settings_Title" xml:space="preserve">
+    <value>Configuración</value>
+  </data>
+  <data name="Settings_Language" xml:space="preserve">
+    <value>Idioma de la aplicación</value>
+  </data>
+  <data name="Settings_Logout" xml:space="preserve">
+    <value>CERRAR SESIÓN</value>
+  </data>
+  <data name="Settings_Logout_ConfirmTitle" xml:space="preserve">
+    <value>Cerrar sesión</value>
+  </data>
+  <data name="Settings_Logout_ConfirmMessage" xml:space="preserve">
+    <value>¿Estás seguro de que deseas cerrar la sesión?</value>
+  </data>
+  <data name="Settings_Security" xml:space="preserve">
+    <value>Seguridad y acceso</value>
+  </data>
+  <data name="Settings_Biometrics" xml:space="preserve">
+    <value>Acceso con huella dactilar</value>
+  </data>
+  <data name="Settings_Biometrics_Desc" xml:space="preserve">
+    <value>Inicia sesión rápidamente con tu huella en lugar de escribir tu contraseña.</value>
+  </data>
+  <data name="Settings_Biometrics_NotSupported" xml:space="preserve">
+    <value>La biometría no está disponible en este dispositivo.</value>
+  </data>
+  <data name="Settings_Biometrics_Prompt_Title" xml:space="preserve">
+    <value>Confirmar activación</value>
+  </data>
+  <data name="Settings_Biometrics_Prompt_Message" xml:space="preserve">
+    <value>Introduce tu contraseña actual para habilitar el acceso con huella:</value>
+  </data>
+  <data name="Settings_Biometrics_Enabled" xml:space="preserve">
+    <value>Acceso biométrico activado correctamente.</value>
+  </data>
+  <data name="Common_Yes" xml:space="preserve">
+    <value>Sí</value>
+  </data>
+  <data name="Common_No" xml:space="preserve">
+    <value>No</value>
+  </data>
   
   <!-- Language Selector -->
   <data name="Language_Title" xml:space="preserve">

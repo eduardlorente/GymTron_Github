@@ -72,6 +72,54 @@
   <data name="MainPage_Measures" xml:space="preserve">
     <value>MEASURES</value>
   </data>
+  <data name="MainPage_Settings" xml:space="preserve">
+    <value>SETTINGS</value>
+  </data>
+  <data name="MainPage_UserPrefix" xml:space="preserve">
+    <value>User: </value>
+  </data>
+  <data name="Settings_Title" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Settings_Language" xml:space="preserve">
+    <value>Application language</value>
+  </data>
+  <data name="Settings_Logout" xml:space="preserve">
+    <value>LOG OUT</value>
+  </data>
+  <data name="Settings_Logout_ConfirmTitle" xml:space="preserve">
+    <value>Log out</value>
+  </data>
+  <data name="Settings_Logout_ConfirmMessage" xml:space="preserve">
+    <value>Are you sure you want to log out?</value>
+  </data>
+  <data name="Settings_Security" xml:space="preserve">
+    <value>Security &amp; Access</value>
+  </data>
+  <data name="Settings_Biometrics" xml:space="preserve">
+    <value>Fingerprint Biometric Login</value>
+  </data>
+  <data name="Settings_Biometrics_Desc" xml:space="preserve">
+    <value>Sign in quickly using your fingerprint instead of typing your password.</value>
+  </data>
+  <data name="Settings_Biometrics_NotSupported" xml:space="preserve">
+    <value>Biometrics is not available on this device.</value>
+  </data>
+  <data name="Settings_Biometrics_Prompt_Title" xml:space="preserve">
+    <value>Confirm Activation</value>
+  </data>
+  <data name="Settings_Biometrics_Prompt_Message" xml:space="preserve">
+    <value>Enter your current password to enable fingerprint access:</value>
+  </data>
+  <data name="Settings_Biometrics_Enabled" xml:space="preserve">
+    <value>Biometric login successfully enabled.</value>
+  </data>
+  <data name="Common_Yes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="Common_No" xml:space="preserve">
+    <value>No</value>
+  </data>
   
   <!-- Language Selector -->
   <data name="Language_Title" xml:space="preserve">

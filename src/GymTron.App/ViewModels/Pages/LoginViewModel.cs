@@ -94,11 +94,16 @@ public sealed class LoginViewModel : PageBaseViewModel, IDisposable
 
     public async Task InitializeAsync()
     {
-        CanUseBiometric = await _sessionManager.CanUseBiometricAsync() && await _authService.IsAuthenticatedAsync();
-
-        if (CanUseBiometric && _sessionManager.LastAuthMethod == AuthMethod.Biometric)
+        if (string.IsNullOrWhiteSpace(Identifier) && !string.IsNullOrWhiteSpace(_sessionManager.LastUsername))
         {
-            await ExecuteBiometricLoginAsync();
+            Identifier = _sessionManager.LastUsername;
+        }
+
+        CanUseBiometric = await _sessionManager.CanUseBiometricAsync();
+
+        if (CanUseBiometric)
+        {
+            await ExecuteBiometricLoginAsync(isAutoPrompt: true);
         }
     }
 
@@ -153,9 +158,10 @@ public sealed class LoginViewModel : PageBaseViewModel, IDisposable
             }
 
             _sessionManager.RecordUnlock(AuthMethod.Credentials);
-            Password = string.Empty;
+            _sessionManager.LastUsername = Identifier.Trim();
 
             if (!_sessionManager.HasEnrolledBiometricsPromptBeenShown &&
+                !_sessionManager.IsBiometricsEnabled &&
                 await _biometricService.IsBiometricAvailableAsync())
             {
                 _sessionManager.HasEnrolledBiometricsPromptBeenShown = true;
@@ -164,12 +170,17 @@ public sealed class LoginViewModel : PageBaseViewModel, IDisposable
                     bool enable = await RequestBiometricEnrollmentPrompt();
                     if (enable)
                     {
-                        _sessionManager.IsBiometricsEnabled = true;
+                        await _sessionManager.EnableBiometricsAsync(Identifier.Trim(), Password);
                         _sessionManager.LastAuthMethod = AuthMethod.Biometric;
                     }
                 }
             }
+            else if (_sessionManager.IsBiometricsEnabled)
+            {
+                await _sessionManager.EnableBiometricsAsync(Identifier.Trim(), Password);
+            }
 
+            Password = string.Empty;
             LoginSuccessful?.Invoke(this, EventArgs.Empty);
         }
         catch (HttpRequestException ex)
@@ -190,7 +201,7 @@ public sealed class LoginViewModel : PageBaseViewModel, IDisposable
         }
     }
 
-    private async Task ExecuteBiometricLoginAsync()
+    private async Task ExecuteBiometricLoginAsync(bool isAutoPrompt = false)
     {
         if (IsBusy)
         {
@@ -202,14 +213,6 @@ public sealed class LoginViewModel : PageBaseViewModel, IDisposable
             SetBusy(true);
             HasError = false;
 
-            bool isAuthed = await _authService.IsAuthenticatedAsync();
-            if (!isAuthed)
-            {
-                ErrorMessage = LocalizationService.GetString("Login_Error_InvalidCredentials");
-                HasError = true;
-                return;
-            }
-
             bool authenticated = await _biometricService.AuthenticateAsync(
                 LocalizationService.GetString("Login_Biometric_Title"),
                 LocalizationService.GetString("Login_Biometric_Reason"),
@@ -217,22 +220,51 @@ public sealed class LoginViewModel : PageBaseViewModel, IDisposable
 
             if (authenticated)
             {
-                _sessionManager.RecordUnlock(AuthMethod.Biometric);
-                Password = string.Empty;
-                LoginSuccessful?.Invoke(this, EventArgs.Empty);
+                // 1. If currently authenticated with valid session, unlock immediately
+                if (await _authService.IsAuthenticatedAsync())
+                {
+                    _sessionManager.RecordUnlock(AuthMethod.Biometric);
+                    Password = string.Empty;
+                    LoginSuccessful?.Invoke(this, EventArgs.Empty);
+                    return;
+                }
+
+                // 2. Otherwise authenticate using stored biometric credentials
+                var (bioUser, bioPass) = await _sessionManager.GetBiometricCredentialsAsync();
+                if (!string.IsNullOrWhiteSpace(bioUser) && !string.IsNullOrWhiteSpace(bioPass))
+                {
+                    bool success = await _authService.LoginAsync(bioUser, bioPass);
+                    if (success)
+                    {
+                        _sessionManager.RecordUnlock(AuthMethod.Biometric);
+                        Password = string.Empty;
+                        LoginSuccessful?.Invoke(this, EventArgs.Empty);
+                        return;
+                    }
+                }
+
+                _logger?.LogWarning("Biometric verification succeeded, but credentials could not authenticate with the API.");
+                ErrorMessage = LocalizationService.GetString("Login_Error_InvalidCredentials");
+                HasError = true;
             }
             else
             {
-                _logger?.LogInformation("Biometric authentication was cancelled or unverified.");
-                ErrorMessage = LocalizationService.GetString("Login_BiometricFailed");
-                HasError = true;
+                _logger?.LogInformation("Biometric authentication was cancelled or unverified (isAutoPrompt: {IsAutoPrompt}).", isAutoPrompt);
+                if (!isAutoPrompt)
+                {
+                    ErrorMessage = LocalizationService.GetString("Login_BiometricFailed");
+                    HasError = true;
+                }
             }
         }
         catch (Exception ex)
         {
             _logger?.LogError(ex, "Unexpected error during biometric login.");
-            ErrorMessage = LocalizationService.GetString("Login_BiometricFailed");
-            HasError = true;
+            if (!isAutoPrompt)
+            {
+                ErrorMessage = LocalizationService.GetString("Login_BiometricFailed");
+                HasError = true;
+            }
         }
         finally
         {

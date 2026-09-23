@@ -13,6 +13,7 @@ public interface ISessionManager
     bool IsBiometricsEnabled { get; set; }
     AuthMethod LastAuthMethod { get; set; }
     bool HasEnrolledBiometricsPromptBeenShown { get; set; }
+    string LastUsername { get; set; }
 
     bool IsSessionActive();
     Task<bool> IsSessionActiveAsync();
@@ -20,4 +21,8 @@ public interface ISessionManager
     void Lock();
     Task<bool> CanUseBiometricAsync();
     Task InvalidateSessionAsync();
+
+    Task EnableBiometricsAsync(string username, string password);
+    Task DisableBiometricsAsync();
+    Task<(string? Username, string? Password)> GetBiometricCredentialsAsync();
 }

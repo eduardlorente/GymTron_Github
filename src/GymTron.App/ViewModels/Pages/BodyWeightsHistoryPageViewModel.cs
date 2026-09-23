@@ -51,6 +51,10 @@ public partial class BodyWeightsHistoryPageViewModel : PageBaseViewModel
                 BodyWeightsHistoryItems.Add(item);
             }
         }
+        catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        {
+            // Session expired; AuthHttpMessageHandler navigates to Login, suppress alert
+        }
         catch (Exception ex)
         {
             await Shell.Current.DisplayAlert("Error", $"Failed to load body weight history: {ex.Message}", "OK");

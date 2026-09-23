@@ -59,6 +59,7 @@
                                    Keyboard="Email"
                                    ClearButtonVisibility="WhileEditing"
                                    TextColor="Black"
+                                   ReturnType="Next"
                                    HeightRequest="48" />
                         </Border>
                     </VerticalStackLayout>
@@ -79,6 +80,8 @@
                                    IsPassword="True"
                                    ClearButtonVisibility="WhileEditing"
                                    TextColor="Black"
+                                   ReturnType="Done"
+                                   ReturnCommand="{Binding LoginCommand}"
                                    HeightRequest="48" />
                         </Border>
                     </VerticalStackLayout>

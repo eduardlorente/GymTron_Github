@@ -34,7 +34,11 @@ public partial class App : Microsoft.Maui.Controls.Application
             });
         };
 
-        if (sessionManager.IsSessionActive())
+        if (sessionManager.IsBiometricsEnabled)
+        {
+            SwitchToLogin();
+        }
+        else if (sessionManager.IsSessionActive())
         {
             SwitchToShell();
         }
