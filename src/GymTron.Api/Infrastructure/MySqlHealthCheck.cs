@@ -1,9 +1,10 @@
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Logging;
 using MySqlConnector;
 
 namespace GymTron.Api.Infrastructure;
 
-public class MySqlHealthCheck(string connectionString) : IHealthCheck
+public class MySqlHealthCheck(string connectionString, ILogger<MySqlHealthCheck>? logger = null) : IHealthCheck
 {
     public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
     {
@@ -18,6 +19,7 @@ public class MySqlHealthCheck(string connectionString) : IHealthCheck
         }
         catch (Exception ex)
         {
+            logger?.LogError(ex, "MySQL database health check failed: {Message}", ex.Message);
             return HealthCheckResult.Unhealthy("MySQL database connection failed.", ex);
         }
     }
