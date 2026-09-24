@@ -92,8 +92,22 @@ builder.Services.AddRateLimiter(options =>
     });
 });
 
+// Response Compression
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+});
+
+// Output Cache
+builder.Services.AddOutputCache(options =>
+{
+    options.AddPolicy("CatalogCache", p =>
+        p.Expire(TimeSpan.FromHours(24)).Tag("catalog"));
+});
+
 // Health Checks
-builder.Services.AddHealthChecks();
+builder.Services.AddHealthChecks()
+    .AddCheck("mysql", new MySqlHealthCheck(connectionString), tags: ["db", "ready"]);
 
 // OpenAPI documentation
 builder.Services.AddOpenApi();
@@ -109,6 +123,7 @@ forwardedHeadersOptions.KnownProxies.Clear();
 app.UseForwardedHeaders(forwardedHeadersOptions);
 
 app.UseExceptionHandler();
+app.UseResponseCompression();
 
 if (app.Environment.IsDevelopment())
 {
@@ -134,6 +149,7 @@ app.Use(async (context, next) =>
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseOutputCache();
 
 // Health Check endpoints
 app.MapHealthChecks("/health").AllowAnonymous();

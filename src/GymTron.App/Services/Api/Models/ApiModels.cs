@@ -63,7 +63,11 @@ public record TrainingRoutineItemDto(
     int? MaxRestTimeInSeconds,
     bool AlternatingSeries,
     int Position,
-    int Type);
+    int Type,
+    decimal? LastWeight = null,
+    int? LastRepetitions = null,
+    int? LastDuration = null,
+    List<string>? LastObservations = null);
 
 public record TrainingExerciseDto(
     int Id,

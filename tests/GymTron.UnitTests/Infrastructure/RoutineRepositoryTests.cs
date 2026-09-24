@@ -1,5 +1,6 @@
 using GymTron.Domain.Entities;
 using GymTron.Domain.Enums;
+using GymTron.Domain.Projections;
 using GymTron.Infrastructure.Persistence.DAL.Models;
 using GymTron.Infrastructure.Persistence.DAL.MySQL;
 using GymTron.Infrastructure.Persistence.Repositories;
@@ -19,14 +20,21 @@ public class RoutineRepositoryTests
             CreateRow(1, "First", 11, 1, "good;stable", 50, 8),
             CreateRow(1, "First", 12, 3, string.Empty, null, null)
         ]);
+        dal.ListById(1).Returns([
+            CreateRow(1, "First", 11, 1, "good;stable", 50, 8),
+            CreateRow(1, "First", 12, 3, string.Empty, null, null)
+        ]);
+        dal.ListById(99).Returns([]);
         using MemoryCache cache = new(new MemoryCacheOptions());
         CachedRoutineRepository repository = new(new RoutineRepository(dal), cache);
 
         List<GymTron.Domain.Entities.Routine> routines = await repository.ListAll();
         GymTron.Domain.Entities.Routine? found = await repository.GetById(1);
+        GymTron.Domain.Entities.Routine? cachedFound = await repository.GetById(1);
         GymTron.Domain.Entities.Routine? missing = await repository.GetById(99);
 
         await dal.Received(1).ListAll();
+        await dal.Received(1).ListById(1, cancellationToken: Arg.Any<CancellationToken>());
         Assert.Equal([2, 1], routines.Select(item => item.Id));
         List<GymTron.Domain.Entities.RoutineItem> items = found!.WorkByDays.Values.SelectMany(value => value).ToList();
         Assert.Equal(2, items.Count);
@@ -96,7 +104,7 @@ public class RoutineRepositoryTests
 
         Routine? found = await repository.GetById(1);
 
-        await dal.Received(1).ListById(1, Arg.Any<CancellationToken>());
+        await dal.Received(1).ListById(1, cancellationToken: Arg.Any<CancellationToken>());
         Assert.NotNull(found);
         Assert.Equal("Direct", found.Name);
     }
@@ -119,6 +127,167 @@ public class RoutineRepositoryTests
         Assert.NotNull(item);
         Assert.Equal("Direct", item.Name);
         await dal.Received(1).ListAll();
+    }
+
+    [Fact]
+    public async Task GetById_CachesIndividually_AndDoesNotDumpAllRoutines()
+    {
+        IRoutineDAL dal = Substitute.For<IRoutineDAL>();
+        dal.ListById(5).Returns([CreateRow(5, "Individual", 11, 1, string.Empty, null, null)]);
+        using MemoryCache cache = new(new MemoryCacheOptions());
+        CachedRoutineRepository repository = new(new RoutineRepository(dal), cache);
+
+        Routine? first = await repository.GetById(5);
+        Routine? second = await repository.GetById(5);
+
+        Assert.NotNull(first);
+        Assert.NotNull(second);
+        Assert.Equal("Individual", first.Name);
+        Assert.Equal("Individual", second.Name);
+        await dal.Received(1).ListById(5, cancellationToken: Arg.Any<CancellationToken>());
+        await dal.DidNotReceive().ListAll(Arg.Any<int?>(), Arg.Any<CancellationToken>());
+        Assert.True(cache.TryGetValue("Routine_5", out _));
+    }
+
+    [Fact]
+    public async Task GetRoutineProjection_CachesIndividually_AndDoesNotDumpAllRoutines()
+    {
+        IRoutineDAL dal = Substitute.For<IRoutineDAL>();
+        dal.ListById(5).Returns([CreateRow(5, "Projection", 11, 1, string.Empty, null, null)]);
+        using MemoryCache cache = new(new MemoryCacheOptions());
+        CachedRoutineRepository repository = new(new RoutineRepository(dal), cache);
+
+        var first = await repository.GetRoutineProjection(5);
+        var second = await repository.GetRoutineProjection(5);
+
+        Assert.NotNull(first);
+        Assert.NotNull(second);
+        Assert.Equal("Projection", first.Name);
+        Assert.Equal("Projection", second.Name);
+        await dal.Received(1).ListById(5, cancellationToken: Arg.Any<CancellationToken>());
+        await dal.DidNotReceive().ListAll(Arg.Any<int?>(), Arg.Any<CancellationToken>());
+        Assert.True(cache.TryGetValue("RoutineProjection_5", out _));
+    }
+
+    [Fact]
+    public async Task CreateAndUpdate_InvalidateIndividualRoutineAndProjectionCaches()
+    {
+        IRoutineDAL dal = Substitute.For<IRoutineDAL>();
+        dal.Create(Arg.Any<string>(), Arg.Any<IReadOnlyList<RoutineItemWriteModel>>(), Arg.Any<int?>(), Arg.Any<CancellationToken>()).Returns(10);
+        using MemoryCache cache = new(new MemoryCacheOptions());
+        CachedRoutineRepository repository = new(new RoutineRepository(dal), cache);
+
+        cache.Set("Routine_10", Routine.FromDatabase(10, "Existing", []));
+        cache.Set("RoutineProjection_10", new RoutineProjection { Id = 10, Name = "Existing" });
+
+        Routine routineToCreate = Routine.FromDatabase(10, "New", []);
+        await repository.Create(routineToCreate);
+
+        Assert.False(cache.TryGetValue("Routine_10", out _));
+        Assert.False(cache.TryGetValue("RoutineProjection_10", out _));
+
+        cache.Set("Routine_10", Routine.FromDatabase(10, "Existing", []));
+        cache.Set("RoutineProjection_10", new RoutineProjection { Id = 10, Name = "Existing" });
+
+        Routine routineToUpdate = Routine.FromDatabase(10, "Updated", []);
+        await repository.Update(routineToUpdate);
+
+        Assert.False(cache.TryGetValue("Routine_10", out _));
+        Assert.False(cache.TryGetValue("RoutineProjection_10", out _));
+    }
+
+    [Fact]
+    public async Task RoutineRepository_GetById_WithUserId_ForwardsUserIdToDal()
+    {
+        IRoutineDAL dal = Substitute.For<IRoutineDAL>();
+        dal.ListById(1, 42, Arg.Any<CancellationToken>()).Returns([CreateRow(1, "UserRoutine", 11, 1, string.Empty, null, null)]);
+        RoutineRepository repository = new(dal);
+
+        Routine? found = await repository.GetById(1, 42);
+
+        await dal.Received(1).ListById(1, 42, Arg.Any<CancellationToken>());
+        Assert.NotNull(found);
+        Assert.Equal("UserRoutine", found.Name);
+    }
+
+    [Fact]
+    public async Task RoutineRepository_GetRoutineProjection_WithUserId_ForwardsUserIdToDal()
+    {
+        IRoutineDAL dal = Substitute.For<IRoutineDAL>();
+        dal.ListById(1, 42, Arg.Any<CancellationToken>()).Returns([CreateRow(1, "UserProjection", 11, 1, string.Empty, null, null)]);
+        RoutineRepository repository = new(dal);
+
+        RoutineProjection? found = await repository.GetRoutineProjection(1, 42);
+
+        await dal.Received(1).ListById(1, 42, Arg.Any<CancellationToken>());
+        Assert.NotNull(found);
+        Assert.Equal("UserProjection", found.Name);
+    }
+
+    [Fact]
+    public async Task CachedRoutineRepository_GetById_WithUserId_UsesDistinctCacheKeyPerUser()
+    {
+        IRoutineDAL dal = Substitute.For<IRoutineDAL>();
+        dal.ListById(5, 10, Arg.Any<CancellationToken>()).Returns([CreateRow(5, "User10", 11, 1, string.Empty, null, null)]);
+        dal.ListById(5, 20, Arg.Any<CancellationToken>()).Returns([CreateRow(5, "User20", 11, 1, string.Empty, null, null)]);
+        using MemoryCache cache = new(new MemoryCacheOptions());
+        CachedRoutineRepository repository = new(new RoutineRepository(dal), cache);
+
+        Routine? user10First = await repository.GetById(5, 10);
+        Routine? user10Second = await repository.GetById(5, 10);
+        Routine? user20First = await repository.GetById(5, 20);
+
+        Assert.Equal("User10", user10First?.Name);
+        Assert.Equal("User10", user10Second?.Name);
+        Assert.Equal("User20", user20First?.Name);
+        await dal.Received(1).ListById(5, 10, Arg.Any<CancellationToken>());
+        await dal.Received(1).ListById(5, 20, Arg.Any<CancellationToken>());
+        Assert.True(cache.TryGetValue("Routine_5_10", out _));
+        Assert.True(cache.TryGetValue("Routine_5_20", out _));
+    }
+
+    [Fact]
+    public async Task CachedRoutineRepository_GetRoutineProjection_WithUserId_UsesDistinctCacheKeyPerUser()
+    {
+        IRoutineDAL dal = Substitute.For<IRoutineDAL>();
+        dal.ListById(5, 10, Arg.Any<CancellationToken>()).Returns([CreateRow(5, "Proj10", 11, 1, string.Empty, null, null)]);
+        dal.ListById(5, 20, Arg.Any<CancellationToken>()).Returns([CreateRow(5, "Proj20", 11, 1, string.Empty, null, null)]);
+        using MemoryCache cache = new(new MemoryCacheOptions());
+        CachedRoutineRepository repository = new(new RoutineRepository(dal), cache);
+
+        RoutineProjection? proj10First = await repository.GetRoutineProjection(5, 10);
+        RoutineProjection? proj10Second = await repository.GetRoutineProjection(5, 10);
+        RoutineProjection? proj20First = await repository.GetRoutineProjection(5, 20);
+
+        Assert.Equal("Proj10", proj10First?.Name);
+        Assert.Equal("Proj10", proj10Second?.Name);
+        Assert.Equal("Proj20", proj20First?.Name);
+        await dal.Received(1).ListById(5, 10, Arg.Any<CancellationToken>());
+        await dal.Received(1).ListById(5, 20, Arg.Any<CancellationToken>());
+        Assert.True(cache.TryGetValue("RoutineProjection_5_10", out _));
+        Assert.True(cache.TryGetValue("RoutineProjection_5_20", out _));
+    }
+
+    [Fact]
+    public async Task CachedRoutineRepository_CreateAndUpdate_InvalidatesBothUserIdAndNonUserIdKeys()
+    {
+        IRoutineDAL dal = Substitute.For<IRoutineDAL>();
+        dal.Create(Arg.Any<string>(), Arg.Any<IReadOnlyList<RoutineItemWriteModel>>(), Arg.Any<int?>(), Arg.Any<CancellationToken>()).Returns(5);
+        using MemoryCache cache = new(new MemoryCacheOptions());
+        CachedRoutineRepository repository = new(new RoutineRepository(dal), cache);
+
+        cache.Set("Routine_5", Routine.FromDatabase(5, "R5", []));
+        cache.Set("Routine_5_10", Routine.FromDatabase(5, "R5_10", []));
+        cache.Set("RoutineProjection_5", new RoutineProjection { Id = 5, Name = "P5" });
+        cache.Set("RoutineProjection_5_10", new RoutineProjection { Id = 5, Name = "P5_10" });
+
+        Routine routine = Routine.FromDatabase(5, "Updated", [], userId: 10);
+        await repository.Update(routine);
+
+        Assert.False(cache.TryGetValue("Routine_5", out _));
+        Assert.False(cache.TryGetValue("Routine_5_10", out _));
+        Assert.False(cache.TryGetValue("RoutineProjection_5", out _));
+        Assert.False(cache.TryGetValue("RoutineProjection_5_10", out _));
     }
 
     private static RoutineFullDetailsDTO CreateRow(

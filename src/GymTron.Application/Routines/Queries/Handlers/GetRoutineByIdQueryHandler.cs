@@ -12,7 +12,7 @@ internal class GetRoutineByIdQueryHandler(IRoutineRepository routineRepository, 
 
     protected override async Task<RoutineDto?> HandleQuery(GetRoutineByIdQuery request, CancellationToken cancellationToken)
     {
-        var projection = await _routineRepository.GetRoutineProjection(request.RoutineId, cancellationToken);
+        var projection = await _routineRepository.GetRoutineProjection(request.RoutineId, cancellationToken: cancellationToken);
         
         if (projection == null)
             return null;

@@ -37,7 +37,6 @@ internal class BodyWeightRepository(IBodyWeightDAL bodyWeightDAL) : IBodyWeightR
             BodyFatPercentage = bw.BodyFatPercentage,
             CreatedOn = bw.CreatedOn
         })
-        .OrderByDescending(b => b.CreatedOn)
         .ToList();
     }
 }

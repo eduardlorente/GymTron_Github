@@ -6,6 +6,7 @@ namespace GymTron.Domain.Repositories;
 public interface ITrainingRepository : IEntityRepository<Training, int>
 {
     Task<Training?> GetCurrent(int? userId = null, CancellationToken cancellationToken = default);
+    Task<bool> HasActiveTraining(int userId, CancellationToken cancellationToken = default);
     Task<List<Training>> ListAllWithoutExercises(CancellationToken cancellationToken = default);
     Task<List<TrainingHistoryProjection>> ListCompletedHistory(int? userId = null, CancellationToken cancellationToken = default);
 }

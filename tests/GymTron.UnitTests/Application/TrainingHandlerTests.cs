@@ -5,12 +5,14 @@ using GymTron.Application.Trainings.Queries;
 using GymTron.Application.Trainings.Queries.DTO;
 using GymTron.Application.Trainings.Queries.Handlers;
 using GymTron.Domain.Aggregates;
+using GymTron.Domain.Common;
 using GymTron.Domain.Entities;
 using GymTron.Domain.Enums;
 using GymTron.Domain.Exceptions;
 using GymTron.Domain.Projections;
 using GymTron.Domain.Repositories;
 using GymTron.Domain.Services;
+using GymTron.Domain.ValueObjects;
 using GymTron.UnitTests.Helpers;
 using MediatR;
 using NSubstitute;
@@ -25,12 +27,12 @@ public class TrainingHandlerTests
         ITrainingRepository trainings = Substitute.For<ITrainingRepository>();
         IRoutineRepository routines = Substitute.For<IRoutineRepository>();
         IExceptionLogger<StartTrainingCommand> logger = Substitute.For<IExceptionLogger<StartTrainingCommand>>();
-        trainings.GetCurrent().Returns((Training?)null);
+        trainings.HasActiveTraining(1, Arg.Any<CancellationToken>()).Returns(false);
         routines.GetById(7).Returns((Routine?)null);
         StartTrainingCommandHandler handler = new(Substitute.For<GymTron.Application.Common.Events.IDomainEventDispatcher>(), trainings, routines, logger, new FakeClock());
 
         EntityNotFoundException exception = await Assert.ThrowsAsync<EntityNotFoundException>(
-            () => handler.Handle(new StartTrainingCommand(Guid.NewGuid(), 7, 3), CancellationToken.None));
+            () => handler.Handle(new StartTrainingCommand(Guid.NewGuid(), 7, 3, userId: 1), CancellationToken.None));
 
         await logger.Received(1).LogException(exception);
         await trainings.DidNotReceive().Add(Arg.Any<Training>());
@@ -64,16 +66,21 @@ public class TrainingHandlerTests
         GymTron.Application.Common.Events.IDomainEventDispatcher eventDispatcher = Substitute.For<GymTron.Application.Common.Events.IDomainEventDispatcher>();
         ITrainingRepository trainings = Substitute.For<ITrainingRepository>();
         IExerciseRepository exercises = Substitute.For<IExerciseRepository>();
+        IUnitOfWork unitOfWork = Substitute.For<IUnitOfWork>();
+        unitOfWork.ExecuteInTransactionAsync(Arg.Any<Func<CancellationToken, Task>>(), Arg.Any<CancellationToken>())
+            .Returns(callInfo => callInfo.Arg<Func<CancellationToken, Task>>()(callInfo.Arg<CancellationToken>()));
+
         Training training = ApplicationTestData.CreateTraining(completedWorkout: [Exercise.New(5, 11, "Squat", 90, 0, 8, [])]);
 
         IExceptionLogger<FinishTrainingCommand> logger = Substitute.For<IExceptionLogger<FinishTrainingCommand>>();
-        await new FinishTrainingCommandHandler(eventDispatcher, trainings, exercises, logger, new FakeClock())
+        await new FinishTrainingCommandHandler(eventDispatcher, trainings, exercises, unitOfWork, logger, new FakeClock())
             .Handle(new FinishTrainingCommand(Guid.NewGuid(), training), CancellationToken.None);
 
         Assert.True(training.Status.IsCompleted);
         Assert.NotNull(training.CompletedOn);
-        await trainings.Received(1).Update(training);
-        await exercises.Received(1).AddRange(training.CompletedWorkout);
+        await unitOfWork.Received(1).ExecuteInTransactionAsync(Arg.Any<Func<CancellationToken, Task>>(), Arg.Any<CancellationToken>());
+        await trainings.Received(1).Update(training, Arg.Any<CancellationToken>());
+        await exercises.Received(1).AddRange(training.CompletedWorkout, Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -112,5 +119,27 @@ public class TrainingHandlerTests
         TrainingHistoryDto item = Assert.Single(history);
         Assert.Equal(completed.StartedOn.FullDate, item.StartedOn);
         Assert.Equal(completed.DayOfTheWeek, item.DayOfTheWeek);
+    }
+
+    [Fact]
+    public async Task CurrentTrainingQueryHandler_MapsPreviousExerciseMetricsCorrectly()
+    {
+        ITrainingRepository repository = Substitute.For<ITrainingRepository>();
+        ExerciseParameters parameters = ExerciseParameters.FromDatabase(
+            11, "Bench Press", "Chest exercise", "Push", 3, (8, 12), 45, 2, (60, 90),
+            85.5m, 45, 10, ExerciseTypes.WEIGHT, [new Observation("Keep elbows tucked")]);
+        RoutineItem item = RoutineItem.FromDatabase(1, 3, parameters, false, 1);
+        Training training = ApplicationTestData.CreateTraining(pendingWorkout: [item]);
+        repository.GetCurrent(Arg.Any<int?>(), Arg.Any<CancellationToken>()).Returns(training);
+
+        CurrentTrainingQueryHandler handler = new(repository, Substitute.For<IExceptionLogger<CurrentTrainingQuery>>());
+        TrainingDto? result = await handler.Handle(new CurrentTrainingQuery(Guid.NewGuid(), 42), CancellationToken.None);
+
+        Assert.NotNull(result);
+        TrainingRoutineItemDto routineItemDto = Assert.Single(result.PendingWorkout);
+        Assert.Equal(85.5m, routineItemDto.LastWeight);
+        Assert.Equal(10, routineItemDto.LastRepetitions);
+        Assert.Equal(45, routineItemDto.LastDuration);
+        Assert.Equal(["Keep elbows tucked"], routineItemDto.LastObservations);
     }
 }

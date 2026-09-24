@@ -1,10 +1,13 @@
+using GymTron.Domain.Common;
 using GymTron.Domain.Entities;
 using GymTron.Domain.Repositories;
+using GymTron.Infrastructure.BackgroundJobs;
+using GymTron.Infrastructure.Persistence;
 using GymTron.Infrastructure.Persistence.DAL.Models;
 using GymTron.Infrastructure.Persistence.DAL.MySQL;
-using GymTron.Infrastructure.Persistence.DAL.MySQL.Extensions;
 using GymTron.Infrastructure.Persistence.Repositories;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using NSubstitute;
 
 namespace GymTron.UnitTests.Infrastructure;
@@ -31,16 +34,11 @@ public class InfrastructureCompositionAndModelTests
         AssertFactory<IBodyWeightDAL, BodyWeightDAL>(services);
         AssertFactory<ILogDAL, LogDAL>(services);
         AssertFactory<IExerciseParameterDAL, ExerciseParameterDAL>(services);
-    }
-
-    [Fact]
-    public void QueryExtension_PreservesQueryInsideExactIsolationWrapper()
-    {
-        const string query = "SELECT * FROM training;";
-
-        string result = query.ToReadUncommited();
-
-        Assert.Equal($"SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;{Environment.NewLine}              SELECT * FROM training;{Environment.NewLine}              SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;", result);
+        AssertFactory<IRefreshTokenDAL, RefreshTokenDAL>(services);
+        AssertScopedFactory<UnitOfWork, UnitOfWork>(services);
+        AssertScopedFactory<IUnitOfWork, UnitOfWork>(services);
+        AssertScopedFactory<IDbTransactionContext, UnitOfWork>(services);
+        Assert.Contains(services, d => d.ServiceType == typeof(IHostedService) && d.ImplementationType == typeof(RefreshTokenCleanupJob));
     }
 
     [Fact]
@@ -109,5 +107,15 @@ public class InfrastructureCompositionAndModelTests
         Assert.NotNull(descriptor.ImplementationFactory);
         using ServiceProvider provider = services.BuildServiceProvider();
         Assert.IsType<TImplementation>(descriptor.ImplementationFactory(provider));
+    }
+
+    private static void AssertScopedFactory<TService, TImplementation>(IServiceCollection services)
+    {
+        ServiceDescriptor descriptor = Assert.Single(services, item => item.ServiceType == typeof(TService));
+        Assert.Equal(ServiceLifetime.Scoped, descriptor.Lifetime);
+        Assert.NotNull(descriptor.ImplementationFactory);
+        using ServiceProvider provider = services.BuildServiceProvider();
+        using IServiceScope scope = provider.CreateScope();
+        Assert.IsType<TImplementation>(descriptor.ImplementationFactory(scope.ServiceProvider));
     }
 }

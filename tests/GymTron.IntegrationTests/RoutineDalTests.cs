@@ -2,7 +2,7 @@ using GymTron.Domain.Enums;
 using GymTron.Infrastructure.Persistence.DAL.Models;
 using GymTron.Infrastructure.Persistence.DAL.MySQL;
 using GymTron.IntegrationTests.Database;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 
 namespace GymTron.IntegrationTests;
 
@@ -120,5 +120,48 @@ public sealed class RoutineDalTests(MySqlCollectionFixture fixture) : MySqlInteg
 
         var rows = (await dal.ListById(routineId)).ToList();
         Assert.Single(rows, row => row.RoutineName == "Original" && row.ExerciseParametersId == weightId);
+    }
+
+    [Fact]
+    public async Task Routine_ListById_WithUserId_RetrievesUserSpecificLastExerciseMetrics()
+    {
+        int weightId = await Database.SeedParameterAsync("Squat", (int)ExerciseTypes.WEIGHT);
+        RoutineDAL routineDal = new(ConnectionString);
+        RoutineItemWriteModel[] items =
+        [
+            new()
+            {
+                DayOfWeek = 1, ExerciseParametersId = weightId, Series = 3, RepetitionsMin = 5,
+                RepetitionsMax = 5, Duration = null, MinRestTimeInSeconds = 120, MaxRestTimeInSeconds = null,
+                AlternatingSeries = false, Position = 1, Type = ExerciseTypes.WEIGHT
+            }
+        ];
+
+        int user1 = 101;
+        int user2 = 102;
+        int routineId = await routineDal.Create("Squat Routine", items, userId: null);
+
+        // Seed training and exercise for user 1
+        int trainingUser1 = await Database.SeedTrainingAsync(routineId, userId: user1);
+        ExerciseDAL exerciseDal = new(ConnectionString);
+        await exerciseDal.AddRange([GymTron.Domain.Entities.Exercise.New(trainingUser1, weightId, "Squat", 120m, 0, 5, ["user1 clean"])]);
+
+        // Seed newer training and exercise for user 2
+        int trainingUser2 = await Database.SeedTrainingAsync(routineId, userId: user2);
+        await exerciseDal.AddRange([GymTron.Domain.Entities.Exercise.New(trainingUser2, weightId, "Squat", 150m, 0, 3, ["user2 heavy"])]);
+
+        // Query routine with user1 context
+        var user1Details = (await routineDal.ListById(routineId, user1)).ToList();
+        var item1 = Assert.Single(user1Details);
+        Assert.Equal(120m, item1.LastWeight);
+        Assert.Equal(5, item1.LastRepetitions);
+        Assert.Equal("[\"user1 clean\"]", item1.LastObservations);
+
+        // Query routine with user2 context
+        var user2Details = (await routineDal.ListById(routineId, user2)).ToList();
+        var item2 = Assert.Single(user2Details);
+        Assert.Equal(150m, item2.LastWeight);
+        Assert.Equal(3, item2.LastRepetitions);
+        Assert.Equal("[\"user2 heavy\"]", item2.LastObservations);
     }
 }

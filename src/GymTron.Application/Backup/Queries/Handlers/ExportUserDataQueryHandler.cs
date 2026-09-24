@@ -22,20 +22,22 @@ internal class ExportUserDataQueryHandler(
 
     protected override async Task<UserDataBackupDto> HandleQuery(ExportUserDataQuery request, CancellationToken cancellationToken)
     {
-        var routines = await _routineRepository.ListRoutineProjections(request.UserId, cancellationToken);
-        var trainings = await _trainingRepository.ListCompletedHistory(request.UserId, cancellationToken);
-        var exercises = await _exerciseRepository.ListHistory(request.UserId, cancellationToken);
-        var bodyWeights = await _bodyWeightRepository.ListHistory(request.UserId, cancellationToken);
+        var routinesTask = _routineRepository.ListRoutineProjections(request.UserId, cancellationToken);
+        var trainingsTask = _trainingRepository.ListCompletedHistory(request.UserId, cancellationToken);
+        var exercisesTask = _exerciseRepository.ListHistory(request.UserId, cancellationToken);
+        var bodyWeightsTask = _bodyWeightRepository.ListHistory(request.UserId, cancellationToken);
+
+        await Task.WhenAll(routinesTask, trainingsTask, exercisesTask, bodyWeightsTask);
 
         return new UserDataBackupDto
         {
             Version = 1,
             ExportedAtUtc = _clock.UtcNow,
             UserId = request.UserId,
-            Routines = routines,
-            CompletedTrainings = trainings,
-            ExerciseHistory = exercises,
-            BodyWeights = bodyWeights
+            Routines = await routinesTask,
+            CompletedTrainings = await trainingsTask,
+            ExerciseHistory = await exercisesTask,
+            BodyWeights = await bodyWeightsTask
         };
     }
 }

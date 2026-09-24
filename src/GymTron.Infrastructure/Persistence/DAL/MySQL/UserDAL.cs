@@ -1,8 +1,7 @@
 using System.Data;
 using Dapper;
 using GymTron.Infrastructure.Persistence.DAL.Models;
-using GymTron.Infrastructure.Persistence.DAL.MySQL.Extensions;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 
 namespace GymTron.Infrastructure.Persistence.DAL.MySQL;
 
@@ -13,7 +12,7 @@ internal class UserDAL(string connectionString) : IUserDAL
         using IDbConnection dbConnection = new MySqlConnection(connectionString);
         string sql = @"SELECT id AS Id, username AS Username, email AS Email, password_hash AS PasswordHash, is_active AS IsActive, created_at AS CreatedAt 
                        FROM users 
-                       WHERE id = @Id;".ToReadUncommited();
+                       WHERE id = @Id;";
 
         return await dbConnection.QueryFirstOrDefaultAsync<UserDALModel>(
             new CommandDefinition(sql, new { Id = id }, cancellationToken: cancellationToken));
@@ -24,7 +23,7 @@ internal class UserDAL(string connectionString) : IUserDAL
         using IDbConnection dbConnection = new MySqlConnection(connectionString);
         string sql = @"SELECT id AS Id, username AS Username, email AS Email, password_hash AS PasswordHash, is_active AS IsActive, created_at AS CreatedAt 
                        FROM users 
-                       WHERE username = @Identifier OR email = @Identifier;".ToReadUncommited();
+                       WHERE username = @Identifier OR email = @Identifier;";
 
         return await dbConnection.QueryFirstOrDefaultAsync<UserDALModel>(
             new CommandDefinition(sql, new { Identifier = identifier }, cancellationToken: cancellationToken));
@@ -35,7 +34,7 @@ internal class UserDAL(string connectionString) : IUserDAL
         using IDbConnection dbConnection = new MySqlConnection(connectionString);
         string sql = @"SELECT COUNT(1) 
                        FROM users 
-                       WHERE username = @Username OR email = @Email;".ToReadUncommited();
+                       WHERE username = @Username OR email = @Email;";
 
         int count = await dbConnection.ExecuteScalarAsync<int>(
             new CommandDefinition(sql, new { Username = username, Email = email }, cancellationToken: cancellationToken));

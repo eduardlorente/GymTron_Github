@@ -1,8 +1,7 @@
 using Dapper;
 using GymTron.Domain.Entities;
 using GymTron.Infrastructure.Persistence.DAL.Models;
-using GymTron.Infrastructure.Persistence.DAL.MySQL.Extensions;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using System.Data;
 
 namespace GymTron.Infrastructure.Persistence.DAL.MySQL;
@@ -41,7 +40,8 @@ internal class BodyWeightDAL(string connectionString) : IBodyWeightDAL
                             BW.created_on AS CreatedOn
                          FROM 
                             body_weights BW
-                         WHERE (@UserId IS NULL OR BW.user_id = @UserId);".ToReadUncommited();
+                         WHERE (@UserId IS NULL OR BW.user_id = @UserId)
+                         ORDER BY BW.created_on DESC;";
 
         return await dbConnection.QueryAsync<BodyWeightDALModel>(new CommandDefinition(query, new { UserId = userId }, cancellationToken: cancellationToken));
     }

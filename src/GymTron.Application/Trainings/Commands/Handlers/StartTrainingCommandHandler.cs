@@ -25,7 +25,7 @@ internal class StartTrainingCommandHandler(IDomainEventDispatcher eventDispatche
     {
         await AvoidStartTrainingIfExistsACurrentOne(request.UserId, cancellationToken);
 
-        Routine routine = await _routineRepository.GetById(request.RoutineId, cancellationToken) ?? throw new EntityNotFoundException(nameof(Routine));
+        Routine routine = await _routineRepository.GetById(request.RoutineId, cancellationToken: cancellationToken) ?? throw new EntityNotFoundException(nameof(Routine));
 
         if (request.UserId.HasValue && routine.UserId.HasValue && routine.UserId.Value != request.UserId.Value)
         {
@@ -46,9 +46,9 @@ internal class StartTrainingCommandHandler(IDomainEventDispatcher eventDispatche
 
     private async Task AvoidStartTrainingIfExistsACurrentOne(int? userId, CancellationToken cancellationToken)
     {
-        Training? lastUserTraining = await _trainingRepository.GetCurrent(userId, cancellationToken);
-
-        if (lastUserTraining != null)
+        if (userId.HasValue && await _trainingRepository.HasActiveTraining(userId.Value, cancellationToken))
+        {
             throw new InvalidDomainOperationException("The previous training is not ended.");
+        }
     }
 }

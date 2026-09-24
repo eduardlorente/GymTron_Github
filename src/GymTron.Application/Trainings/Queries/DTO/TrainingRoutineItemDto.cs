@@ -15,4 +15,8 @@ public class TrainingRoutineItemDto
     public bool AlternatingSeries { get; set; }
     public int Position { get; set; }
     public int Type { get; set; }
+    public decimal? LastWeight { get; set; }
+    public int? LastRepetitions { get; set; }
+    public int? LastDuration { get; set; }
+    public List<string> LastObservations { get; set; } = [];
 }

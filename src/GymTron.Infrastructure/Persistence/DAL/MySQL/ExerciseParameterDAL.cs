@@ -1,7 +1,6 @@
 using Dapper;
 using GymTron.Infrastructure.Persistence.DAL.Models;
-using GymTron.Infrastructure.Persistence.DAL.MySQL.Extensions;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using System.Data;
 
 namespace GymTron.Infrastructure.Persistence.DAL.MySQL;
@@ -13,7 +12,7 @@ internal class ExerciseParameterDAL(string connectionString) : IExerciseParamete
         using IDbConnection dbConnection = new MySqlConnection(connectionString);
         string sql = @"SELECT id AS Id, name AS Name, description AS Description, pattern AS Pattern, type_id AS TypeId, replays_in_reserve AS ReplaysInReserve 
                        FROM exercise_parameters 
-                       ORDER BY name;".ToReadUncommited();
+                       ORDER BY name;";
         return await dbConnection.QueryAsync<ExerciseParameterDALModel>(new CommandDefinition(sql, cancellationToken: cancellationToken));
     }
 
@@ -22,7 +21,7 @@ internal class ExerciseParameterDAL(string connectionString) : IExerciseParamete
         using IDbConnection dbConnection = new MySqlConnection(connectionString);
         string sql = @"SELECT id AS Id, name AS Name, description AS Description, pattern AS Pattern, type_id AS TypeId, replays_in_reserve AS ReplaysInReserve 
                        FROM exercise_parameters 
-                       WHERE id = @Id;".ToReadUncommited();
+                       WHERE id = @Id;";
         return await dbConnection.QueryFirstOrDefaultAsync<ExerciseParameterDALModel>(new CommandDefinition(sql, new { Id = id }, cancellationToken: cancellationToken));
     }
 

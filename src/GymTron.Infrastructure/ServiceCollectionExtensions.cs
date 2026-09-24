@@ -1,5 +1,8 @@
+using GymTron.Domain.Common;
 using GymTron.Domain.Repositories;
 using GymTron.Domain.Services;
+using GymTron.Infrastructure.BackgroundJobs;
+using GymTron.Infrastructure.Persistence;
 using GymTron.Infrastructure.Persistence.DAL.MySQL;
 using GymTron.Infrastructure.Persistence.Repositories;
 using GymTron.Infrastructure.Security;
@@ -17,6 +20,11 @@ public static class ServiceCollectionExtensions
 
         // Clock
         services.AddSingleton<IClock, SystemClock>();
+
+        // Unit of Work & Transaction Context
+        services.AddScoped<UnitOfWork>(sp => new UnitOfWork(connectionString));
+        services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<UnitOfWork>());
+        services.AddScoped<IDbTransactionContext>(sp => sp.GetRequiredService<UnitOfWork>());
 
         // Repositories
         services.AddTransient<ITrainingRepository, TrainingRepository>();
@@ -40,13 +48,16 @@ public static class ServiceCollectionExtensions
 
         // DALs
         services.AddTransient<IRoutineDAL>(sp => new RoutineDAL(connectionString));
-        services.AddTransient<ITrainingDAL>(sp => new TrainingDAL(connectionString));
-        services.AddTransient<IExerciseDAL>(sp => new ExerciseDAL(connectionString));
+        services.AddTransient<ITrainingDAL>(sp => new TrainingDAL(connectionString, sp.GetService<IDbTransactionContext>()));
+        services.AddTransient<IExerciseDAL>(sp => new ExerciseDAL(connectionString, sp.GetService<IDbTransactionContext>()));
         services.AddTransient<IBodyWeightDAL>(sp => new BodyWeightDAL(connectionString));
         services.AddTransient<ILogDAL>(sp => new LogDAL(connectionString));
         services.AddTransient<IExerciseParameterDAL>(sp => new ExerciseParameterDAL(connectionString));
         services.AddTransient<IUserDAL>(sp => new UserDAL(connectionString));
         services.AddTransient<IRefreshTokenDAL>(sp => new RefreshTokenDAL(connectionString));
+
+        // Hosted Services
+        services.AddHostedService<RefreshTokenCleanupJob>();
 
         return services;
     }

@@ -12,6 +12,7 @@ public static class ListExerciseParametersEndpoint
             var exercises = await mediator.Send(new ListExerciseParametersQuery(Guid.NewGuid()), ct);
             return Results.Ok(exercises);
         })
+        .CacheOutput("CatalogCache")
         .WithTags("ExerciseParameters")
         .WithName("ListExerciseParameters")
         .WithSummary("List all exercise parameters");

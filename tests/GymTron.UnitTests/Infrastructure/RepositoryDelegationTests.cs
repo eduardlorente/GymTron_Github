@@ -107,8 +107,8 @@ public class RepositoryDelegationTests
         DateTime d1 = new(2026, 1, 1);
         DateTime d2 = new(2026, 2, 1);
         bwDal.ListAll().Returns([
-            new BodyWeightDALModel { Id = 1, Weight = 80, BodyFatPercentage = 16, CreatedOn = d1 },
-            new BodyWeightDALModel { Id = 2, Weight = 79, BodyFatPercentage = 15, CreatedOn = d2 }
+            new BodyWeightDALModel { Id = 2, Weight = 79, BodyFatPercentage = 15, CreatedOn = d2 },
+            new BodyWeightDALModel { Id = 1, Weight = 80, BodyFatPercentage = 16, CreatedOn = d1 }
         ]);
         BodyWeightRepository bwRepo = new(bwDal);
         var bwHistory = await bwRepo.ListHistory();
@@ -116,8 +116,8 @@ public class RepositoryDelegationTests
 
         IExerciseDAL exDal = Substitute.For<IExerciseDAL>();
         exDal.ListAll().Returns([
-            new ExerciseDALModel { Id = 1, Name = "Squat", Weight = 100, Repetitions = 5, DurationInSeconds = 0, CreatedOn = d1 },
-            new ExerciseDALModel { Id = 2, Name = "Bench", Weight = 80, Repetitions = 8, DurationInSeconds = 0, CreatedOn = d2 }
+            new ExerciseDALModel { Id = 2, Name = "Bench", Weight = 80, Repetitions = 8, DurationInSeconds = 0, CreatedOn = d2 },
+            new ExerciseDALModel { Id = 1, Name = "Squat", Weight = 100, Repetitions = 5, DurationInSeconds = 0, CreatedOn = d1 }
         ]);
         ExerciseRepository exRepo = new(exDal);
         var exHistory = await exRepo.ListHistory();

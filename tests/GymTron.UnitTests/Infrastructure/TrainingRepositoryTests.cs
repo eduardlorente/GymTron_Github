@@ -102,22 +102,71 @@ public class TrainingRepositoryTests
     }
 
     [Fact]
-    public async Task ListCompletedHistory_MapsOnlyCompletedTrainings()
+    public async Task HasActiveTraining_DelegatesToDal()
     {
         ITrainingDAL dal = Substitute.For<ITrainingDAL>();
-        DateTime first = new(2026, 1, 1);
+        dal.HasActiveTraining(42, Arg.Any<CancellationToken>()).Returns(true);
+        TrainingRepository repository = CreateRepository(dal);
+
+        using CancellationTokenSource cts = new();
+        bool result = await repository.HasActiveTraining(42, cts.Token);
+
+        Assert.True(result);
+        await dal.Received(1).HasActiveTraining(42, cts.Token);
+    }
+
+    [Fact]
+    public async Task ListCompletedHistory_WithUserId_DelegatesToDalAndMapsProjection()
+    {
+        ITrainingDAL dal = Substitute.For<ITrainingDAL>();
         DateTime second = new(2026, 2, 1);
-        dal.ListAll().Returns([
-            new TrainingDALModel { Id = 2, RoutineId = 8, DayOfWeek = 3, StartedOn = second, CompletedOn = second.AddHours(1), StatusType = (int)EntityStatusTypes.COMPLETED },
-            new TrainingDALModel { Id = 1, RoutineId = 7, DayOfWeek = 2, StartedOn = first, StatusType = (int)EntityStatusTypes.ACTIVE }
+        dal.ListCompletedHistory(42, Arg.Any<CancellationToken>()).Returns([
+            new TrainingHistoryDALModel(second, 3)
         ]);
         TrainingRepository repository = CreateRepository(dal);
 
-        var result = await repository.ListCompletedHistory();
+        var result = await repository.ListCompletedHistory(42);
 
         var item = Assert.Single(result);
         Assert.Equal(3, item.DayOfTheWeek);
         Assert.Equal(second, item.StartedOn.FullDate);
+        await dal.Received(1).ListCompletedHistory(42, Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task ListCompletedHistory_WithoutUserId_ReturnsEmptyList()
+    {
+        ITrainingDAL dal = Substitute.For<ITrainingDAL>();
+        TrainingRepository repository = CreateRepository(dal);
+
+        var result = await repository.ListCompletedHistory(null);
+
+        Assert.Empty(result);
+        await dal.DidNotReceiveWithAnyArgs().ListCompletedHistory(default, default);
+    }
+
+    [Fact]
+    public async Task GetCurrent_WithUserId_ForwardsUserIdToRoutineRepository()
+    {
+        ITrainingDAL dal = Substitute.For<ITrainingDAL>();
+        IRoutineRepository routines = Substitute.For<IRoutineRepository>();
+        IExerciseRepository exercises = Substitute.For<IExerciseRepository>();
+        DateTime startedOn = new(2026, 2, 3);
+        TrainingDALModel model = new()
+        {
+            Id = 5, RoutineId = 7, DayOfWeek = 2, StartedOn = startedOn,
+            UserId = 99, StatusType = (int)EntityStatusTypes.ACTIVE
+        };
+        dal.GetCurrent(99, Arg.Any<CancellationToken>()).Returns(model);
+        RoutineItem pending = CreateRoutineItem(11, 2);
+        routines.GetById(7, 99, Arg.Any<CancellationToken>())
+            .Returns(Routine.FromDatabase(7, "Routine", [pending], userId: 99));
+        TrainingRepository repository = new(dal, routines, exercises);
+
+        Training? current = await repository.GetCurrent(99);
+
+        Assert.NotNull(current);
+        await routines.Received(1).GetById(7, 99, Arg.Any<CancellationToken>());
     }
 
     private static TrainingRepository CreateRepository(ITrainingDAL dal) => new(
