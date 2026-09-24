@@ -1,8 +1,8 @@
 using Dapper;
 using GymTron.Infrastructure.Persistence.DAL.Models;
-using GymTron.Infrastructure.Persistence.DAL.MySQL.Extensions;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using System.Data;
+using System.Text;
 
 namespace GymTron.Infrastructure.Persistence.DAL.MySQL;
 
@@ -16,9 +16,9 @@ internal class RoutineDAL(string connectionString) : IRoutineDAL
     }
 
 
-    public async Task<IEnumerable<RoutineFullDetailsDTO>> ListById(int id, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<RoutineFullDetailsDTO>> ListById(int id, int? userId = null, CancellationToken cancellationToken = default)
     {
-        return await ListAllWithFullInfo(id, null, cancellationToken);
+        return await ListAllWithFullInfo(id, userId, cancellationToken);
     }
 
 
@@ -60,66 +60,63 @@ internal class RoutineDAL(string connectionString) : IRoutineDAL
                        LEFT JOIN routine_items ri ON r.id = ri.routine_id
                        LEFT JOIN exercise_parameters ep ON ri.exercise_parameters_id = ep.id
                        LEFT JOIN exercises le 
-                           ON ep.id = le.exercise_parameters_id 
-                           AND le.created_on = (SELECT MAX(e2.created_on) 
-                                               FROM exercises e2 
-                                               WHERE e2.exercise_parameters_id = ep.id)
+                           ON le.id = (SELECT e2.id 
+                                       FROM exercises e2 
+                                       JOIN trainings t2 ON e2.training_id = t2.id 
+                                       WHERE e2.exercise_parameters_id = ep.id 
+                                         AND (@UserId IS NULL OR t2.user_id = @UserId) 
+                                       ORDER BY e2.created_on DESC, e2.id DESC 
+                                       LIMIT 1)
                        
                        WHERE (@RoutineId IS NULL OR r.id = @RoutineId)
                          AND (@UserId IS NULL OR r.user_id IS NULL OR r.user_id = @UserId)
-                       ORDER BY r.id DESC, ri.day_of_week ASC, ri.`position` ASC;".ToReadUncommited();
+                       ORDER BY r.id DESC, ri.day_of_week ASC, ri.`position` ASC;";
 
         var parameters = new { RoutineId = routineId, UserId = userId };
 
         IEnumerable<RoutineFullDetailsDTO> result = await dbConnection.QueryAsync<RoutineFullDetailsDTO>(new CommandDefinition(sql, parameters, cancellationToken: cancellationToken));
 
-        return result.Distinct();
+        return result;
     }
 
     public async Task<int> Create(string name, IReadOnlyList<RoutineItemWriteModel> items, int? userId = null, CancellationToken cancellationToken = default)
     {
-        using IDbConnection dbConnection = new MySqlConnection(connectionString);
-        dbConnection.Open();
-        using IDbTransaction transaction = dbConnection.BeginTransaction();
+        await using var dbConnection = new MySqlConnection(connectionString);
+        await dbConnection.OpenAsync(cancellationToken);
+        await using var transaction = await dbConnection.BeginTransactionAsync(cancellationToken);
         try
         {
             int routineId = await InsertRoutineAsync(dbConnection, transaction, name, userId, cancellationToken);
 
-            foreach (RoutineItemWriteModel item in items)
-            {
-                await InsertRoutineItemAsync(dbConnection, transaction, routineId, item, cancellationToken);
-            }
+            await InsertRoutineItemsBatchAsync(dbConnection, transaction, routineId, items, cancellationToken);
 
-            transaction.Commit();
+            await transaction.CommitAsync(cancellationToken);
             return routineId;
         }
         catch
         {
-            transaction.Rollback();
+            await transaction.RollbackAsync(cancellationToken);
             throw;
         }
     }
 
     public async Task Update(int id, string name, IReadOnlyList<RoutineItemWriteModel> items, CancellationToken cancellationToken = default)
     {
-        using IDbConnection dbConnection = new MySqlConnection(connectionString);
-        dbConnection.Open();
-        using IDbTransaction transaction = dbConnection.BeginTransaction();
+        await using var dbConnection = new MySqlConnection(connectionString);
+        await dbConnection.OpenAsync(cancellationToken);
+        await using var transaction = await dbConnection.BeginTransactionAsync(cancellationToken);
         try
         {
             await UpdateRoutineAsync(dbConnection, transaction, id, name, cancellationToken);
             await DeleteRoutineItemsAsync(dbConnection, transaction, id, cancellationToken);
 
-            foreach (RoutineItemWriteModel item in items)
-            {
-                await InsertRoutineItemAsync(dbConnection, transaction, id, item, cancellationToken);
-            }
+            await InsertRoutineItemsBatchAsync(dbConnection, transaction, id, items, cancellationToken);
 
-            transaction.Commit();
+            await transaction.CommitAsync(cancellationToken);
         }
         catch
         {
-            transaction.Rollback();
+            await transaction.RollbackAsync(cancellationToken);
             throw;
         }
     }
@@ -143,27 +140,37 @@ internal class RoutineDAL(string connectionString) : IRoutineDAL
         _ = await dbConnection.ExecuteAsync(new CommandDefinition(sql, new { RoutineId = routineId }, transaction, cancellationToken: cancellationToken));
     }
 
-    private static async Task InsertRoutineItemAsync(IDbConnection dbConnection, IDbTransaction transaction, int routineId, RoutineItemWriteModel item, CancellationToken cancellationToken)
+    private static async Task InsertRoutineItemsBatchAsync(IDbConnection dbConnection, IDbTransaction transaction, int routineId, IReadOnlyList<RoutineItemWriteModel> items, CancellationToken cancellationToken)
     {
-        string sql = @"INSERT INTO routine_items 
-                       (routine_id, day_of_week, exercise_parameters_id, series, repetitions_min, repetitions_max, duration,
-                        min_rest_time_in_seconds, max_rest_time_in_seconds, alternating_series, `position`, active) 
-                       VALUES 
-                       (@RoutineId, @DayOfWeek, @ExerciseParametersId, @Series, @RepetitionsMin, @RepetitionsMax, @Duration,
-                        @MinRestTimeInSeconds, @MaxRestTimeInSeconds, @AlternatingSeries, @Position, 1)";
-        _ = await dbConnection.ExecuteAsync(new CommandDefinition(sql, new
+        if (items.Count == 0) return;
+
+        var sb = new StringBuilder();
+        sb.Append(@"INSERT INTO routine_items 
+                   (routine_id, day_of_week, exercise_parameters_id, series, repetitions_min, repetitions_max, duration,
+                    min_rest_time_in_seconds, max_rest_time_in_seconds, alternating_series, `position`, active) 
+                   VALUES ");
+
+        var parameters = new DynamicParameters();
+        parameters.Add("RoutineId", routineId);
+
+        for (int i = 0; i < items.Count; i++)
         {
-            RoutineId = routineId,
-            DayOfWeek = item.DayOfWeek,
-            ExerciseParametersId = item.ExerciseParametersId,
-            Series = item.Series,
-            RepetitionsMin = item.RepetitionsMin,
-            RepetitionsMax = item.RepetitionsMax,
-            Duration = item.Duration,
-            MinRestTimeInSeconds = item.MinRestTimeInSeconds,
-            MaxRestTimeInSeconds = item.MaxRestTimeInSeconds,
-            AlternatingSeries = item.AlternatingSeries,
-            Position = item.Position
-        }, transaction, cancellationToken: cancellationToken));
+            if (i > 0) sb.Append(", ");
+            sb.Append($"(@RoutineId, @Day{i}, @EP{i}, @Series{i}, @RepMin{i}, @RepMax{i}, @Dur{i}, @MinRest{i}, @MaxRest{i}, @Alt{i}, @Pos{i}, 1)");
+
+            var item = items[i];
+            parameters.Add($"Day{i}", item.DayOfWeek);
+            parameters.Add($"EP{i}", item.ExerciseParametersId);
+            parameters.Add($"Series{i}", item.Series);
+            parameters.Add($"RepMin{i}", item.RepetitionsMin);
+            parameters.Add($"RepMax{i}", item.RepetitionsMax);
+            parameters.Add($"Dur{i}", item.Duration);
+            parameters.Add($"MinRest{i}", item.MinRestTimeInSeconds);
+            parameters.Add($"MaxRest{i}", item.MaxRestTimeInSeconds);
+            parameters.Add($"Alt{i}", item.AlternatingSeries);
+            parameters.Add($"Pos{i}", item.Position);
+        }
+
+        await dbConnection.ExecuteAsync(new CommandDefinition(sb.ToString(), parameters, transaction, cancellationToken: cancellationToken));
     }
 }

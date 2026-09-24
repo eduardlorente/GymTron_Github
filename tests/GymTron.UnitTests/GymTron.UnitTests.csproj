@@ -28,9 +28,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\GymTron.Api\GymTron.Api.csproj" />
     <ProjectReference Include="..\..\src\GymTron.Application\GymTron.Application.csproj" />
     <ProjectReference Include="..\..\src\GymTron.Domain\GymTron.Domain.csproj" />
     <ProjectReference Include="..\..\src\GymTron.Infrastructure\GymTron.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\src\GymTron.App\Services\Api\Models\ApiModels.cs" Link="App\ApiModels.cs" />
+    <Compile Include="..\..\src\GymTron.App\ViewModels\Entities\TrainingViewModel.cs" Link="App\TrainingViewModel.cs" />
+    <Compile Include="..\..\src\GymTron.App\ViewModels\Entities\TrainingDateViewModel.cs" Link="App\TrainingDateViewModel.cs" />
+    <Compile Include="..\..\src\GymTron.App\ViewModels\Entities\RoutineItemViewModel.cs" Link="App\RoutineItemViewModel.cs" />
+    <Compile Include="..\..\src\GymTron.App\ViewModels\Entities\ExerciseViewModel.cs" Link="App\ExerciseViewModel.cs" />
+    <Compile Include="..\..\src\GymTron.App\ViewModels\Entities\ExerciseParametersViewModel.cs" Link="App\ExerciseParametersViewModel.cs" />
+    <Compile Include="..\..\src\GymTron.App\ViewModels\Entities\RangeViewModel.cs" Link="App\RangeViewModel.cs" />
+    <Compile Include="..\..\src\GymTron.App\ViewModels\Entities\ObservationViewModel.cs" Link="App\ObservationViewModel.cs" />
   </ItemGroup>
 
 </Project>

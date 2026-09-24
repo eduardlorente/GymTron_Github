@@ -1,8 +1,7 @@
 using System.Data;
 using Dapper;
 using GymTron.Infrastructure.Persistence.DAL.Models;
-using GymTron.Infrastructure.Persistence.DAL.MySQL.Extensions;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 
 namespace GymTron.Infrastructure.Persistence.DAL.MySQL;
 
@@ -14,7 +13,7 @@ internal class RefreshTokenDAL(string connectionString) : IRefreshTokenDAL
         string sql = @"SELECT id AS Id, user_id AS UserId, token_hash AS TokenHash, expires_at AS ExpiresAt, 
                               created_at AS CreatedAt, revoked_at AS RevokedAt, replaced_by_token_hash AS ReplacedByTokenHash 
                        FROM refresh_tokens 
-                       WHERE token_hash = @TokenHash;".ToReadUncommited();
+                       WHERE token_hash = @TokenHash;";
 
         return await dbConnection.QueryFirstOrDefaultAsync<RefreshTokenDALModel>(
             new CommandDefinition(sql, new { TokenHash = tokenHash }, cancellationToken: cancellationToken));
@@ -65,5 +64,15 @@ internal class RefreshTokenDAL(string connectionString) : IRefreshTokenDAL
                 UserId = userId,
                 RevokedAt = revokedAt
             }, cancellationToken: cancellationToken));
+    }
+
+    public async Task<int> DeleteExpiredAndRevoked(DateTime olderThanUtc, CancellationToken cancellationToken = default)
+    {
+        using IDbConnection dbConnection = new MySqlConnection(connectionString);
+        const string sql = @"DELETE FROM refresh_tokens 
+                             WHERE expires_at < @OlderThanUtc 
+                                OR (revoked_at IS NOT NULL AND revoked_at < @OlderThanUtc);";
+        return await dbConnection.ExecuteAsync(
+            new CommandDefinition(sql, new { OlderThanUtc = olderThanUtc }, cancellationToken: cancellationToken));
     }
 }

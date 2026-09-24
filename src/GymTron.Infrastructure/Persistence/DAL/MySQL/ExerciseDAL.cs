@@ -1,15 +1,16 @@
 using Dapper;
 using GymTron.Domain.Entities;
 using GymTron.Infrastructure.Persistence.DAL.Models;
-using GymTron.Infrastructure.Persistence.DAL.MySQL.Extensions;
 using GymTron.Infrastructure.Persistence.Serialization;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using System.Data;
+using System.Text;
 
 namespace GymTron.Infrastructure.Persistence.DAL.MySQL;
 
-internal class ExerciseDAL(string connectionString) : IExerciseDAL
+internal class ExerciseDAL(string connectionString, IDbTransactionContext? transactionContext = null) : IExerciseDAL
 {
+    private readonly IDbTransactionContext? _transactionContext = transactionContext;
 
 
     public async Task Add(Exercise entity, CancellationToken cancellationToken = default)
@@ -38,25 +39,39 @@ internal class ExerciseDAL(string connectionString) : IExerciseDAL
 
     public async Task AddRange(List<Exercise> exercises, CancellationToken cancellationToken = default)
     {
-        using IDbConnection dbConnection = new MySqlConnection(connectionString);
+        if (exercises.Count == 0) return;
 
-        string query = @"INSERT INTO exercises 
-                        (training_id, exercise_parameters_id, weight, duration, repetitions, created_on, observations) 
-                     VALUES 
-                        (@TrainingId, @ExerciseParametersId, @Weight, @Duration, @Repetitions, @CreatedOn, @Observations);";
+        var sb = new StringBuilder();
+        sb.Append(@"INSERT INTO exercises 
+                   (training_id, exercise_parameters_id, weight, duration, repetitions, created_on, observations) 
+                   VALUES ");
 
-        var parameters = exercises.Select(e => new
+        var parameters = new DynamicParameters();
+        for (int i = 0; i < exercises.Count; i++)
         {
-            e.TrainingId,
-            e.ExerciseParametersId,
-            e.Weight,
-            Duration = e.DurationInSeconds,
-            Repetitions = e.CurrentRepetitions,
-            e.Status.CreatedOn,
-            Observations = ObservationSerializer.Serialize(e.Observations)
-        });
+            if (i > 0) sb.Append(", ");
+            sb.Append($"(@TId{i}, @EPId{i}, @Weight{i}, @Dur{i}, @Reps{i}, @CreatedOn{i}, @Obs{i})");
 
-        await dbConnection.ExecuteAsync(new CommandDefinition(query, parameters, cancellationToken: cancellationToken));
+            var e = exercises[i];
+            parameters.Add($"TId{i}", e.TrainingId);
+            parameters.Add($"EPId{i}", e.ExerciseParametersId);
+            parameters.Add($"Weight{i}", e.Weight);
+            parameters.Add($"Dur{i}", e.DurationInSeconds);
+            parameters.Add($"Reps{i}", e.CurrentRepetitions);
+            parameters.Add($"CreatedOn{i}", e.Status.CreatedOn);
+            parameters.Add($"Obs{i}", ObservationSerializer.Serialize(e.Observations));
+        }
+
+        if (_transactionContext?.HasActiveTransaction == true && _transactionContext.ActiveConnection != null)
+        {
+            await _transactionContext.ActiveConnection.ExecuteAsync(
+                new CommandDefinition(sb.ToString(), parameters, _transactionContext.ActiveTransaction, cancellationToken: cancellationToken));
+        }
+        else
+        {
+            using IDbConnection dbConnection = new MySqlConnection(connectionString);
+            await dbConnection.ExecuteAsync(new CommandDefinition(sb.ToString(), parameters, cancellationToken: cancellationToken));
+        }
     }
 
 
@@ -79,7 +94,7 @@ internal class ExerciseDAL(string connectionString) : IExerciseDAL
                          LEFT JOIN 
                             exercise_parameters EP ON E.exercise_parameters_id = EP.id
                          WHERE 
-                            E.training_id = @TrainingId;".ToReadUncommited();
+                            E.training_id = @TrainingId;";
 
         return await dbConnection.QueryAsync<ExerciseDALModel>(new CommandDefinition(query, new { TrainingId = trainingId }, cancellationToken: cancellationToken));
     }
@@ -106,7 +121,9 @@ internal class ExerciseDAL(string connectionString) : IExerciseDAL
                          LEFT JOIN 
                             exercise_parameters EP ON E.exercise_parameters_id = EP.id
                          WHERE
-                            (@UserId IS NULL OR T.user_id = @UserId);".ToReadUncommited();
+                            (@UserId IS NULL OR T.user_id = @UserId)
+                         ORDER BY 
+                            EP.name ASC, E.created_on DESC;";
 
         return await dbConnection.QueryAsync<ExerciseDALModel>(new CommandDefinition(query, new { UserId = userId }, cancellationToken: cancellationToken));
     }

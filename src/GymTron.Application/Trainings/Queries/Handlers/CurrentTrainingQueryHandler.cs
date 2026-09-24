@@ -41,7 +41,11 @@ internal class CurrentTrainingQueryHandler(ITrainingRepository trainingRepositor
                 MaxRestTimeInSeconds = item.ExerciseParameters.RestTimeInSeconds.Max,
                 AlternatingSeries = item.AlternatingSeries,
                 Position = item.Position,
-                Type = (int)item.ExerciseParameters.Type
+                Type = (int)item.ExerciseParameters.Type,
+                LastWeight = item.ExerciseParameters.LastWeight,
+                LastRepetitions = item.ExerciseParameters.LastRepetitions,
+                LastDuration = item.ExerciseParameters.LastDurationInSeconds > 0 ? item.ExerciseParameters.LastDurationInSeconds : null,
+                LastObservations = item.ExerciseParameters.Observations.Select(o => o.Comment).ToList(),
             }).ToList(),
             CompletedWorkout = training.CompletedWorkout.Select(exercise => new TrainingExerciseDto
             {

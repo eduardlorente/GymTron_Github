@@ -25,6 +25,7 @@ public class ArchitectureTests
                 "GymTron.App",
                 "GymTron.Web",
                 "MySql.Data",
+                "MySqlConnector",
                 "Dapper",
                 "MediatR")
             .GetResult();
@@ -48,6 +49,7 @@ public class ArchitectureTests
         Assert.DoesNotContain("GymTron.App", referencedAssemblyNames);
         Assert.DoesNotContain("GymTron.Web", referencedAssemblyNames);
         Assert.DoesNotContain("MySql.Data", referencedAssemblyNames);
+        Assert.DoesNotContain("MySqlConnector", referencedAssemblyNames);
         Assert.DoesNotContain("Dapper", referencedAssemblyNames);
         Assert.DoesNotContain("MediatR", referencedAssemblyNames);
     }
@@ -63,6 +65,7 @@ public class ArchitectureTests
                 "GymTron.App",
                 "GymTron.Web",
                 "MySql.Data",
+                "MySqlConnector",
                 "Dapper")
             .GetResult();
 
@@ -84,6 +87,7 @@ public class ArchitectureTests
         Assert.DoesNotContain("GymTron.App", referencedAssemblyNames);
         Assert.DoesNotContain("GymTron.Web", referencedAssemblyNames);
         Assert.DoesNotContain("MySql.Data", referencedAssemblyNames);
+        Assert.DoesNotContain("MySqlConnector", referencedAssemblyNames);
         Assert.DoesNotContain("Dapper", referencedAssemblyNames);
     }
 

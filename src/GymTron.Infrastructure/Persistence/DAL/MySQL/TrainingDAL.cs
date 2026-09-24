@@ -1,14 +1,15 @@
 using Dapper;
 using GymTron.Domain.Aggregates;
 using GymTron.Infrastructure.Persistence.DAL.Models;
-using GymTron.Infrastructure.Persistence.DAL.MySQL.Extensions;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using System.Data;
 
 namespace GymTron.Infrastructure.Persistence.DAL.MySQL;
 
-internal class TrainingDAL(string connectionString) : ITrainingDAL
+internal class TrainingDAL(string connectionString, IDbTransactionContext? transactionContext = null) : ITrainingDAL
 {
+    private readonly IDbTransactionContext? _transactionContext = transactionContext;
+
 
 
     public async Task Add(Training entity, CancellationToken cancellationToken = default)
@@ -48,7 +49,7 @@ internal class TrainingDAL(string connectionString) : ITrainingDAL
                          FROM 
                             trainings 
                          WHERE 
-                            id = @Id;".ToReadUncommited();
+                            id = @Id;";
 
         return await dbConnection.QuerySingleOrDefaultAsync<TrainingDALModel>(new CommandDefinition(query, new { Id = id }, cancellationToken: cancellationToken));
     }
@@ -73,9 +74,39 @@ internal class TrainingDAL(string connectionString) : ITrainingDAL
                             AND status = 1
                             AND (@UserId IS NULL OR user_id = @UserId)
                          ORDER BY 
-                            started_on DESC LIMIT 1;".ToReadUncommited();
+                            started_on DESC LIMIT 1;";
 
         return await dbConnection.QuerySingleOrDefaultAsync<TrainingDALModel>(new CommandDefinition(query, new { UserId = userId }, cancellationToken: cancellationToken));
+    }
+
+
+    public async Task<bool> HasActiveTraining(int userId, CancellationToken cancellationToken = default)
+    {
+        using IDbConnection dbConnection = new MySqlConnection(connectionString);
+        const string query = @"SELECT EXISTS(
+                                  SELECT 1 
+                                  FROM trainings 
+                                  WHERE completed_on IS NULL 
+                                    AND status = 1 
+                                    AND user_id = @UserId
+                               );";
+        return await dbConnection.ExecuteScalarAsync<bool>(
+            new CommandDefinition(query, new { UserId = userId }, cancellationToken: cancellationToken));
+    }
+
+
+    public async Task<IEnumerable<TrainingHistoryDALModel>> ListCompletedHistory(int userId, CancellationToken cancellationToken = default)
+    {
+        using IDbConnection dbConnection = new MySqlConnection(connectionString);
+        const string query = @"SELECT 
+                                  started_on AS StartedOn, 
+                                  day_of_week AS DayOfWeek 
+                               FROM trainings 
+                               WHERE user_id = @UserId 
+                                 AND status = 6 
+                               ORDER BY started_on DESC;";
+        return await dbConnection.QueryAsync<TrainingHistoryDALModel>(
+            new CommandDefinition(query, new { UserId = userId }, cancellationToken: cancellationToken));
     }
 
 
@@ -94,7 +125,7 @@ internal class TrainingDAL(string connectionString) : ITrainingDAL
                          FROM 
                             trainings
                          WHERE
-                            (@UserId IS NULL OR user_id = @UserId);".ToReadUncommited();
+                            (@UserId IS NULL OR user_id = @UserId);";
 
         return (await dbConnection.QueryAsync<TrainingDALModel>(new CommandDefinition(query, new { UserId = userId }, cancellationToken: cancellationToken))).ToList();
     }
@@ -102,8 +133,6 @@ internal class TrainingDAL(string connectionString) : ITrainingDAL
 
     public async Task Update(TrainingDALModel model, CancellationToken cancellationToken = default)
     {
-        using IDbConnection dbConnection = new MySqlConnection(connectionString);
-
         string query = @"UPDATE 
                             trainings 
                         SET 
@@ -117,6 +146,15 @@ internal class TrainingDAL(string connectionString) : ITrainingDAL
                             id = @Id
                             AND (@UserId IS NULL OR user_id = @UserId);";
 
-        await dbConnection.ExecuteAsync(new CommandDefinition(query, model, cancellationToken: cancellationToken));
+        if (_transactionContext?.HasActiveTransaction == true && _transactionContext.ActiveConnection != null)
+        {
+            await _transactionContext.ActiveConnection.ExecuteAsync(new CommandDefinition(
+                query, model, _transactionContext.ActiveTransaction, cancellationToken: cancellationToken));
+        }
+        else
+        {
+            using IDbConnection dbConnection = new MySqlConnection(connectionString);
+            await dbConnection.ExecuteAsync(new CommandDefinition(query, model, cancellationToken: cancellationToken));
+        }
     }
 }

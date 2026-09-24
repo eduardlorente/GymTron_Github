@@ -17,7 +17,7 @@ internal class UpdateRoutineCommandHandler(IRoutineRepository routineRepository,
         int? routineUserId = null;
         if (request.UserId.HasValue)
         {
-            Routine existing = await _routineRepository.GetById(request.Id, cancellationToken)
+            Routine existing = await _routineRepository.GetById(request.Id, cancellationToken: cancellationToken)
                 ?? throw new EntityNotFoundException(nameof(Routine));
 
             if (existing.UserId != request.UserId)

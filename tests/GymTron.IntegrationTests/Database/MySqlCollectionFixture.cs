@@ -1,5 +1,5 @@
 using Dapper;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using Testcontainers.MySql;
 
 namespace GymTron.IntegrationTests.Database;
@@ -79,16 +79,17 @@ public sealed class MySqlCollectionFixture : IAsyncLifetime
         return await QuerySingleAsync<int>(sql, new { Name = name, TypeId = typeId });
     }
 
-    public async Task<int> SeedTrainingAsync(int routineId, DateTime? startedOn = null, int status = 1, DateTime? completedOn = null)
+    public async Task<int> SeedTrainingAsync(int routineId, DateTime? startedOn = null, int status = 1, DateTime? completedOn = null, int? userId = null)
     {
         const string sql = """
-            INSERT INTO trainings (routine_id, day_of_week, started_on, completed_on, status)
-            VALUES (@RoutineId, 2, @StartedOn, @CompletedOn, @Status);
+            INSERT INTO trainings (routine_id, user_id, day_of_week, started_on, completed_on, status)
+            VALUES (@RoutineId, @UserId, 2, @StartedOn, @CompletedOn, @Status);
             SELECT LAST_INSERT_ID();
             """;
         return await QuerySingleAsync<int>(sql, new
         {
             RoutineId = routineId,
+            UserId = userId,
             StartedOn = startedOn ?? new DateTime(2026, 1, 2, 3, 4, 5),
             CompletedOn = completedOn,
             Status = status

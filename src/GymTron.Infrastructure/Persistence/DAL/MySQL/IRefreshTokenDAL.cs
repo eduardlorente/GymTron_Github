@@ -8,4 +8,5 @@ internal interface IRefreshTokenDAL
     Task Add(int userId, string tokenHash, DateTime expiresAt, DateTime createdAt, CancellationToken cancellationToken = default);
     Task Update(int id, DateTime? revokedAt, string? replacedByTokenHash, CancellationToken cancellationToken = default);
     Task RevokeAllForUser(int userId, DateTime revokedAt, CancellationToken cancellationToken = default);
+    Task<int> DeleteExpiredAndRevoked(DateTime olderThanUtc, CancellationToken cancellationToken = default);
 }

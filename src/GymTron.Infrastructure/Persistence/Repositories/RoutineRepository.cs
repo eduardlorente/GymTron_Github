@@ -20,17 +20,17 @@ internal class RoutineRepository(IRoutineDAL routineDAL) : IRoutineRepository
         return BuildRoutineFromData(routines ?? []);
     }
 
-    public async Task<Routine?> GetById(int id, CancellationToken cancellationToken = default)
+    public async Task<Routine?> GetById(int id, int? userId = null, CancellationToken cancellationToken = default)
     {
-        IEnumerable<RoutineFullDetailsDTO> routines = await _routineDAL.ListById(id, cancellationToken);
+        IEnumerable<RoutineFullDetailsDTO> routines = await _routineDAL.ListById(id, userId, cancellationToken);
 
         return BuildRoutineFromData(routines ?? [])
             .FirstOrDefault();
     }
 
-    public async Task<RoutineProjection?> GetRoutineProjection(int id, CancellationToken cancellationToken = default)
+    public async Task<RoutineProjection?> GetRoutineProjection(int id, int? userId = null, CancellationToken cancellationToken = default)
     {
-        IEnumerable<RoutineFullDetailsDTO> routines = await _routineDAL.ListById(id, cancellationToken);
+        IEnumerable<RoutineFullDetailsDTO> routines = await _routineDAL.ListById(id, userId, cancellationToken);
 
         return BuildRoutineProjectionFromData(routines ?? [])
             .FirstOrDefault();

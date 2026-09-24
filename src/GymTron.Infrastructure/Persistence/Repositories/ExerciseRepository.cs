@@ -54,7 +54,6 @@ internal class ExerciseRepository(IExerciseDAL exerciseDAL) : IExerciseRepositor
             Repetitions = x.Repetitions,
             DurationInSeconds = x.DurationInSeconds
         })
-        .OrderBy(x => x.Name)
         .ToList();
     }
 

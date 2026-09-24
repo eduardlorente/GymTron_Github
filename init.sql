@@ -1,4 +1,6 @@
 
+SET FOREIGN_KEY_CHECKS = 0;
+
 -- INITIALIZE TABLES --
 
 -- CREATE TABLE --
@@ -134,6 +136,17 @@ ALTER TABLE body_weights CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicod
 ALTER TABLE logs CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ALTER TABLE users CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ALTER TABLE refresh_tokens CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- INDEXES & CONSTRAINTS --
+ALTER TABLE `routine_items`
+  ADD KEY `ix_routine_items_routine_id` (`routine_id`),
+  ADD CONSTRAINT `fk_routine_items_routine`
+    FOREIGN KEY (`routine_id`) REFERENCES `routines` (`id`) ON DELETE CASCADE;
+
+CREATE INDEX `ix_exercises_param_created` ON `exercises` (`exercise_parameters_id`, `created_on` DESC);
+CREATE INDEX `ix_trainings_user_active` ON `trainings` (`user_id`, `status`, `completed_on`, `started_on`);
+CREATE INDEX `ix_bodyweights_user_created` ON `body_weights` (`user_id`, `created_on` DESC);
+CREATE INDEX `ix_refresh_tokens_user_revoked` ON `refresh_tokens` (`user_id`, `revoked_at`);
 
 -- NOURISH DATA --
 
@@ -353,5 +366,4 @@ VALUES
     (9, 3, 5, 16.00, NULL, 10, '2026-03-06 09:50:00', '')
 ON DUPLICATE KEY UPDATE `weight` = VALUES(`weight`);
 
-
-	
+SET FOREIGN_KEY_CHECKS = 1;

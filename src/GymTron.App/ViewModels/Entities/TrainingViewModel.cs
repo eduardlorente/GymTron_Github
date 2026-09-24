@@ -40,7 +40,11 @@ public class TrainingViewModel
                 Repetitions = new RangeViewModel(ri.RepetitionsMin, ri.RepetitionsMax),
                 DurationInSeconds = ri.Duration ?? 0,
                 RestTimeInSeconds = new RangeViewModel(ri.MinRestTimeInSeconds, ri.MaxRestTimeInSeconds ?? 0),
-                TypeId = ri.Type
+                TypeId = ri.Type,
+                LastWeight = ri.LastWeight,
+                LastRepetitions = ri.LastRepetitions,
+                LastDurationInSeconds = ri.LastDuration,
+                Observations = [.. (ri.LastObservations ?? []).Select(obs => new ObservationViewModel(obs))]
             },
             AlternatingSeries = ri.AlternatingSeries,
             Position = ri.Position
@@ -79,7 +83,11 @@ public class TrainingViewModel
                 ri.ExerciseParameters.RestTimeInSeconds.Max,
                 ri.AlternatingSeries,
                 ri.Position,
-                ri.ExerciseParameters.TypeId))],
+                ri.ExerciseParameters.TypeId,
+                ri.ExerciseParameters.LastWeight,
+                ri.ExerciseParameters.LastRepetitions,
+                ri.ExerciseParameters.LastDurationInSeconds,
+                ri.ExerciseParameters.Observations.Select(o => o.Comment).ToList()))],
             [.. CompletedWorkout.Select(e => new TrainingExerciseDto(
                 e.Id,
                 e.TrainingId,

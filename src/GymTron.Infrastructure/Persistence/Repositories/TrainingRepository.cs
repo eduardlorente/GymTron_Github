@@ -40,6 +40,12 @@ internal class TrainingRepository(ITrainingDAL trainingDAL,
     }
 
 
+    public async Task<bool> HasActiveTraining(int userId, CancellationToken cancellationToken = default)
+    {
+        return await _trainingDAL.HasActiveTraining(userId, cancellationToken);
+    }
+
+
     public async Task Update(Training entity, CancellationToken cancellationToken = default)
     {
         await _trainingDAL.Update(new TrainingDALModel(entity), cancellationToken);
@@ -63,16 +69,14 @@ internal class TrainingRepository(ITrainingDAL trainingDAL,
 
     public async Task<List<TrainingHistoryProjection>> ListCompletedHistory(int? userId = null, CancellationToken cancellationToken = default)
     {
-        List<TrainingDALModel> trainings = await _trainingDAL.ListAll(userId, cancellationToken);
+        if (!userId.HasValue) return [];
 
-        return trainings
-            .Where(t => t.StatusType == (int)Domain.Enums.EntityStatusTypes.COMPLETED)
-            .Select(t => new TrainingHistoryProjection
-            {
-                StartedOn = new Domain.ValueObjects.TrainingDate(t.StartedOn),
-                DayOfTheWeek = t.DayOfWeek
-            })
-            .ToList();
+        var completed = await _trainingDAL.ListCompletedHistory(userId.Value, cancellationToken);
+        return completed.Select(t => new TrainingHistoryProjection
+        {
+            StartedOn = new Domain.ValueObjects.TrainingDate(t.StartedOn),
+            DayOfTheWeek = t.DayOfWeek
+        }).ToList();
     }
 
 
@@ -80,7 +84,7 @@ internal class TrainingRepository(ITrainingDAL trainingDAL,
     {
         if (trainingData != null)
         {
-            Routine? routine = await _routineRepository.GetById(trainingData.RoutineId, cancellationToken);
+            Routine? routine = await _routineRepository.GetById(trainingData.RoutineId, trainingData.UserId, cancellationToken);
 
             if (routine != null)
             {

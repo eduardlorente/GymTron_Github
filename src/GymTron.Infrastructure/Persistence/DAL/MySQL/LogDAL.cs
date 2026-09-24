@@ -1,6 +1,6 @@
 using Dapper;
 using GymTron.Domain.Entities;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using System.Data;
 
 namespace GymTron.Infrastructure.Persistence.DAL.MySQL;
