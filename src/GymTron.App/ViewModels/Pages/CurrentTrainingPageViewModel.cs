@@ -107,7 +107,7 @@ public partial class CurrentTrainingPageViewModel : PageBaseViewModel
             {
                 while (!token.IsCancellationRequested)
                 {
-                    OnPropertyChanged(nameof(ElapsedTime));
+                    MainThread.BeginInvokeOnMainThread(() => OnPropertyChanged(nameof(ElapsedTime)));
                     await Task.Delay(1000, token);
                 }
             }

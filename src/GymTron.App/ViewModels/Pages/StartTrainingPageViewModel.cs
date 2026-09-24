@@ -76,9 +76,9 @@ public partial class StartTrainingPageViewModel : PageBaseViewModel
             {
                 await OnStartTraining();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                await Shell.Current.DisplayAlert("Error", $"Failed to start training: {ex.Message}", "OK");
             }
             finally
             {
@@ -93,9 +93,9 @@ public partial class StartTrainingPageViewModel : PageBaseViewModel
             {
                 await LoadRoutines();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                await Shell.Current.DisplayAlert("Error", $"Failed to load routines: {ex.Message}", "OK");
             }
             finally
             {
@@ -124,6 +124,7 @@ public partial class StartTrainingPageViewModel : PageBaseViewModel
 
     private void UpdateRoutineDays()
     {
+        SelectedDay = null;
         RoutineDays.Clear();
         RoutineItems.Clear();
         if (SelectedRoutine != null)
@@ -137,9 +138,9 @@ public partial class StartTrainingPageViewModel : PageBaseViewModel
     private void UpdateRoutineItems()
     {
         RoutineItems.Clear();
-        if (SelectedRoutine != null && SelectedDay.HasValue)
+        if (SelectedRoutine != null && SelectedDay.HasValue &&
+            SelectedRoutine.WorkByDays.TryGetValue(SelectedDay.Value, out var items))
         {
-            List<RoutineItemViewModel> items = SelectedRoutine.WorkByDays[SelectedDay.Value];
             foreach (RoutineItemViewModel item in items)
                 RoutineItems.Add(item);
         }
@@ -157,9 +158,15 @@ public partial class StartTrainingPageViewModel : PageBaseViewModel
 
             await Shell.Current.GoToAsync(nameof(CurrentTrainingPage));
 
-            IReadOnlyList<Page> stack = Shell.Current.Navigation.NavigationStack;
-            if (stack.Count > 1)
-                Shell.Current.Navigation.RemovePage(stack[stack.Count - 2]);
+            var nav = Shell.Current?.Navigation;
+            if (nav != null && nav.NavigationStack.Count > 1)
+            {
+                var previousPage = nav.NavigationStack[nav.NavigationStack.Count - 2];
+                if (previousPage != null)
+                {
+                    nav.RemovePage(previousPage);
+                }
+            }
         }
         catch (Exception ex)
         {

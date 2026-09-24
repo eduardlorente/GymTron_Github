@@ -90,13 +90,17 @@ internal class TrainingRepository(ITrainingDAL trainingDAL,
             {
                 List<Exercise> completedExercises = await _exerciseRepository.ListByTraining(trainingData.Id, cancellationToken);
 
+                var pendingExercises = routine.WorkByDays.TryGetValue(trainingData.DayOfWeek, out var exercisesForDay)
+                    ? exercisesForDay
+                    : [];
+
                 return Training.FromDatabase(trainingData.Id,
                                              trainingData.RoutineId,
                                              trainingData.DayOfWeek,
                                              trainingData.StartedOn,
                                              trainingData.CompletedOn,
                                              (Domain.Enums.EntityStatusTypes)trainingData.StatusType,
-                                             routine.WorkByDays[trainingData.DayOfWeek],
+                                             pendingExercises,
                                              completedExercises,
                                              trainingData.UserId);
             }

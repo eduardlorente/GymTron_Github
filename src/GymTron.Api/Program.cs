@@ -2,6 +2,7 @@ using System.Text;
 using System.Threading.RateLimiting;
 using GymTron.Api.Endpoints;
 using GymTron.Api.Infrastructure;
+using GymTron.Infrastructure.Persistence;
 using Scalar.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -17,10 +18,11 @@ if (string.IsNullOrWhiteSpace(connectionString))
     throw new InvalidOperationException(
         "Required connection string 'DefaultConnection' is missing or blank. Configure it with User Secrets or an environment/provider override.");
 }
+var sanitizedConnectionString = MySqlConnectionStringHelper.Sanitize(connectionString);
 
 // Application and Infrastructure layers
 builder.Services.AddApplicationServices();
-builder.Services.AddInfrastructureServices(connectionString);
+builder.Services.AddInfrastructureServices(sanitizedConnectionString);
 
 // Exception handling and ProblemDetails
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
@@ -106,8 +108,12 @@ builder.Services.AddOutputCache(options =>
 });
 
 // Health Checks
+builder.Services.AddTransient(sp => new MySqlHealthCheck(
+    sanitizedConnectionString,
+    sp.GetService<ILogger<MySqlHealthCheck>>()));
+
 builder.Services.AddHealthChecks()
-    .AddCheck("mysql", new MySqlHealthCheck(connectionString), tags: ["db", "ready"]);
+    .AddCheck<MySqlHealthCheck>("mysql", tags: ["db", "ready"]);
 
 // OpenAPI documentation
 builder.Services.AddOpenApi();
