@@ -97,7 +97,14 @@ public class RefreshTokenCleanupJobTests
 
         if (job.ExecuteTask != null)
         {
-            await job.ExecuteTask;
+            try
+            {
+                await job.ExecuteTask;
+            }
+            catch (OperationCanceledException)
+            {
+                // Expected when BackgroundService ExecuteTask is cancelled during shutdown
+            }
         }
     }
 }

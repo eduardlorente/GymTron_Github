@@ -29,19 +29,16 @@ public class RefreshTokenCleanupJob(
                 {
                     logger.LogInformation("Deleted {Count} expired/revoked refresh tokens.", deleted);
                 }
-            }
-            catch (Exception ex) when (ex is not OperationCanceledException)
-            {
-                logger.LogError(ex, "Error occurred during refresh token cleanup.");
-            }
 
-            try
-            {
                 await Task.Delay(_checkInterval, stoppingToken);
             }
             catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
             {
                 break;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error occurred during refresh token cleanup.");
             }
         }
     }
