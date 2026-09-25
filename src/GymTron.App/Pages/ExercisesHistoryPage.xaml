@@ -2,7 +2,8 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="GymTron.App.Pages.ExercisesHistoryPage"
-             Shell.BackgroundColor="#ffbd59"
+             BackgroundColor="{StaticResource GymTronSurface}"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:ext="clr-namespace:GymTron.App.Extensions"
              xmlns:converters="clr-namespace:GymTron.App.Converters"
              xmlns:vm="clr-namespace:GymTron.App.ViewModels.Pages"
@@ -10,54 +11,131 @@
              x:DataType="vm:ExercisesHistoryPageViewModel"
              Title="{ext:Translate ExercisesHistory_Title}">
 
+    <ContentPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="#FAF9F6" StatusBarStyle="DarkContent" />
+    </ContentPage.Behaviors>
+
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:LocalizedFormatConverter x:Key="LocalizedFormatConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20">
-            <Picker Title="{ext:Translate ExercisesHistory_SelectExercise}"
-                    ItemsSource="{Binding DistinctExerciseNames}"
-                    SelectedItem="{Binding SelectedExerciseName}"
-                    FontSize="16"
-                    Margin="0,0,0,20"
-                    BackgroundColor="White"
-                    TextColor="Black"
-                    IsEnabled="{Binding ExercisesLoaded}"/>
+    <ScrollView VerticalScrollBarVisibility="Never">
+        <VerticalStackLayout Padding="20, 16" Spacing="16">
 
+            <!-- Selector Card -->
+            <Border StrokeShape="RoundRectangle 16"
+                    Stroke="{StaticResource GymTronBorder}"
+                    StrokeThickness="1"
+                    BackgroundColor="{StaticResource GymTronCardBg}"
+                    Padding="16">
+                <Border.Shadow>
+                    <Shadow Brush="#000000" Opacity="0.04" Radius="8" Offset="0, 2" />
+                </Border.Shadow>
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="{ext:Translate ExercisesHistory_SelectExercise}"
+                           FontSize="13"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource GymTronTextMuted}" />
+                    <Border StrokeShape="RoundRectangle 12"
+                            Stroke="{StaticResource GymTronBorder}"
+                            StrokeThickness="1"
+                            BackgroundColor="{StaticResource GymTronSurface}"
+                            Padding="12, 2">
+                        <Picker Title="{ext:Translate ExercisesHistory_SelectExercise}"
+                                ItemsSource="{Binding DistinctExerciseNames}"
+                                SelectedItem="{Binding SelectedExerciseName}"
+                                FontSize="15"
+                                TextColor="{StaticResource GymTronDark}"
+                                TitleColor="{StaticResource GymTronTextMuted}"
+                                IsEnabled="{Binding ExercisesLoaded}" />
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Executions List -->
             <CollectionView ItemsSource="{Binding SelectedExerciseExecutions}"
-                            Margin="0,10,0,0">
+                            SelectionMode="None">
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout Spacing="8" Padding="20, 50" HorizontalOptions="Center">
+                        <Label Text="📊" FontSize="36" HorizontalOptions="Center" />
+                        <Label Text="Sin registros seleccionados"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource GymTronDark}"
+                               HorizontalTextAlignment="Center" />
+                        <Label Text="Elige un ejercicio del selector superior para ver todas sus series y pesos históricos."
+                               FontSize="13"
+                               TextColor="{StaticResource GymTronTextMuted}"
+                               HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="vmEntities:ExerciseViewModel">
-                        <Frame BorderColor="#dddddd"
-                               BackgroundColor="#ffffff"
-                               CornerRadius="10"
-                               Padding="15"
-                               Margin="0,10">
-                            <VerticalStackLayout Spacing="5">
+                        <Border StrokeShape="RoundRectangle 16"
+                                Stroke="{StaticResource GymTronBorder}"
+                                StrokeThickness="1"
+                                BackgroundColor="{StaticResource GymTronCardBg}"
+                                Padding="16"
+                                Margin="0, 6">
+                            <Border.Shadow>
+                                <Shadow Brush="#000000" Opacity="0.04" Radius="8" Offset="0, 2" />
+                            </Border.Shadow>
+                            <VerticalStackLayout Spacing="10">
+
+                                <!-- Execution Date -->
                                 <Label Text="{Binding CreatedOn, Converter={StaticResource LocalizedFormatConverter}, ConverterParameter='ExercisesHistory_Date'}"
-                                       FontSize="18"
+                                       FontSize="16"
                                        FontAttributes="Bold"
-                                       TextColor="Black" />
-                                <Label Text="{Binding Weight, Converter={StaticResource LocalizedFormatConverter}, ConverterParameter='ExercisesHistory_Weight'}"
-                                       FontSize="16"
-                                       IsVisible="{Binding HasWeight}"
-                                       TextColor="#666666" />
-                                <Label Text="{Binding CurrentRepetitions, Converter={StaticResource LocalizedFormatConverter}, ConverterParameter='ExercisesHistory_Reps'}"
-                                       FontSize="16"
-                                       IsVisible="{Binding HasWeight}"
-                                       TextColor="#666666" />
-                                <Label Text="{Binding DurationInSeconds, Converter={StaticResource LocalizedFormatConverter}, ConverterParameter='ExercisesHistory_Duration'}"
-                                       FontSize="16"
-                                       IsVisible="{Binding HasDuration}"
-                                       TextColor="#666666" />
+                                       TextColor="{StaticResource GymTronDark}" />
+
+                                <!-- Metrics Badges -->
+                                <HorizontalStackLayout Spacing="8">
+                                    <!-- Weight Badge -->
+                                    <Border StrokeShape="RoundRectangle 8"
+                                            Stroke="Transparent"
+                                            BackgroundColor="{StaticResource GymTronAmberLight}"
+                                            Padding="10, 5"
+                                            IsVisible="{Binding HasWeight}">
+                                        <Label Text="{Binding Weight, Converter={StaticResource LocalizedFormatConverter}, ConverterParameter='ExercisesHistory_Weight'}"
+                                               FontSize="13"
+                                               FontAttributes="Bold"
+                                               TextColor="{StaticResource GymTronAmberDark}" />
+                                    </Border>
+
+                                    <!-- Reps Badge -->
+                                    <Border StrokeShape="RoundRectangle 8"
+                                            Stroke="{StaticResource GymTronBorder}"
+                                            StrokeThickness="1"
+                                            BackgroundColor="{StaticResource GymTronSurface}"
+                                            Padding="10, 5"
+                                            IsVisible="{Binding HasWeight}">
+                                        <Label Text="{Binding CurrentRepetitions, Converter={StaticResource LocalizedFormatConverter}, ConverterParameter='ExercisesHistory_Reps'}"
+                                               FontSize="13"
+                                               FontAttributes="Bold"
+                                               TextColor="{StaticResource GymTronDark}" />
+                                    </Border>
+
+                                    <!-- Duration Badge -->
+                                    <Border StrokeShape="RoundRectangle 8"
+                                            Stroke="Transparent"
+                                            BackgroundColor="{StaticResource GymTronAmberLight}"
+                                            Padding="10, 5"
+                                            IsVisible="{Binding HasDuration}">
+                                        <Label Text="{Binding DurationInSeconds, Converter={StaticResource LocalizedFormatConverter}, ConverterParameter='ExercisesHistory_Duration'}"
+                                               FontSize="13"
+                                               FontAttributes="Bold"
+                                               TextColor="{StaticResource GymTronAmberDark}" />
+                                    </Border>
+                                </HorizontalStackLayout>
+
                             </VerticalStackLayout>
-                        </Frame>
+                        </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

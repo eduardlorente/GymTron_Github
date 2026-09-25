@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <?xaml-comp compile="true" ?>
 <ResourceDictionary 
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -6,12 +6,25 @@
 
     <!-- Note: For Android please see also Platforms\Android\Resources\values\colors.xml -->
 
-    <Color x:Key="Primary">#512BD4</Color>
-    <Color x:Key="PrimaryDark">#ac99ea</Color>
-    <Color x:Key="PrimaryDarkText">#242424</Color>
-    <Color x:Key="Secondary">#DFD8F7</Color>
-    <Color x:Key="SecondaryDarkText">#9880e5</Color>
-    <Color x:Key="Tertiary">#2B0B98</Color>
+    <!-- GymTron Brand Colors (Light Theme) -->
+    <Color x:Key="GymTronAmber">#FFBD59</Color>
+    <Color x:Key="GymTronAmberDark">#B45309</Color>
+    <Color x:Key="GymTronAmberLight">#FEF3C7</Color>
+    <Color x:Key="GymTronAmberSoft">#FFFBEB</Color>
+    <Color x:Key="GymTronDark">#1C1917</Color>
+    <Color x:Key="GymTronCardBg">#FFFFFF</Color>
+    <Color x:Key="GymTronSurface">#FBFBF9</Color>
+    <Color x:Key="GymTronBorder">#EAEAEA</Color>
+    <Color x:Key="GymTronTextMuted">#6B7280</Color>
+    <Color x:Key="GymTronSuccess">#10B981</Color>
+    <Color x:Key="GymTronSuccessLight">#ECFDF5</Color>
+
+    <Color x:Key="Primary">#FFBD59</Color>
+    <Color x:Key="PrimaryDark">#EAA842</Color>
+    <Color x:Key="PrimaryDarkText">#1C1917</Color>
+    <Color x:Key="Secondary">#FEF3C7</Color>
+    <Color x:Key="SecondaryDarkText">#B45309</Color>
+    <Color x:Key="Tertiary">#D97706</Color>
 
     <Color x:Key="White">White</Color>
     <Color x:Key="Black">Black</Color>
@@ -27,6 +40,13 @@
     <Color x:Key="Gray600">#404040</Color>
     <Color x:Key="Gray900">#212121</Color>
     <Color x:Key="Gray950">#141414</Color>
+
+    <SolidColorBrush x:Key="GymTronAmberBrush" Color="{StaticResource GymTronAmber}"/>
+    <SolidColorBrush x:Key="GymTronAmberLightBrush" Color="{StaticResource GymTronAmberLight}"/>
+    <SolidColorBrush x:Key="GymTronDarkBrush" Color="{StaticResource GymTronDark}"/>
+    <SolidColorBrush x:Key="GymTronCardBgBrush" Color="{StaticResource GymTronCardBg}"/>
+    <SolidColorBrush x:Key="GymTronSurfaceBrush" Color="{StaticResource GymTronSurface}"/>
+    <SolidColorBrush x:Key="GymTronBorderBrush" Color="{StaticResource GymTronBorder}"/>
 
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
     <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>

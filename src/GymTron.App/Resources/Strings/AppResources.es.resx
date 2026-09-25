@@ -250,6 +250,12 @@
   <data name="CompleteModal_Complete" xml:space="preserve">
     <value>Completar</value>
   </data>
+  <data name="CompleteModal_InvalidDuration" xml:space="preserve">
+    <value>La duración debe ser un valor superior a cero.</value>
+  </data>
+  <data name="CompleteModal_InvalidWeightOrReps" xml:space="preserve">
+    <value>El peso y las repeticiones deben ser valores superiores a cero.</value>
+  </data>
   
   <!-- AddBodyWeightModal -->
   <data name="AddBodyWeight_Title" xml:space="preserve">
@@ -324,6 +330,9 @@
   </data>
   <data name="Dialog_Ok" xml:space="preserve">
     <value>Aceptar</value>
+  </data>
+  <data name="Dialog_Alert" xml:space="preserve">
+    <value>Aviso</value>
   </data>
   <data name="CurrentTraining_ConfirmFinish" xml:space="preserve">
     <value>¿Estás seguro de que quieres finalizar el entrenamiento?</value>

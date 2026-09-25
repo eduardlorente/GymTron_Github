@@ -5,9 +5,13 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:GymTron.App"
     xmlns:pages="clr-namespace:GymTron.App.Pages"
-    Shell.BackgroundColor="White"
-    Shell.TitleColor="Black"
-    Shell.ForegroundColor="Black"
+    Shell.BackgroundColor="{StaticResource GymTronCardBg}"
+    Shell.TitleColor="{StaticResource GymTronDark}"
+    Shell.ForegroundColor="{StaticResource GymTronDark}"
+    Shell.TabBarBackgroundColor="{StaticResource GymTronCardBg}"
+    Shell.TabBarForegroundColor="{StaticResource GymTronAmberDark}"
+    Shell.TabBarTitleColor="{StaticResource GymTronAmberDark}"
+    Shell.TabBarUnselectedColor="{StaticResource GymTronTextMuted}"
     Shell.FlyoutBehavior="Disabled">
 
     <ShellContent

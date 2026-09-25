@@ -41,6 +41,7 @@
     <Compile Include="..\..\src\GymTron.App\ViewModels\Entities\RoutineItemViewModel.cs" Link="App\RoutineItemViewModel.cs" />
     <Compile Include="..\..\src\GymTron.App\ViewModels\Entities\ExerciseViewModel.cs" Link="App\ExerciseViewModel.cs" />
     <Compile Include="..\..\src\GymTron.App\ViewModels\Entities\ExerciseParametersViewModel.cs" Link="App\ExerciseParametersViewModel.cs" />
+    <Compile Include="..\..\src\GymTron.App\Helpers\TextEncodingHelper.cs" Link="App\TextEncodingHelper.cs" />
     <Compile Include="..\..\src\GymTron.App\ViewModels\Entities\RangeViewModel.cs" Link="App\RangeViewModel.cs" />
     <Compile Include="..\..\src\GymTron.App\ViewModels\Entities\ObservationViewModel.cs" Link="App\ObservationViewModel.cs" />
   </ItemGroup>

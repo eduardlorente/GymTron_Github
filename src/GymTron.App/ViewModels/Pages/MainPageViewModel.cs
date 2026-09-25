@@ -21,9 +21,14 @@ public partial class MainPageViewModel : PageBaseViewModel
             if (SetProperty(ref _loggedUsername, value))
             {
                 OnPropertyChanged(nameof(UserFooterText));
+                OnPropertyChanged(nameof(GreetingText));
             }
         }
     }
+
+    public string GreetingText => string.IsNullOrWhiteSpace(LoggedUsername)
+        ? "GymTron"
+        : $"¡Hola, {LoggedUsername}!";
 
     public string UserFooterText => string.IsNullOrWhiteSpace(LoggedUsername)
         ? string.Empty
@@ -83,6 +88,7 @@ public partial class MainPageViewModel : PageBaseViewModel
         OnPropertyChanged(nameof(BodyWeightHistoryText));
         OnPropertyChanged(nameof(SettingsText));
         OnPropertyChanged(nameof(UserFooterText));
+        OnPropertyChanged(nameof(GreetingText));
     }
 
     private async Task NavigateTrainingAsync()

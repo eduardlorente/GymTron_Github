@@ -1,78 +1,173 @@
-﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="GymTron.App.Pages.Modals.CompleteExerciseModal"
-             Shell.BackgroundColor="#ffbd59"
-             xmlns:converters="clr-namespace:GymTron.App.Converters"
+             BackgroundColor="{StaticResource GymTronSurface}"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:ext="clr-namespace:GymTron.App.Extensions"
              xmlns:vm="clr-namespace:GymTron.App.ViewModels.Pages.Modals"
              x:DataType="vm:CompleteExerciseModalViewModel"
              Title="{ext:Translate CompleteModal_Title}">
 
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
-        </ResourceDictionary>
-    </ContentPage.Resources>
+    <ContentPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="#FAF9F6" StatusBarStyle="DarkContent" />
+    </ContentPage.Behaviors>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+    <Grid RowDefinitions="*, Auto" Padding="20, 16">
 
-        <ScrollView Grid.Row="0">
-            <VerticalStackLayout Padding="20" Spacing="15">
+        <ScrollView Grid.Row="0" VerticalScrollBarVisibility="Never">
+            <VerticalStackLayout Spacing="16">
 
-                <Label Text="{ext:Translate CompleteModal_Title}" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center"/>
+                <Label Text="{ext:Translate CompleteModal_Title}" 
+                       FontSize="20" 
+                       FontAttributes="Bold" 
+                       TextColor="{StaticResource GymTronDark}"
+                       HorizontalOptions="Center"/>
 
-                <Frame BorderColor="Gray" CornerRadius="10" Padding="15" IsVisible="{Binding IsDurationExercise}">
-                    <StackLayout Spacing="10">
-                        <Label Text="{ext:Translate CompleteModal_Duration}" FontSize="18" />
-                        <Entry Keyboard="Numeric" Text="{Binding Duration}" Margin="0,5,0,0" Placeholder="Introdueix la duració"/>
-                    </StackLayout>
-                </Frame>
+                <!-- DURATION CARD -->
+                <Border StrokeShape="RoundRectangle 16"
+                        Stroke="{StaticResource GymTronBorder}"
+                        StrokeThickness="1"
+                        BackgroundColor="{StaticResource GymTronCardBg}"
+                        Padding="16"
+                        IsVisible="{Binding IsDurationExercise}">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="{ext:Translate CompleteModal_Duration}" 
+                               FontSize="14" 
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource GymTronDark}" />
+                        <Border StrokeShape="RoundRectangle 12"
+                                Stroke="{StaticResource GymTronBorder}"
+                                BackgroundColor="{StaticResource GymTronSurface}"
+                                Padding="12, 0">
+                            <Entry Keyboard="Numeric" 
+                                   Text="{Binding Duration}" 
+                                   TextColor="{StaticResource GymTronDark}"
+                                   Placeholder="Introdueix la duració" 
+                                   HeightRequest="48" />
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
 
-                <Frame BorderColor="Gray" CornerRadius="10" Padding="15" IsVisible="{Binding IsWeightExercise}">
-                    <StackLayout Spacing="10">
-                        <Label Text="{ext:Translate CompleteModal_Weight}" FontSize="18" />
-                        <Entry Keyboard="Numeric" Text="{Binding Weight}" Margin="0,5,0,0" Placeholder="Introdueix el pes"/>
-                        <Label Text="{ext:Translate CompleteModal_Reps}" FontSize="18" />
-                        <Entry Keyboard="Numeric" Text="{Binding Repetitions}" Margin="0,5,0,0" Placeholder="Introdueix les repeticions"/>
-                    </StackLayout>
-                </Frame>
+                <!-- WEIGHT & REPS CARD -->
+                <Border StrokeShape="RoundRectangle 16"
+                        Stroke="{StaticResource GymTronBorder}"
+                        StrokeThickness="1"
+                        BackgroundColor="{StaticResource GymTronCardBg}"
+                        Padding="16"
+                        IsVisible="{Binding IsWeightExercise}">
+                    <VerticalStackLayout Spacing="12">
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="{ext:Translate CompleteModal_Weight}" 
+                                   FontSize="14" 
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource GymTronDark}" />
+                            <Border StrokeShape="RoundRectangle 12"
+                                    Stroke="{StaticResource GymTronBorder}"
+                                    BackgroundColor="{StaticResource GymTronSurface}"
+                                    Padding="12, 0">
+                                <Entry Keyboard="Numeric" 
+                                       Text="{Binding Weight}" 
+                                       TextColor="{StaticResource GymTronDark}"
+                                       Placeholder="Introdueix el pes (kg)" 
+                                       HeightRequest="48" />
+                            </Border>
+                        </VerticalStackLayout>
 
-                <Frame BorderColor="Gray" CornerRadius="10" Padding="15">
-                    <StackLayout>
-                        <Label Text="{ext:Translate CompleteModal_Difficulty}" FontSize="18" />
-                        <RadioButton Content="Dur" Value="Hard" GroupName="Difficulty" IsChecked="{Binding SelectedHardDifficulty}"/>
-                        <RadioButton Content="Molt dur" Value="VeryHard" GroupName="Difficulty" IsChecked="{Binding SelectedReallyHardDifficulty}"/>
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="{ext:Translate CompleteModal_Reps}" 
+                                   FontSize="14" 
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource GymTronDark}" />
+                            <Border StrokeShape="RoundRectangle 12"
+                                    Stroke="{StaticResource GymTronBorder}"
+                                    BackgroundColor="{StaticResource GymTronSurface}"
+                                    Padding="12, 0">
+                                <Entry Keyboard="Numeric" 
+                                       Text="{Binding Repetitions}" 
+                                       TextColor="{StaticResource GymTronDark}"
+                                       Placeholder="Introdueix les repeticions" 
+                                       HeightRequest="48" />
+                            </Border>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
 
-                        <HorizontalStackLayout Margin="0,10,0,0">
-                            <CheckBox IsChecked="{Binding IncreaseWeight}" />
-                            <Label Text="{ext:Translate CompleteModal_IncreaseWeight}" VerticalOptions="Center"/>
+                <!-- DIFFICULTY & PROGRESSION CARD -->
+                <Border StrokeShape="RoundRectangle 16"
+                        Stroke="{StaticResource GymTronBorder}"
+                        StrokeThickness="1"
+                        BackgroundColor="{StaticResource GymTronCardBg}"
+                        Padding="16">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="{ext:Translate CompleteModal_Difficulty}" 
+                               FontSize="14" 
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource GymTronDark}" />
+                        
+                        <HorizontalStackLayout Spacing="16">
+                            <RadioButton Content="Dur" 
+                                         Value="Hard" 
+                                         GroupName="Difficulty" 
+                                         IsChecked="{Binding SelectedHardDifficulty}"
+                                         TextColor="{StaticResource GymTronDark}" />
+                            <RadioButton Content="Molt dur" 
+                                         Value="VeryHard" 
+                                         GroupName="Difficulty" 
+                                         IsChecked="{Binding SelectedReallyHardDifficulty}"
+                                         TextColor="{StaticResource GymTronDark}" />
                         </HorizontalStackLayout>
 
-                        <HorizontalStackLayout>
-                            <CheckBox IsChecked="{Binding IncreaseRepetitions}" />
-                            <Label Text="{ext:Translate CompleteModal_IncreaseReps}" VerticalOptions="Center"/>
-                        </HorizontalStackLayout>
-                    </StackLayout>
-                </Frame>
+                        <BoxView HeightRequest="1" Color="{StaticResource GymTronBorder}" Margin="0, 4" />
 
-                <Label Text="{ext:Translate CompleteModal_Observations}" FontSize="18" Margin="0,10,0,5"/>
-                <Editor Text="{Binding Observations}" HeightRequest="100" Placeholder="Escriu aquí les teves observacions..." Margin="0,0,0,0"/>
+                        <HorizontalStackLayout Spacing="10">
+                            <CheckBox IsChecked="{Binding IncreaseWeight}" Color="{StaticResource GymTronAmber}" />
+                            <Label Text="{ext:Translate CompleteModal_IncreaseWeight}" 
+                                   TextColor="{StaticResource GymTronDark}"
+                                   VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+
+                        <HorizontalStackLayout Spacing="10">
+                            <CheckBox IsChecked="{Binding IncreaseRepetitions}" Color="{StaticResource GymTronAmber}" />
+                            <Label Text="{ext:Translate CompleteModal_IncreaseReps}" 
+                                   TextColor="{StaticResource GymTronDark}"
+                                   VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- OBSERVATIONS -->
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="{ext:Translate CompleteModal_Observations}" 
+                           FontSize="14" 
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource GymTronDark}" />
+                    <Border StrokeShape="RoundRectangle 12"
+                            Stroke="{StaticResource GymTronBorder}"
+                            BackgroundColor="{StaticResource GymTronCardBg}"
+                            Padding="12">
+                        <Editor Text="{Binding Observations}" 
+                                HeightRequest="90" 
+                                TextColor="{StaticResource GymTronDark}"
+                                Placeholder="Escriu aquí les teves observacions..." />
+                    </Border>
+                </VerticalStackLayout>
 
             </VerticalStackLayout>
         </ScrollView>
 
-        <Button Grid.Row="1" 
-                Text="{ext:Translate CompleteModal_Complete}" 
-                Command="{Binding CompleteCommand}" 
-                BackgroundColor="Green" 
-                TextColor="White" 
-                CornerRadius="10" 
-                Margin="20,10" 
-                HorizontalOptions="Fill" />
+        <!-- COMPLETE BUTTON -->
+        <Grid Grid.Row="1" Padding="0, 12, 0, 4">
+            <Button Text="{ext:Translate CompleteModal_Complete}" 
+                    Command="{Binding CompleteCommand}" 
+                    BackgroundColor="{StaticResource GymTronAmber}" 
+                    TextColor="{StaticResource GymTronDark}" 
+                    FontAttributes="Bold"
+                    FontSize="16"
+                    CornerRadius="16" 
+                    HeightRequest="52" 
+                    HorizontalOptions="Fill" />
+        </Grid>
     </Grid>
 
 </ContentPage>

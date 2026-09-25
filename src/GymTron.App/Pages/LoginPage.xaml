@@ -9,10 +9,10 @@
              Shell.NavBarIsVisible="False">
 
     <ContentPage.Behaviors>
-        <toolkit:StatusBarBehavior StatusBarColor="White" StatusBarStyle="DarkContent" />
+        <toolkit:StatusBarBehavior StatusBarColor="#FAF9F6" StatusBarStyle="DarkContent" />
     </ContentPage.Behaviors>
 
-    <ScrollView>
+    <ScrollView VerticalScrollBarVisibility="Never">
         <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="24" Padding="24" MaximumWidthRequest="420">
 
             <!-- Header -->
@@ -26,21 +26,24 @@
                        FontSize="28"
                        FontAttributes="Bold"
                        HorizontalOptions="Center"
-                       TextColor="Black" />
+                       TextColor="{StaticResource GymTronDark}" />
 
                 <Label Text="{Binding SubtitleText}"
                        FontSize="14"
-                       TextColor="{StaticResource Gray600}"
+                       TextColor="{StaticResource GymTronTextMuted}"
                        HorizontalOptions="Center"
                        HorizontalTextAlignment="Center" />
             </VerticalStackLayout>
 
             <!-- Form Card -->
-            <Border StrokeShape="RoundRectangle 20"
+            <Border StrokeShape="RoundRectangle 24"
                     StrokeThickness="1"
-                    Stroke="{StaticResource Gray200}"
-                    BackgroundColor="White"
+                    Stroke="{StaticResource GymTronBorder}"
+                    BackgroundColor="{StaticResource GymTronCardBg}"
                     Padding="24">
+                <Border.Shadow>
+                    <Shadow Brush="#000000" Opacity="0.06" Radius="12" Offset="0, 4" />
+                </Border.Shadow>
                 <VerticalStackLayout Spacing="16">
 
                     <!-- Identifier Field -->
@@ -48,17 +51,18 @@
                         <Label Text="{Binding IdentifierPlaceholder}"
                                FontSize="13"
                                FontAttributes="Bold"
-                               TextColor="{StaticResource Gray900}" />
+                               TextColor="{StaticResource GymTronDark}" />
                         <Border StrokeShape="RoundRectangle 12"
                                 StrokeThickness="1"
-                                Stroke="{StaticResource Gray300}"
-                                BackgroundColor="White"
+                                Stroke="{StaticResource GymTronBorder}"
+                                BackgroundColor="{StaticResource GymTronSurface}"
                                 Padding="12,0">
                             <Entry Text="{Binding Identifier}"
                                    Placeholder="{Binding IdentifierPlaceholder}"
+                                   PlaceholderColor="{StaticResource GymTronTextMuted}"
                                    Keyboard="Email"
                                    ClearButtonVisibility="WhileEditing"
-                                   TextColor="Black"
+                                   TextColor="{StaticResource GymTronDark}"
                                    ReturnType="Next"
                                    HeightRequest="48" />
                         </Border>
@@ -69,17 +73,18 @@
                         <Label Text="{Binding PasswordPlaceholder}"
                                FontSize="13"
                                FontAttributes="Bold"
-                               TextColor="{StaticResource Gray900}" />
+                               TextColor="{StaticResource GymTronDark}" />
                         <Border StrokeShape="RoundRectangle 12"
                                 StrokeThickness="1"
-                                Stroke="{StaticResource Gray300}"
-                                BackgroundColor="White"
+                                Stroke="{StaticResource GymTronBorder}"
+                                BackgroundColor="{StaticResource GymTronSurface}"
                                 Padding="12,0">
                             <Entry Text="{Binding Password}"
                                    Placeholder="{Binding PasswordPlaceholder}"
+                                   PlaceholderColor="{StaticResource GymTronTextMuted}"
                                    IsPassword="True"
                                    ClearButtonVisibility="WhileEditing"
-                                   TextColor="Black"
+                                   TextColor="{StaticResource GymTronDark}"
                                    ReturnType="Done"
                                    ReturnCommand="{Binding LoginCommand}"
                                    HeightRequest="48" />
@@ -88,7 +93,7 @@
 
                     <!-- Error message -->
                     <Label Text="{Binding ErrorMessage}"
-                           TextColor="Red"
+                           TextColor="#EF4444"
                            FontSize="13"
                            HorizontalOptions="Center"
                            HorizontalTextAlignment="Center"
@@ -97,29 +102,33 @@
                     <!-- Loading Indicator -->
                     <ActivityIndicator IsRunning="{Binding IsBusy}"
                                        IsVisible="{Binding IsBusy}"
-                                       Color="#ffbd59"
+                                       Color="{StaticResource GymTronAmber}"
                                        HorizontalOptions="Center" />
 
                     <!-- Submit Button -->
                     <Button Text="{Binding SubmitButtonText}"
                             Command="{Binding LoginCommand}"
-                            BackgroundColor="#ffbd59"
-                            TextColor="Black"
+                            BackgroundColor="{StaticResource GymTronAmber}"
+                            TextColor="{StaticResource GymTronDark}"
                             FontAttributes="Bold"
-                            CornerRadius="20"
+                            CornerRadius="24"
                             HeightRequest="50"
-                            FontSize="16" />
+                            FontSize="16">
+                        <Button.Shadow>
+                            <Shadow Brush="#FFBD59" Opacity="0.3" Radius="8" Offset="0, 3" />
+                        </Button.Shadow>
+                    </Button>
 
                     <!-- Biometric Button -->
                     <Button Text="{Binding BiometricButtonText}"
                             Command="{Binding BiometricLoginCommand}"
                             IsVisible="{Binding CanUseBiometric}"
                             BackgroundColor="Transparent"
-                            BorderColor="#ffbd59"
+                            BorderColor="{StaticResource GymTronAmber}"
                             BorderWidth="2"
-                            TextColor="Black"
+                            TextColor="{StaticResource GymTronDark}"
                             FontAttributes="Bold"
-                            CornerRadius="20"
+                            CornerRadius="24"
                             HeightRequest="50"
                             FontSize="16" />
 

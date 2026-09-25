@@ -1,137 +1,166 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:ext="clr-namespace:GymTron.App.Extensions"
              xmlns:vm="clr-namespace:GymTron.App.ViewModels.Pages"
              x:Class="GymTron.App.Pages.SettingsPage"
              x:DataType="vm:SettingsPageViewModel"
              Title="{ext:Translate Settings_Title}"
-             Shell.BackgroundColor="#ffbd59">
+             BackgroundColor="{StaticResource GymTronSurface}">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="24" Spacing="24">
+    <ContentPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="#FAF9F6" StatusBarStyle="DarkContent" />
+    </ContentPage.Behaviors>
+
+    <ScrollView VerticalScrollBarVisibility="Never">
+        <VerticalStackLayout Padding="20, 16" Spacing="16">
+
             <!-- Language Settings Section -->
-            <Frame BorderColor="#dddddd"
-                   BackgroundColor="#ffffff"
-                   CornerRadius="12"
-                   Padding="20"
-                   HasShadow="True">
+            <Border StrokeShape="RoundRectangle 16"
+                    Stroke="{StaticResource GymTronBorder}"
+                    StrokeThickness="1"
+                    BackgroundColor="{StaticResource GymTronCardBg}"
+                    Padding="20">
+                <Border.Shadow>
+                    <Shadow Brush="#000000" Opacity="0.04" Radius="8" Offset="0, 2" />
+                </Border.Shadow>
                 <VerticalStackLayout Spacing="12">
                     <Label Text="{Binding LanguageSectionTitle}"
-                           FontSize="18"
+                           FontSize="17"
                            FontAttributes="Bold"
-                           TextColor="#333333" />
+                           TextColor="{StaticResource GymTronDark}" />
 
                     <Label Text="{Binding LanguageTitle}"
-                           FontSize="14"
-                           TextColor="#666666" />
+                           FontSize="13"
+                           TextColor="{StaticResource GymTronTextMuted}" />
 
-                    <Picker ItemsSource="{Binding LanguageNames}"
-                            SelectedIndex="{Binding SelectedLanguageIndex}"
-                            FontSize="16"
-                            BackgroundColor="#f5f5f5"
-                            TextColor="Black"
-                            HeightRequest="48" />
+                    <Border StrokeShape="RoundRectangle 12"
+                            Stroke="{StaticResource GymTronBorder}"
+                            StrokeThickness="1"
+                            BackgroundColor="{StaticResource GymTronSurface}"
+                            Padding="12, 0">
+                        <Picker ItemsSource="{Binding LanguageNames}"
+                                SelectedIndex="{Binding SelectedLanguageIndex}"
+                                FontSize="15"
+                                TextColor="{StaticResource GymTronDark}"
+                                TitleColor="{StaticResource GymTronTextMuted}"
+                                HeightRequest="48" />
+                    </Border>
                 </VerticalStackLayout>
-            </Frame>
+            </Border>
 
             <!-- Security / Biometrics Section -->
-            <Frame BorderColor="#dddddd"
-                   BackgroundColor="#ffffff"
-                   CornerRadius="12"
-                   Padding="20"
-                   HasShadow="True">
+            <Border StrokeShape="RoundRectangle 16"
+                    Stroke="{StaticResource GymTronBorder}"
+                    StrokeThickness="1"
+                    BackgroundColor="{StaticResource GymTronCardBg}"
+                    Padding="20">
+                <Border.Shadow>
+                    <Shadow Brush="#000000" Opacity="0.04" Radius="8" Offset="0, 2" />
+                </Border.Shadow>
                 <VerticalStackLayout Spacing="12">
                     <Label Text="{Binding SecuritySectionTitle}"
-                           FontSize="18"
+                           FontSize="17"
                            FontAttributes="Bold"
-                           TextColor="#333333" />
+                           TextColor="{StaticResource GymTronDark}" />
 
                     <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto" ColumnSpacing="12" RowSpacing="6">
                         <Label Grid.Row="0" Grid.Column="0"
                                Text="{Binding BiometricsTitle}"
-                               FontSize="16"
+                               FontSize="15"
                                FontAttributes="Bold"
-                               TextColor="#333333"
+                               TextColor="{StaticResource GymTronDark}"
                                VerticalOptions="Center" />
 
                         <Switch Grid.Row="0" Grid.Column="1"
                                 IsToggled="{Binding IsBiometricsEnabled}"
                                 IsEnabled="{Binding IsBiometricsSupported}"
-                                OnColor="#ffbd59"
-                                ThumbColor="#ffffff"
+                                OnColor="{StaticResource GymTronAmber}"
+                                ThumbColor="White"
                                 VerticalOptions="Center" />
 
                         <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
                                Text="{Binding BiometricsDesc}"
                                FontSize="13"
-                               TextColor="#666666"
+                               TextColor="{StaticResource GymTronTextMuted}"
                                IsVisible="{Binding IsBiometricsSupported}" />
 
                         <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
                                Text="{Binding BiometricsNotSupportedText}"
                                FontSize="13"
-                               TextColor="#d93838"
+                               TextColor="#EF4444"
                                IsVisible="{Binding ShowBiometricsNotSupported}" />
                     </Grid>
                 </VerticalStackLayout>
-            </Frame>
+            </Border>
 
             <!-- Backup Section -->
-            <Frame BorderColor="#dddddd"
-                   BackgroundColor="#ffffff"
-                   CornerRadius="12"
-                   Padding="20"
-                   HasShadow="True">
-                <VerticalStackLayout Spacing="12">
+            <Border StrokeShape="RoundRectangle 16"
+                    Stroke="{StaticResource GymTronBorder}"
+                    StrokeThickness="1"
+                    BackgroundColor="{StaticResource GymTronCardBg}"
+                    Padding="20">
+                <Border.Shadow>
+                    <Shadow Brush="#000000" Opacity="0.04" Radius="8" Offset="0, 2" />
+                </Border.Shadow>
+                <VerticalStackLayout Spacing="14">
                     <Label Text="{Binding BackupSectionTitle}"
-                           FontSize="18"
+                           FontSize="17"
                            FontAttributes="Bold"
-                           TextColor="#333333" />
+                           TextColor="{StaticResource GymTronDark}" />
 
                     <Label Text="{Binding BackupDesc}"
                            FontSize="13"
-                           TextColor="#666666" />
+                           TextColor="{StaticResource GymTronTextMuted}" />
 
                     <Button Text="{Binding BackupButtonText}"
                             Command="{Binding ExportBackupCommand}"
                             IsEnabled="{Binding IsNotExportingBackup}"
-                            BackgroundColor="#ffbd59"
-                            TextColor="#333333"
-                            CornerRadius="20"
-                            HeightRequest="48"
-                            FontSize="16"
-                            FontAttributes="Bold" />
+                            BackgroundColor="{StaticResource GymTronAmber}"
+                            TextColor="{StaticResource GymTronDark}"
+                            CornerRadius="24"
+                            HeightRequest="50"
+                            FontSize="15"
+                            FontAttributes="Bold">
+                        <Button.Shadow>
+                            <Shadow Brush="#FFBD59" Opacity="0.25" Radius="8" Offset="0, 2" />
+                        </Button.Shadow>
+                    </Button>
 
                     <ActivityIndicator IsRunning="{Binding IsExportingBackup}"
                                        IsVisible="{Binding IsExportingBackup}"
-                                       Color="#ffbd59"
+                                       Color="{StaticResource GymTronAmber}"
                                        HorizontalOptions="Center" />
                 </VerticalStackLayout>
-            </Frame>
+            </Border>
 
             <!-- Account / Logout Section -->
-            <Frame BorderColor="#f5c2c2"
-                   BackgroundColor="#ffffff"
-                   CornerRadius="12"
-                   Padding="20"
-                   HasShadow="True">
-                <VerticalStackLayout Spacing="16">
+            <Border StrokeShape="RoundRectangle 16"
+                    Stroke="#FEE2E2"
+                    StrokeThickness="1"
+                    BackgroundColor="{StaticResource GymTronCardBg}"
+                    Padding="20">
+                <Border.Shadow>
+                    <Shadow Brush="#000000" Opacity="0.04" Radius="8" Offset="0, 2" />
+                </Border.Shadow>
+                <VerticalStackLayout Spacing="14">
                     <Label Text="{Binding LogoutText}"
-                           FontSize="18"
+                           FontSize="17"
                            FontAttributes="Bold"
-                           TextColor="#d93838" />
+                           TextColor="#DC2626" />
 
                     <Button Text="{Binding LogoutText}"
                             Command="{Binding LogoutCommand}"
-                            BackgroundColor="#d93838"
+                            BackgroundColor="#DC2626"
                             TextColor="White"
-                            CornerRadius="20"
-                            HeightRequest="48"
-                            FontSize="16"
+                            CornerRadius="24"
+                            HeightRequest="50"
+                            FontSize="15"
                             FontAttributes="Bold" />
                 </VerticalStackLayout>
-            </Frame>
+            </Border>
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

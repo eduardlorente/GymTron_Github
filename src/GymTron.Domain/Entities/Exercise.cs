@@ -1,3 +1,4 @@
+using GymTron.Domain.Exceptions;
 using GymTron.Domain.Services;
 using GymTron.Domain.ValueObjects;
 
@@ -68,6 +69,7 @@ public class Exercise : Entity<int>
                                List<string> observations,
                                IClock clock)
     {
+        ValidateExecutionValues(weight, duration, repetitions);
         return new Exercise(trainingId, exerciseParametersId, name, weight, duration, repetitions, clock.UtcNow, observations);
     }
 
@@ -81,6 +83,7 @@ public class Exercise : Entity<int>
                                DateTime createdOn,
                                List<string> observations)
     {
+        ValidateExecutionValues(weight, duration, repetitions);
         return new Exercise(trainingId, exerciseParametersId, name, weight, duration, repetitions, createdOn, observations);
     }
 
@@ -94,6 +97,7 @@ public class Exercise : Entity<int>
                                List<string> observations,
                                DateTime createdOn)
     {
+        ValidateExecutionValues(weight, duration, repetitions);
         return new Exercise(trainingId, exerciseParametersId, name, weight, duration, repetitions, createdOn, observations);
     }
 
@@ -106,7 +110,24 @@ public class Exercise : Entity<int>
                                int repetitions,
                                List<string> observations)
     {
+        ValidateExecutionValues(weight, duration, repetitions);
         return new Exercise(trainingId, exerciseParametersId, name, weight, duration, repetitions, default, observations);
+    }
+
+    private static void ValidateExecutionValues(decimal weight, int duration, int repetitions)
+    {
+        if (weight < 0 || duration < 0 || repetitions < 0)
+        {
+            throw new InvalidDomainOperationException("Exercise values cannot be negative.");
+        }
+
+        bool isValidDuration = duration > 0;
+        bool isValidWeightAndReps = weight > 0 && repetitions > 0;
+
+        if (!isValidDuration && !isValidWeightAndReps)
+        {
+            throw new InvalidDomainOperationException("Exercise execution must specify either duration greater than zero or weight and repetitions greater than zero.");
+        }
     }
 
 

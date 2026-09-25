@@ -1,14 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="GymTron.App.Pages.StartTrainingPage"
+             BackgroundColor="{StaticResource GymTronSurface}"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             Shell.BackgroundColor="#ffbd59"
              xmlns:converters="clr-namespace:GymTron.App.Converters"
              xmlns:ext="clr-namespace:GymTron.App.Extensions"
              xmlns:vm="clr-namespace:GymTron.App.ViewModels.Pages"
              xmlns:vmEntities="clr-namespace:GymTron.App.ViewModels.Entities"
              x:DataType="vm:StartTrainingPageViewModel"
              Title="{ext:Translate StartTraining_Title}">
+
+    <ContentPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="#FAF9F6" StatusBarStyle="DarkContent" />
+        <toolkit:EventToCommandBehavior
+            EventName="Appearing"
+            Command="{Binding LoadRoutinesCommand}" />
+    </ContentPage.Behaviors>
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -17,61 +25,116 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <ContentPage.Behaviors>
-        <toolkit:EventToCommandBehavior
-            EventName="Appearing"
-            Command="{Binding LoadRoutinesCommand}" />
-    </ContentPage.Behaviors>
+    <Grid RowDefinitions="*, Auto" Padding="20, 16">
+        
+        <!-- SCROLLABLE CONTENT -->
+        <ScrollView Grid.Row="0" VerticalScrollBarVisibility="Never">
+            <VerticalStackLayout Spacing="18">
+                
+                <!-- SELECTOR ROUTINE CARD -->
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="{ext:Translate StartTraining_SelectRoutine}" 
+                           FontSize="15" 
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource GymTronDark}" />
+                    <Border StrokeShape="RoundRectangle 14"
+                            Stroke="{StaticResource GymTronBorder}"
+                            StrokeThickness="1"
+                            BackgroundColor="{StaticResource GymTronCardBg}"
+                            Padding="12, 2">
+                        <Picker ItemsSource="{Binding Routines}" 
+                                ItemDisplayBinding="{Binding Name, x:DataType=vmEntities:RoutineViewModel}" 
+                                SelectedItem="{Binding SelectedRoutine}"
+                                IsEnabled="{Binding RoutinesLoaded}"
+                                TextColor="{StaticResource GymTronDark}"
+                                Title="Selecciona una rutina"
+                                HeightRequest="48" />
+                    </Border>
+                </VerticalStackLayout>
 
-    <Grid RowDefinitions="*, Auto" Margin="20">
-        <!-- CONTINGUT SCROLLABLE -->
-        <ScrollView Grid.Row="0">
-            <StackLayout Spacing="5">
-                <!-- SELECTOR ROUTINE -->
-                <Label Text="{ext:Translate StartTraining_SelectRoutine}" FontSize="18" />
-                <Picker ItemsSource="{Binding Routines}" 
-                        ItemDisplayBinding="{Binding Name, x:DataType=vmEntities:RoutineViewModel}" 
-                        SelectedItem="{Binding SelectedRoutine}"
-                        IsEnabled="{Binding RoutinesLoaded}"
-                        Margin="0,0,0,20"/>
+                <!-- SELECTOR DAY CARD -->
+                <VerticalStackLayout Spacing="6" IsVisible="{Binding SelectedRoutine, Converter={StaticResource NullToBoolConverter}}">
+                    <Label Text="{ext:Translate StartTraining_SelectDay}" 
+                           FontSize="15" 
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource GymTronDark}" />
+                    <Border StrokeShape="RoundRectangle 14"
+                            Stroke="{StaticResource GymTronBorder}"
+                            StrokeThickness="1"
+                            BackgroundColor="{StaticResource GymTronCardBg}"
+                            Padding="12, 2">
+                        <Picker ItemsSource="{Binding RoutineDays}" 
+                                SelectedItem="{Binding SelectedDay}" 
+                                TextColor="{StaticResource GymTronDark}"
+                                Title="Selecciona el día"
+                                HeightRequest="48" />
+                    </Border>
+                </VerticalStackLayout>
 
-                <!-- SELECTOR DAY -->
-                <Label Text="{ext:Translate StartTraining_SelectDay}" FontSize="18" 
-                       IsVisible="{Binding SelectedRoutine, Converter={StaticResource NullToBoolConverter}}" />
-                <Picker ItemsSource="{Binding RoutineDays}" 
-                        SelectedItem="{Binding SelectedDay}" 
-                        IsVisible="{Binding SelectedRoutine, Converter={StaticResource NullToBoolConverter}}"
-                        Margin="0,0,0,20"/>
+                <!-- EXERCISES PREVIEW -->
+                <VerticalStackLayout Spacing="8" IsVisible="{Binding SelectedDay, TargetNullValue=false}">
+                    <Label Text="{ext:Translate StartTraining_Exercises}" 
+                           FontSize="16" 
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource GymTronDark}" />
+                    <CollectionView ItemsSource="{Binding RoutineItems}" SelectionMode="None">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="vmEntities:RoutineItemViewModel">
+                                <Border StrokeShape="RoundRectangle 12"
+                                        Stroke="{StaticResource GymTronBorder}"
+                                        StrokeThickness="1"
+                                        BackgroundColor="{StaticResource GymTronCardBg}"
+                                        Padding="14, 12"
+                                        Margin="0, 4">
+                                    <Border.Shadow>
+                                        <Shadow Brush="#000000" Opacity="0.03" Radius="6" Offset="0, 2" />
+                                    </Border.Shadow>
+                                    <Grid ColumnDefinitions="Auto, *">
+                                        <Border Grid.Column="0"
+                                                WidthRequest="28"
+                                                HeightRequest="28"
+                                                StrokeShape="RoundRectangle 14"
+                                                Stroke="Transparent"
+                                                BackgroundColor="{StaticResource GymTronAmberLight}"
+                                                Margin="0, 0, 10, 0"
+                                                VerticalOptions="Center">
+                                            <Label Text="•"
+                                                   FontSize="18"
+                                                   TextColor="{StaticResource GymTronAmberDark}"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center" />
+                                        </Border>
+                                        <Label Grid.Column="1"
+                                               Text="{Binding ExerciseParameters.Name}"
+                                               FontSize="14" 
+                                               FontAttributes="Bold" 
+                                               TextColor="{StaticResource GymTronDark}"
+                                               VerticalOptions="Center" 
+                                               LineBreakMode="WordWrap" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
 
-                <!-- EXERCISES -->
-                <Label Text="{ext:Translate StartTraining_Exercises}" FontSize="18" 
-                       IsVisible="{Binding SelectedDay, TargetNullValue=false}" />
-                <CollectionView ItemsSource="{Binding RoutineItems}" IsVisible="{Binding SelectedDay, TargetNullValue=false}">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="vmEntities:RoutineItemViewModel">
-                            <Frame CornerRadius="8" Padding="8" Margin="5" BackgroundColor="#f2f2f2" HasShadow="True">
-                                <Label Text="{Binding ExerciseParameters.Name}"
-                                       FontSize="12" 
-                                       FontAttributes="Bold" 
-                                       VerticalOptions="Center" 
-                                       HorizontalOptions="StartAndExpand" 
-                                       LineBreakMode="WordWrap" />
-                            </Frame>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-            </StackLayout>
+            </VerticalStackLayout>
         </ScrollView>
 
         <!-- START TRAINING BUTTON -->
-        <Button Grid.Row="1"
-                Text="{ext:Translate StartTraining_Start}" 
-                Command="{Binding StartTrainingCommand}" 
-                IsEnabled="{Binding SelectedDay}" 
-                BackgroundColor="Green" 
-                TextColor="White" 
-                CornerRadius="10"
-                IsVisible="{Binding SelectedDay, TargetNullValue=false}" />
+        <Grid Grid.Row="1" Padding="0, 12, 0, 4">
+            <Button Text="{ext:Translate StartTraining_Start}" 
+                    Command="{Binding StartTrainingCommand}" 
+                    IsEnabled="{Binding SelectedDay}" 
+                    BackgroundColor="{StaticResource GymTronAmber}" 
+                    TextColor="{StaticResource GymTronDark}" 
+                    FontAttributes="Bold"
+                    FontSize="16"
+                    CornerRadius="16"
+                    HeightRequest="52"
+                    IsVisible="{Binding SelectedDay, TargetNullValue=false}"
+                    HorizontalOptions="Fill" />
+        </Grid>
     </Grid>
 
 </ContentPage>
