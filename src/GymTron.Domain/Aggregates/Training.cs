@@ -95,6 +95,13 @@ public class Training : AggregateRoot<int>
 
     public void CompleteExercise(Exercise exercise, IClock clock)
     {
+        ArgumentNullException.ThrowIfNull(exercise);
+
+        if (exercise.DurationInSeconds <= 0 && (exercise.Weight <= 0 || exercise.CurrentRepetitions <= 0))
+        {
+            throw new InvalidDomainOperationException("Exercise completion values must be greater than zero.");
+        }
+
         bool notExistsExerciseInTraining = !_completedWorkout.Any(x => x.ExerciseParametersId == exercise.ExerciseParametersId);
 
         if (notExistsExerciseInTraining)

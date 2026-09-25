@@ -1,19 +1,18 @@
-﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="GymTron.App.Pages.CurrentTrainingPage"
-             Shell.BackgroundColor="#ffbd59"
-             xmlns:converters="clr-namespace:GymTron.App.Converters"
+             BackgroundColor="{StaticResource GymTronSurface}"
              xmlns:vm="clr-namespace:GymTron.App.ViewModels.Pages"
              xmlns:vmEntities="clr-namespace:GymTron.App.ViewModels.Entities"
              xmlns:ext="clr-namespace:GymTron.App.Extensions"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:DataType="vm:CurrentTrainingPageViewModel"
              Title="{Binding Title}">
 
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
-        </ResourceDictionary>
-    </ContentPage.Resources>
+    <ContentPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="#FAF9F6" StatusBarStyle="DarkContent" />
+    </ContentPage.Behaviors>
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="{ext:Translate CurrentTraining_Cancel}" 
@@ -21,72 +20,204 @@
                      Order="Secondary" />
     </ContentPage.ToolbarItems>
 
-    <Grid RowDefinitions="*, Auto" Margin="20">
-        <!-- CONTINGUT SCROLLABLE -->
+    <Grid RowDefinitions="*, Auto" Padding="16, 12, 16, 16">
+        
+        <!-- SCROLLABLE CONTENT -->
         <ScrollView Grid.Row="0" VerticalScrollBarVisibility="Never">
-            <StackLayout Spacing="5">
+            <VerticalStackLayout Spacing="16">
 
-                <!-- DATA D'INICI -->
-                <Label Text="{ext:Translate CurrentTraining_StartDate}"
-                       FontSize="18" />
-                <Label Text="{Binding StartTime, StringFormat='{MMMM d, yyyy h:mm tt}'}"
-                       FontSize="16"
-                       FontAttributes="Bold"
-                       Margin="0,0,0,20" />
+                <!-- WORKOUT DASHBOARD HUD (CRONÓMETRO + PROGRESO) -->
+                <Border StrokeShape="RoundRectangle 20"
+                        Stroke="{StaticResource GymTronBorder}"
+                        StrokeThickness="1"
+                        BackgroundColor="{StaticResource GymTronCardBg}"
+                        Padding="20, 18">
+                    <Border.Shadow>
+                        <Shadow Brush="#000000" Opacity="0.05" Radius="10" Offset="0, 4" />
+                    </Border.Shadow>
+                    <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
+                        <!-- HEADER STOPWATCH LABEL -->
+                        <HorizontalStackLayout Spacing="6" HorizontalOptions="Center">
+                            <Image Source="training.svg"
+                                   WidthRequest="16"
+                                   HeightRequest="16"
+                                   VerticalOptions="Center" />
+                            <Label Text="{ext:Translate CurrentTraining_ElapsedTime}"
+                                   FontSize="13"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource GymTronTextMuted}"
+                                   VerticalOptions="Center" />
+                        </HorizontalStackLayout>
 
-                <!-- TEMPS TRANSCORREGUT -->
-                <Label Text="{ext:Translate CurrentTraining_ElapsedTime}"
-                       FontSize="18" />
-                <Label Text="{Binding ElapsedTime}"
-                       FontSize="16"
-                       FontAttributes="Bold"
-                       Margin="0,0,0,20" />
+                        <!-- PROMINENT ELAPSED TIME -->
+                        <Label Text="{Binding ElapsedTime}"
+                               FontSize="36"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource GymTronDark}"
+                               HorizontalOptions="Center" />
 
-                <!-- LLISTA D'EXERCICIS -->
-                <Label Grid.Column="0"
-                       Text="{ext:Translate CurrentTraining_Exercises}"
-                       FontSize="18"
-                       VerticalOptions="Center" />
+                        <!-- PROGRESS BAR -->
+                        <ProgressBar Progress="{Binding ProgressPercentage}"
+                                     ProgressColor="{StaticResource GymTronAmber}"
+                                     HeightRequest="6"
+                                     HorizontalOptions="FillAndExpand"
+                                     Margin="10, 4, 10, 0" />
 
-                <CollectionView ItemsSource="{Binding TrainingExercises}" SelectionMode="None" VerticalScrollBarVisibility="Never">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="vmEntities:ExerciseItemViewModel">
-                            <Frame CornerRadius="8" Padding="8" Margin="5"
-                                   BackgroundColor="{Binding IsCompleted, Converter={StaticResource BoolToColorConverter}}">
-                                <Grid ColumnDefinitions="*, Auto">
-                                    <Label Text="{Binding Name}" 
-                                           FontSize="14" 
-                                           FontAttributes="Bold"
-                                           Grid.Column="0">
-                                        <Label.GestureRecognizers>
-                                            <TapGestureRecognizer 
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CurrentTrainingPageViewModel}}, Path=SelectExerciseCommand}"
-                                                CommandParameter="{Binding .}" />
-                                        </Label.GestureRecognizers>
-                                    </Label>
+                        <!-- PROGRESS TEXT -->
+                        <Label Text="{Binding ProgressText}"
+                               FontSize="13"
+                               TextColor="{StaticResource GymTronTextMuted}"
+                               HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </Border>
 
-                                    <Image Source="lightning.svg"
-                                           WidthRequest="20"
-                                           HeightRequest="20"
-                                           IsVisible="{Binding AlternatingSeries}"
-                                           VerticalOptions="Center"
-                                           HorizontalOptions="End" />
-                                </Grid>
-                            </Frame>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-            </StackLayout>
+                <!-- PENDING EXERCISES SECTION -->
+                <VerticalStackLayout Spacing="8" IsVisible="{Binding HasPendingExercises}">
+                    <Label Text="{ext:Translate CurrentTraining_Exercises}"
+                           FontSize="17"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource GymTronDark}"
+                           Margin="4, 4, 0, 0" />
+
+                    <CollectionView ItemsSource="{Binding PendingExercises}" SelectionMode="None">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="vmEntities:ExerciseItemViewModel">
+                                <Border StrokeShape="RoundRectangle 12"
+                                        Stroke="{StaticResource GymTronBorder}"
+                                        StrokeThickness="1"
+                                        BackgroundColor="{StaticResource GymTronCardBg}"
+                                        Padding="14, 12"
+                                        Margin="0, 3">
+                                    <Border.Shadow>
+                                        <Shadow Brush="#000000" Opacity="0.03" Radius="6" Offset="0, 2" />
+                                    </Border.Shadow>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer 
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CurrentTrainingPageViewModel}}, Path=SelectExerciseCommand}"
+                                            CommandParameter="{Binding .}" />
+                                    </Border.GestureRecognizers>
+
+                                    <Grid ColumnDefinitions="*, Auto" ColumnSpacing="10">
+                                        <!-- EXERCISE NAME & ALTERNATING BADGE -->
+                                        <VerticalStackLayout Grid.Column="0" Spacing="4" VerticalOptions="Center">
+                                            <Label Text="{Binding Name}"
+                                                   FontSize="15"
+                                                   FontAttributes="Bold"
+                                                   TextColor="{StaticResource GymTronDark}"
+                                                   LineBreakMode="WordWrap"
+                                                   VerticalOptions="Center" />
+
+                                            <!-- ALTERNATING BADGE (DETACHED FROM TEXT) -->
+                                            <Border IsVisible="{Binding AlternatingSeries}"
+                                                    StrokeShape="RoundRectangle 6"
+                                                    Stroke="Transparent"
+                                                    BackgroundColor="{StaticResource GymTronAmberLight}"
+                                                    Padding="6, 2"
+                                                    HorizontalOptions="Start">
+                                                <HorizontalStackLayout Spacing="4">
+                                                    <Image Source="lightning.svg"
+                                                           WidthRequest="12"
+                                                           HeightRequest="12"
+                                                           VerticalOptions="Center" />
+                                                    <Label Text="Serie alterna"
+                                                           FontSize="11"
+                                                           FontAttributes="Bold"
+                                                           TextColor="{StaticResource GymTronAmberDark}"
+                                                           VerticalOptions="Center" />
+                                                </HorizontalStackLayout>
+                                            </Border>
+                                        </VerticalStackLayout>
+
+                                        <!-- ACTION ARROW -->
+                                        <Border Grid.Column="1"
+                                                WidthRequest="28"
+                                                HeightRequest="28"
+                                                StrokeShape="RoundRectangle 14"
+                                                Stroke="Transparent"
+                                                BackgroundColor="{StaticResource GymTronAmberLight}"
+                                                VerticalOptions="Center">
+                                            <Label Text="›"
+                                                   TextColor="{StaticResource GymTronAmberDark}"
+                                                   FontSize="18"
+                                                   FontAttributes="Bold"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center" />
+                                        </Border>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+
+                <!-- COMPLETED EXERCISES SECTION (COMPACT: NAME + TICK ONLY) -->
+                <VerticalStackLayout Spacing="8" IsVisible="{Binding HasCompletedExercises}" Margin="0, 8, 0, 0">
+                    <Label Text="Completados"
+                           FontSize="15"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource GymTronTextMuted}"
+                           Margin="4, 4, 0, 0" />
+
+                    <CollectionView ItemsSource="{Binding CompletedExercises}" SelectionMode="None">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="vmEntities:ExerciseItemViewModel">
+                                <Border StrokeShape="RoundRectangle 12"
+                                        Stroke="{StaticResource GymTronBorder}"
+                                        StrokeThickness="1"
+                                        BackgroundColor="{StaticResource GymTronCardBg}"
+                                        Padding="14, 10"
+                                        Margin="0, 3">
+                                    <Grid ColumnDefinitions="*, Auto">
+                                        <!-- EXERCISE NAME ONLY -->
+                                        <Label Grid.Column="0"
+                                               Text="{Binding Name}"
+                                               FontSize="14"
+                                               FontAttributes="Bold"
+                                               TextColor="{StaticResource GymTronDark}"
+                                               VerticalOptions="Center"
+                                               LineBreakMode="WordWrap" />
+
+                                        <!-- TICK ONLY -->
+                                        <Border Grid.Column="1"
+                                                WidthRequest="26"
+                                                HeightRequest="26"
+                                                StrokeShape="RoundRectangle 13"
+                                                Stroke="Transparent"
+                                                BackgroundColor="{StaticResource GymTronSuccessLight}"
+                                                VerticalOptions="Center">
+                                            <Label Text="✓"
+                                                   TextColor="{StaticResource GymTronSuccess}"
+                                                   FontSize="14"
+                                                   FontAttributes="Bold"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center" />
+                                        </Border>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
         </ScrollView>
 
-        <Grid Grid.Row="1" ColumnDefinitions="*" Margin="0, 10, 0, 0">
-            <Button Grid.Column="0"
-                    Text="{ext:Translate CurrentTraining_Finish}"
+        <!-- BOTTOM ACTION: FINALIZAR ENTRENO -->
+        <Grid Grid.Row="1" Padding="0, 10, 0, 0">
+            <Button Text="{ext:Translate CurrentTraining_Finish}"
                     Command="{Binding FinishTrainingCommand}"
-                    BackgroundColor="#2C3E50"
-                    TextColor="White"
-                    CornerRadius="10"
-                    HorizontalOptions="Fill" />
+                    BackgroundColor="{StaticResource GymTronAmber}"
+                    TextColor="{StaticResource GymTronDark}"
+                    FontAttributes="Bold"
+                    FontSize="15"
+                    MinimumHeightRequest="52"
+                    CornerRadius="16"
+                    HorizontalOptions="Fill">
+                <Button.Shadow>
+                    <Shadow Brush="#FFBD59" Opacity="0.3" Radius="8" Offset="0, 2" />
+                </Button.Shadow>
+            </Button>
         </Grid>
+        
     </Grid>
 </ContentPage>

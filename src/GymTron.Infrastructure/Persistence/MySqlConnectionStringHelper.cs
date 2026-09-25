@@ -53,6 +53,11 @@ public static class MySqlConnectionStringHelper
             builder["AllowPublicKeyRetrieval"] = "True";
         }
 
+        if (!builder.ContainsKey("CharSet") && !builder.ContainsKey("charset"))
+        {
+            builder["CharSet"] = "utf8mb4";
+        }
+
         return builder.ConnectionString;
     }
 }

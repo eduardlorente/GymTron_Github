@@ -2,169 +2,161 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="GymTron.App.Pages.TrainingSummaryPage"
-             Shell.BackgroundColor="#ffbd59"
+             BackgroundColor="{StaticResource GymTronSurface}"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:ext="clr-namespace:GymTron.App.Extensions"
              xmlns:vm="clr-namespace:GymTron.App.ViewModels.Pages"
              xmlns:vmEntities="clr-namespace:GymTron.App.ViewModels.Entities"
              x:DataType="vm:TrainingSummaryPageViewModel"
              Title="{Binding Title}">
 
-    <Grid RowDefinitions="*, Auto" Margin="15">
+    <ContentPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="#FAF9F6" StatusBarStyle="DarkContent" />
+    </ContentPage.Behaviors>
+
+    <Grid RowDefinitions="*, Auto" Padding="16, 12, 16, 16">
         <!-- SCROLLABLE CONTENT -->
         <ScrollView Grid.Row="0" VerticalScrollBarVisibility="Never">
-            <VerticalStackLayout Spacing="15" Padding="0,5,0,15">
+            <VerticalStackLayout Spacing="16">
 
                 <!-- CELEBRATION HEADER -->
-                <Frame BorderColor="Transparent"
-                       BackgroundColor="#FFF8E1"
-                       CornerRadius="14"
-                       Padding="15"
-                       HasShadow="True">
+                <Border StrokeShape="RoundRectangle 20"
+                        Stroke="{StaticResource GymTronAmberLight}"
+                        StrokeThickness="1"
+                        BackgroundColor="{StaticResource GymTronAmberSoft}"
+                        Padding="20, 18">
+                    <Border.Shadow>
+                        <Shadow Brush="#000000" Opacity="0.04" Radius="8" Offset="0, 2" />
+                    </Border.Shadow>
                     <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
-                        <Label Text="🎉" FontSize="36" HorizontalOptions="Center" />
+                        <Label Text="🏆" FontSize="36" HorizontalOptions="Center" />
                         <Label Text="{Binding CongratulationsText}"
                                FontSize="20"
                                FontAttributes="Bold"
-                               TextColor="#E65100"
+                               TextColor="{StaticResource GymTronDark}"
                                HorizontalOptions="Center" />
                     </VerticalStackLayout>
-                </Frame>
+                </Border>
 
                 <!-- METRICS 2x2 GRID -->
-                <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto" RowSpacing="10" ColumnSpacing="10">
+                <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto" RowSpacing="12" ColumnSpacing="12">
                     <!-- DURATION CARD -->
-                    <Frame Grid.Row="0" Grid.Column="0"
-                           BorderColor="#E0E0E0"
-                           BackgroundColor="#FFFFFF"
-                           CornerRadius="12"
-                           Padding="12"
-                           HasShadow="True">
+                    <Border Grid.Row="0" Grid.Column="0"
+                            StrokeShape="RoundRectangle 16"
+                            Stroke="{StaticResource GymTronBorder}"
+                            StrokeThickness="1"
+                            BackgroundColor="{StaticResource GymTronCardBg}"
+                            Padding="14">
+                        <Border.Shadow>
+                            <Shadow Brush="#000000" Opacity="0.03" Radius="6" Offset="0, 2" />
+                        </Border.Shadow>
                         <VerticalStackLayout Spacing="4">
-                            <Label Text="{Binding DurationLabel}" FontSize="12" TextColor="#757575" />
-                            <Label Text="{Binding DurationDisplay}" FontSize="18" FontAttributes="Bold" TextColor="#1A1A1A" />
+                            <Label Text="{Binding DurationLabel}" FontSize="12" TextColor="{StaticResource GymTronTextMuted}" />
+                            <Label Text="{Binding DurationDisplay}" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource GymTronDark}" />
                         </VerticalStackLayout>
-                    </Frame>
+                    </Border>
 
                     <!-- EXERCISES CARD -->
-                    <Frame Grid.Row="0" Grid.Column="1"
-                           BorderColor="#E0E0E0"
-                           BackgroundColor="#FFFFFF"
-                           CornerRadius="12"
-                           Padding="12"
-                           HasShadow="True">
+                    <Border Grid.Row="0" Grid.Column="1"
+                            StrokeShape="RoundRectangle 16"
+                            Stroke="{StaticResource GymTronBorder}"
+                            StrokeThickness="1"
+                            BackgroundColor="{StaticResource GymTronCardBg}"
+                            Padding="14">
+                        <Border.Shadow>
+                            <Shadow Brush="#000000" Opacity="0.03" Radius="6" Offset="0, 2" />
+                        </Border.Shadow>
                         <VerticalStackLayout Spacing="4">
-                            <Label Text="{Binding ExercisesLabel}" FontSize="12" TextColor="#757575" />
-                            <Label Text="{Binding ExercisesDisplay}" FontSize="18" FontAttributes="Bold" TextColor="#1A1A1A" />
+                            <Label Text="{Binding ExercisesLabel}" FontSize="12" TextColor="{StaticResource GymTronTextMuted}" />
+                            <Label Text="{Binding ExercisesDisplay}" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource GymTronDark}" />
                         </VerticalStackLayout>
-                    </Frame>
+                    </Border>
 
                     <!-- TOTAL VOLUME CARD -->
-                    <Frame Grid.Row="1" Grid.Column="0"
-                           BorderColor="#E0E0E0"
-                           BackgroundColor="#FFFFFF"
-                           CornerRadius="12"
-                           Padding="12"
-                           HasShadow="True">
+                    <Border Grid.Row="1" Grid.Column="0"
+                            StrokeShape="RoundRectangle 16"
+                            Stroke="{StaticResource GymTronBorder}"
+                            StrokeThickness="1"
+                            BackgroundColor="{StaticResource GymTronCardBg}"
+                            Padding="14">
+                        <Border.Shadow>
+                            <Shadow Brush="#000000" Opacity="0.03" Radius="6" Offset="0, 2" />
+                        </Border.Shadow>
                         <VerticalStackLayout Spacing="4">
-                            <Label Text="{Binding TotalVolumeLabel}" FontSize="12" TextColor="#757575" />
-                            <Label Text="{Binding VolumeDisplay}" FontSize="18" FontAttributes="Bold" TextColor="#2E7D32" />
+                            <Label Text="{Binding TotalVolumeLabel}" FontSize="12" TextColor="{StaticResource GymTronTextMuted}" />
+                            <Label Text="{Binding VolumeDisplay}" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource GymTronAmberDark}" />
                         </VerticalStackLayout>
-                    </Frame>
+                    </Border>
 
                     <!-- TOTAL REPS CARD -->
-                    <Frame Grid.Row="1" Grid.Column="1"
-                           BorderColor="#E0E0E0"
-                           BackgroundColor="#FFFFFF"
-                           CornerRadius="12"
-                           Padding="12"
-                           HasShadow="True">
+                    <Border Grid.Row="1" Grid.Column="1"
+                            StrokeShape="RoundRectangle 16"
+                            Stroke="{StaticResource GymTronBorder}"
+                            StrokeThickness="1"
+                            BackgroundColor="{StaticResource GymTronCardBg}"
+                            Padding="14">
+                        <Border.Shadow>
+                            <Shadow Brush="#000000" Opacity="0.03" Radius="6" Offset="0, 2" />
+                        </Border.Shadow>
                         <VerticalStackLayout Spacing="4">
-                            <Label Text="{Binding TotalRepsLabel}" FontSize="12" TextColor="#757575" />
-                            <Label Text="{Binding RepsDisplay}" FontSize="18" FontAttributes="Bold" TextColor="#1565C0" />
+                            <Label Text="{Binding TotalRepsLabel}" FontSize="12" TextColor="{StaticResource GymTronTextMuted}" />
+                            <Label Text="{Binding RepsDisplay}" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource GymTronDark}" />
                         </VerticalStackLayout>
-                    </Frame>
+                    </Border>
                 </Grid>
 
-                <!-- COMPLETED EXERCISES SECTION -->
+                <!-- COMPLETED EXERCISES SECTION (COMPACT) -->
                 <Label Text="{Binding CompletedExercisesLabel}"
-                       FontSize="18"
+                       FontSize="15"
                        FontAttributes="Bold"
-                       TextColor="#1A1A1A"
-                       Margin="0,5,0,0" />
+                       TextColor="{StaticResource GymTronDark}"
+                       Margin="2, 6, 0, 0" />
 
                 <CollectionView ItemsSource="{Binding CompletedExercises}" SelectionMode="None">
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="vmEntities:CompletedExerciseSummaryItem">
-                            <Frame BorderColor="#E0E0E0"
-                                   BackgroundColor="#FFFFFF"
-                                   CornerRadius="10"
-                                   Padding="12"
-                                   Margin="0,4"
-                                   HasShadow="True">
-                                <VerticalStackLayout Spacing="6">
-                                    <Grid ColumnDefinitions="*, Auto">
-                                        <Label Text="{Binding Name}"
-                                               FontSize="15"
-                                               FontAttributes="Bold"
-                                               TextColor="#1A1A1A"
-                                               Grid.Column="0"
-                                               LineBreakMode="WordWrap" />
-                                        <Label Text="{Binding MetricDisplay}"
-                                               FontSize="13"
-                                               FontAttributes="Bold"
-                                               TextColor="#2E7D32"
-                                               Grid.Column="1"
-                                               HorizontalOptions="End" />
-                                    </Grid>
-                                    <Label Text="{Binding Observations}"
-                                           FontSize="12"
-                                           FontAttributes="Italic"
-                                           TextColor="#757575"
-                                           IsVisible="{Binding HasObservations}" />
-                                </VerticalStackLayout>
-                            </Frame>
+                            <Border StrokeShape="RoundRectangle 12"
+                                    Stroke="{StaticResource GymTronBorder}"
+                                    StrokeThickness="1"
+                                    BackgroundColor="{StaticResource GymTronCardBg}"
+                                    Padding="14, 10"
+                                    Margin="0, 3">
+                                <Grid ColumnDefinitions="Auto, *">
+                                    <Label Grid.Column="0"
+                                           Text="✓"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource GymTronSuccess}"
+                                           Margin="0, 0, 10, 0"
+                                           VerticalOptions="Center" />
+                                    <Label Grid.Column="1"
+                                           Text="{Binding Name}"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource GymTronDark}"
+                                           VerticalOptions="Center"
+                                           LineBreakMode="WordWrap" />
+                                </Grid>
+                            </Border>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-
-                <!-- PENDING EXERCISES SECTION (IF ANY) -->
-                <VerticalStackLayout Spacing="6" IsVisible="{Binding HasPendingExercises}" Margin="0,5,0,0">
-                    <Label Text="{Binding PendingExercisesLabel}"
-                           FontSize="16"
-                           FontAttributes="Bold"
-                           TextColor="#D32F2F" />
-
-                    <CollectionView ItemsSource="{Binding PendingExercises}" SelectionMode="None">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate x:DataType="x:String">
-                                <Frame BorderColor="#FFCDD2"
-                                       BackgroundColor="#FFEBEE"
-                                       CornerRadius="8"
-                                       Padding="10"
-                                       Margin="0,3">
-                                    <Label Text="{Binding .}"
-                                           FontSize="13"
-                                           TextColor="#C62828" />
-                                </Frame>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
-                </VerticalStackLayout>
 
             </VerticalStackLayout>
         </ScrollView>
 
         <!-- DONE BUTTON -->
-        <Button Grid.Row="1"
-                Text="{Binding DoneButtonText}"
-                Command="{Binding DoneCommand}"
-                BackgroundColor="Green"
-                TextColor="White"
-                CornerRadius="10"
-                HeightRequest="50"
-                FontSize="16"
-                FontAttributes="Bold"
-                Margin="0,10,0,0" />
+        <Grid Grid.Row="1" Padding="0, 12, 0, 4">
+            <Button Text="{Binding DoneButtonText}"
+                    Command="{Binding DoneCommand}"
+                    BackgroundColor="{StaticResource GymTronAmber}"
+                    TextColor="{StaticResource GymTronDark}"
+                    FontAttributes="Bold"
+                    FontSize="16"
+                    CornerRadius="16"
+                    HeightRequest="52"
+                    HorizontalOptions="Fill" />
+        </Grid>
     </Grid>
 
 </ContentPage>

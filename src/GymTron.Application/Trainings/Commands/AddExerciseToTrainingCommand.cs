@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using GymTron.Application.Base;
 using GymTron.Domain.Aggregates;
 
@@ -69,5 +69,25 @@ public class AddExerciseToTrainingCommandValidator : AbstractValidator<AddExerci
         RuleFor(x => x.CurrentTraining!.Id).NotEmpty();
         RuleFor(x => x.ExerciseParametersId).GreaterThan(0);
         RuleFor(x => x.ExerciseParametersName).NotEmpty();
+
+        When(x => x.DurationInSeconds.HasValue, () =>
+        {
+            RuleFor(x => x.DurationInSeconds!.Value)
+                .GreaterThan(0)
+                .WithMessage("Duration must be greater than zero.");
+        }).Otherwise(() =>
+        {
+            RuleFor(x => x.Weight)
+                .NotNull()
+                .WithMessage("Weight is required.")
+                .GreaterThan(0)
+                .WithMessage("Weight must be greater than zero.");
+
+            RuleFor(x => x.Repetitions)
+                .NotNull()
+                .WithMessage("Repetitions are required.")
+                .GreaterThan(0)
+                .WithMessage("Repetitions must be greater than zero.");
+        });
     }
 }

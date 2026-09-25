@@ -24,7 +24,7 @@ public class ExerciseViewModel
 
     public ExerciseViewModel(ExerciseHistoryItemDto exercise)
     {
-        Name = exercise.Name;
+        Name = Helpers.TextEncodingHelper.Sanitize(exercise.Name);
         CreatedOn = exercise.CreatedOn;
         Weight = exercise.Weight ?? 0;
         CurrentRepetitions = exercise.Repetitions ?? 0;

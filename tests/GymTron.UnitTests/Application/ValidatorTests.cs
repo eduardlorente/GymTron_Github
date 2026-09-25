@@ -1,7 +1,9 @@
-using GymTron.Application.Routines.Commands;
-using GymTron.Application.Routines.Queries;
 using GymTron.Application.ExerciseParameters.Commands;
 using GymTron.Application.ExerciseParameters.Queries;
+using GymTron.Application.Routines.Commands;
+using GymTron.Application.Routines.Queries;
+using GymTron.Application.Trainings.Commands;
+using GymTron.Domain.Aggregates;
 using GymTron.Domain.Enums;
 
 namespace GymTron.UnitTests.Application;
@@ -260,4 +262,38 @@ public class ValidatorTests
         Position = 1,
         Type = ExerciseTypes.WEIGHT
     };
+
+    [Theory]
+    [InlineData(50, 10, true)]
+    [InlineData(0, 10, false)]
+    [InlineData(-5, 10, false)]
+    [InlineData(50, 0, false)]
+    [InlineData(50, -2, false)]
+    public void AddExerciseToTrainingCommand_WeightAndRepsValidation(decimal weight, int reps, bool expectedValid)
+    {
+        Training training = ApplicationTestData.CreateTraining();
+        AddExerciseToTrainingCommand command = AddExerciseToTrainingCommand.New(
+            Guid.NewGuid(), training, 11, "Squat", weight, reps, []);
+        AddExerciseToTrainingCommandValidator validator = new();
+
+        FluentValidation.Results.ValidationResult result = validator.Validate(command);
+
+        Assert.Equal(expectedValid, result.IsValid);
+    }
+
+    [Theory]
+    [InlineData(60, true)]
+    [InlineData(0, false)]
+    [InlineData(-10, false)]
+    public void AddExerciseToTrainingCommand_DurationValidation(int duration, bool expectedValid)
+    {
+        Training training = ApplicationTestData.CreateTraining();
+        AddExerciseToTrainingCommand command = AddExerciseToTrainingCommand.New(
+            Guid.NewGuid(), training, 12, "Plank", duration, []);
+        AddExerciseToTrainingCommandValidator validator = new();
+
+        FluentValidation.Results.ValidationResult result = validator.Validate(command);
+
+        Assert.Equal(expectedValid, result.IsValid);
+    }
 }

@@ -28,7 +28,17 @@ public partial class CurrentTrainingPageViewModel : PageBaseViewModel
         }
     }
 
-    public ObservableCollection<ExerciseItemViewModel> TrainingExercises { get; set; }
+    public int TotalExercisesCount => PendingExercises.Count + CompletedExercises.Count;
+    public int CompletedExercisesCount => CompletedExercises.Count;
+    public double ProgressPercentage => TotalExercisesCount > 0 ? (double)CompletedExercisesCount / TotalExercisesCount : 0;
+    public string ProgressText => $"{CompletedExercisesCount} / {TotalExercisesCount} {LocalizationService.GetString("CurrentTraining_Exercises")}";
+
+    public ObservableCollection<ExerciseItemViewModel> PendingExercises { get; set; } = [];
+    public ObservableCollection<ExerciseItemViewModel> CompletedExercises { get; set; } = [];
+    public bool HasPendingExercises => PendingExercises.Count > 0;
+    public bool HasCompletedExercises => CompletedExercises.Count > 0;
+
+    public ObservableCollection<ExerciseItemViewModel> TrainingExercises { get; set; } = [];
     public ICommand FinishTrainingCommand { get; }
     public ICommand SelectExerciseCommand { get; }
     public ICommand CancelTrainingCommand { get; }
@@ -38,6 +48,8 @@ public partial class CurrentTrainingPageViewModel : PageBaseViewModel
     {
         _trainingService = trainingService;
 
+        PendingExercises = [];
+        CompletedExercises = [];
         TrainingExercises = [];
 
         LoadCurrentTrainingAsync().SafeFireAndForget();
@@ -60,29 +72,48 @@ public partial class CurrentTrainingPageViewModel : PageBaseViewModel
             _currentTraining = await _trainingService.GetCurrentTraining();
             if (_currentTraining != null)
             {
-                List<ExerciseItemViewModel> exercises = [];
+                PendingExercises.Clear();
+                CompletedExercises.Clear();
+                TrainingExercises.Clear();
 
-                foreach (RoutineItemViewModel item in _currentTraining.PendingWorkout)
+                foreach (RoutineItemViewModel item in _currentTraining.PendingWorkout.OrderBy(p => p.Position))
                 {
-                    exercises.Add(new ExerciseItemViewModel(item.ExerciseParameters.Id,
-                                                            item.ExerciseParameters.Name,
-                                                            item.ExerciseParameters.Description,
-                                                            false,
-                                                            item.AlternatingSeries));
+                    ExerciseItemViewModel ex = new(
+                        item.ExerciseParameters.Id,
+                        item.ExerciseParameters.Name,
+                        item.ExerciseParameters.Description,
+                        isCompleted: false,
+                        alternatingSeries: item.AlternatingSeries,
+                        targetInfo: string.Empty,
+                        lastPerformanceInfo: string.Empty,
+                        position: item.Position);
+
+                    PendingExercises.Add(ex);
+                    TrainingExercises.Add(ex);
                 }
 
                 foreach (ExerciseViewModel exercise in _currentTraining.CompletedWorkout)
                 {
-                    exercises.Add(new ExerciseItemViewModel(exercise.ExerciseParametersId, exercise.Name, true, false));
+                    ExerciseItemViewModel ex = new(
+                        exercise.ExerciseParametersId,
+                        exercise.Name,
+                        exercise.Description,
+                        isCompleted: true,
+                        alternatingSeries: false,
+                        targetInfo: string.Empty,
+                        lastPerformanceInfo: string.Empty,
+                        position: 0);
+
+                    CompletedExercises.Add(ex);
+                    TrainingExercises.Add(ex);
                 }
 
-                exercises = [.. exercises.OrderByDescending(e => e.IsCompleted)];
-
-                TrainingExercises.Clear();
-                foreach (ExerciseItemViewModel exercise in exercises)
-                {
-                    TrainingExercises.Add(exercise);
-                }
+                OnPropertyChanged(nameof(TotalExercisesCount));
+                OnPropertyChanged(nameof(CompletedExercisesCount));
+                OnPropertyChanged(nameof(ProgressPercentage));
+                OnPropertyChanged(nameof(ProgressText));
+                OnPropertyChanged(nameof(HasPendingExercises));
+                OnPropertyChanged(nameof(HasCompletedExercises));
             }
         }
         catch (Exception ex)
@@ -94,6 +125,8 @@ public partial class CurrentTrainingPageViewModel : PageBaseViewModel
             IsBusy = false;
         }
     }
+
+
 
 
     private void StartTimer()

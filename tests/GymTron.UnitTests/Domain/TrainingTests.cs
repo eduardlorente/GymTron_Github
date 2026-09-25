@@ -45,6 +45,15 @@ public class TrainingTests
     }
 
     [Fact]
+    public void CompleteExercise_WithInvalidExecutionValues_ThrowsInvalidDomainOperationException()
+    {
+        Training training = CreateActiveTraining();
+        Exercise invalidExercise = Exercise.FromDatabase(1, training.Id, 11, "Squat", 0, 0, 0, DateTime.UtcNow, []);
+
+        Assert.Throws<InvalidDomainOperationException>(() => training.CompleteExercise(invalidExercise, Clock));
+    }
+
+    [Fact]
     public void Complete_WhenActive_MarksTrainingCompletedAndRecordsCompletionTime()
     {
         Training training = CreateActiveTraining();
