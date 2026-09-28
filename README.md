@@ -6,6 +6,17 @@ While developed as an experimental project rather than a commercial product, it 
 
 ---
 
+## Key Features
+
+* **Workout & Routine Tracking**: Design custom, multi-day training routines with specific sets, target repetitions, reserve repetitions (RIR), and rest intervals. Record live workout sessions and track completion status.
+* **Exercise Catalog & Parameterization**: Rich database of exercises categorizing movement patterns, target muscle groups, and technique execution tips.
+* **Body Metrics & Composition**: Log body weight, track Body Mass Index (BMI/IMC), and monitor long-term historical trends.
+* **Secure Authentication & Multi-Tenancy**: Built according to OWASP guidelines—JWT authentication, refresh tokens, PBKDF2 password hashing, and user-scoped data isolation (BOLA/IDOR prevention).
+* **Cross-Platform Experience**: Mobile client (.NET MAUI for Android & Windows) for in-gym tracking alongside a responsive Web dashboard (ASP.NET Core Razor Pages) for desktop management.
+* **Multilingual Experience**: Native localization supporting **Catalan** (default), **Spanish**, and **English**.
+
+---
+
 ## Ecosystem Overview
 
 The solution consists of three primary entry points sharing core domain and application libraries:
@@ -15,6 +26,31 @@ The solution consists of three primary entry points sharing core domain and appl
 * **GymTron.Api** (ASP.NET Core 10 Minimal API): Secure backend service boundary implementing the REPR (Request-Endpoint-Response) pattern, JWT Bearer authentication, rate limiting, RFC 7807 `ProblemDetails`, and interactive API documentation powered by [Scalar](https://scalar.com).
 * **GymTron.Domain & GymTron.Application**: Encapsulate the core business models, domain events, MediatR command/query handlers, FluentValidation pipeline behaviors, and deterministic UTC clock abstractions (`IClock`).
 * **GymTron.Infrastructure**: Data access layer built with Dapper and MySQL, featuring transactional atomicity and connection isolation.
+
+---
+
+## Project Structure
+
+```text
+GymTron/
+├── .github/workflows/          # CI/CD pipelines (validation, security scanning, releases)
+├── docs/                       # Architectural documentation, ADRs, and points of truth
+├── eng/                        # Build scripts and code coverage assertion gates
+├── scripts/                    # Automation and database helper scripts
+├── src/
+│   ├── GymTron.Api/            # ASP.NET Core 10 Minimal API backend (REPR, JWT, Scalar docs)
+│   ├── GymTron.App/            # .NET 9 MAUI cross-platform client (Android & Windows)
+│   ├── GymTron.Application/    # CQRS commands/queries (MediatR) and validation behaviors
+│   ├── GymTron.Domain/         # Core domain entities, aggregate roots, repository contracts
+│   ├── GymTron.Infrastructure/ # Persistence layer (Dapper, MySQL repositories)
+│   └── GymTron.Web/            # ASP.NET Core 10 Razor Pages web application
+├── tests/
+│   ├── GymTron.UnitTests/        # Unit & architecture tests (NetArchTest, 100% Domain coverage)
+│   └── GymTron.IntegrationTests/ # MySQL integration tests via Testcontainers
+├── docker-compose.yml          # Container configuration for local MySQL database
+├── init.sql                    # Database schema creation and initial seed data
+└── StartDockerScript.ps1       # Automation script to start the local database container
+```
 
 ---
 
@@ -84,6 +120,43 @@ Never commit credentials to tracked JSON files. Use ASP.NET Core User Secrets fo
 
 * **Mobile App (MAUI)**:
   Configure `ApiUrl` in `src/GymTron.App/Resources/Json/appsettings.json` pointing to your local `GymTron.Api` instance.
+
+### 4. Running the Applications
+
+#### REST API (`GymTron.Api`)
+```powershell
+dotnet run --project src/GymTron.Api/GymTron.Api.csproj
+```
+* **URL:** `https://localhost:7251` (HTTP: `http://localhost:5275`)
+* **Interactive API Documentation (Scalar):** `https://localhost:7251/scalar/v1`
+
+#### Web Dashboard (`GymTron.Web`)
+```powershell
+dotnet run --project src/GymTron.Web/GymTron.Web.csproj
+```
+* **URL:** `https://localhost:5000` (HTTP: `http://localhost:5001`)
+
+#### Mobile Client (`GymTron.App` - MAUI)
+```powershell
+# Windows Desktop
+dotnet run --project src/GymTron.App/GymTron.App.csproj -f net9.0-windows10.0.19041.0
+
+# Android (Device or Emulator attached)
+dotnet build src/GymTron.App/GymTron.App.csproj -t:Run -f net9.0-android
+```
+
+### 5. Default Test Credentials
+
+The database initialization script (`init.sql`) automatically provisions a seed user for local development and testing:
+
+| Parameter | Default Value |
+|---|---|
+| **Username** | `user` |
+| **Email** | `user@gymtron.local` |
+| **Password** | `password` |
+
+> [!NOTE]
+> Seed routines, workout history, and sample body measurements are linked to this user out of the box.
 
 ---
 
