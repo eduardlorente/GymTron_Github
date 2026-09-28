@@ -108,6 +108,7 @@ public class LoginModel(IAuthApiClient authApiClient) : PageModel
                 "nameid" or "sub" => ClaimTypes.NameIdentifier,
                 "unique_name" or "name" => ClaimTypes.Name,
                 "email" => ClaimTypes.Email,
+                "role" or ClaimTypes.Role => ClaimTypes.Role,
                 _ => property.Name
             };
             claims.Add(new Claim(claimType, property.Value.ToString()));

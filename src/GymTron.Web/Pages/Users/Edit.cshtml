@@ -1,0 +1,69 @@
+@page "{id:int}"
+@model GymTron.Web.Pages.Users.EditModel
+@using GymTron.Domain.Enums
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["Users_Edit_PageTitle"];
+}
+
+<div class="gt-form-card">
+    <div class="d-flex align-items-center gap-3 mb-4 pb-2 border-bottom">
+        <a asp-page="Index" class="btn btn-secondary btn-sm p-2" aria-label="Back">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+        <h1 class="h3 fw-bold mb-0">@Localizer["Users_Edit_Title"]</h1>
+    </div>
+
+    <form method="post">
+        <input type="hidden" asp-for="UserInput.Id" />
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4" role="alert"></div>
+
+        <div class="mb-3">
+            <label asp-for="UserInput.Username" class="form-label">@Localizer["Users_Form_Username"]</label>
+            <input asp-for="UserInput.Username" class="form-control" autocomplete="username" />
+            <span asp-validation-for="UserInput.Username" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="UserInput.Email" class="form-label">@Localizer["Users_Form_Email"]</label>
+            <input asp-for="UserInput.Email" type="email" class="form-control" autocomplete="email" />
+            <span asp-validation-for="UserInput.Email" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="UserInput.TypeId" class="form-label">@Localizer["Users_Form_Type"]</label>
+            <select asp-for="UserInput.TypeId" class="form-select">
+                <option value="@UserTypes.Standard">@Localizer["Users_Type_Standard"]</option>
+                <option value="@UserTypes.Administrator">@Localizer["Users_Type_Administrator"]</option>
+            </select>
+            <span asp-validation-for="UserInput.TypeId" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3 form-check form-switch">
+            <input asp-for="UserInput.IsActive" class="form-check-input" type="checkbox" role="switch" id="userIsActiveSwitch" />
+            <label class="form-check-label" for="userIsActiveSwitch">@Localizer["Users_Form_IsActive"]</label>
+            <span asp-validation-for="UserInput.IsActive" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="UserInput.NewPassword" class="form-label">@Localizer["Users_Form_NewPassword"]</label>
+            <input asp-for="UserInput.NewPassword" type="password" class="form-control" autocomplete="new-password" />
+            <span asp-validation-for="UserInput.NewPassword" class="text-danger small"></span>
+            <div class="form-text">@Localizer["Users_Form_NewPasswordHelp"]</div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+            <a asp-page="Index" class="btn btn-secondary">
+                @Localizer["Users_Form_Cancel"]
+            </a>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-lg"></i> @Localizer["Users_Form_Save"]
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -34,6 +34,12 @@
                         <li class="nav-item">
                             <a class="nav-link gt-nav-link" asp-page="/ExerciseParameters/Index">@Localizer["Layout_Exercises"]</a>
                         </li>
+                        @if (User.IsInRole("Administrator"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link gt-nav-link" asp-page="/Users/Index">@Localizer["Layout_Users"]</a>
+                            </li>
+                        }
                     </ul>
                     <ul class="navbar-nav me-3">
                         @if (User.Identity?.IsAuthenticated == true)

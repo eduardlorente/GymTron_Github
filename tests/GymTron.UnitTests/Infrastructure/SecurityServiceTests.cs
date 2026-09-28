@@ -1,4 +1,7 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using GymTron.Domain.Entities;
+using GymTron.Domain.Enums;
 using GymTron.Infrastructure.Security;
 using GymTron.UnitTests.Helpers;
 using Microsoft.Extensions.Configuration;
@@ -76,6 +79,29 @@ public class SecurityServiceTests
         Assert.Equal(64, tokenHash.Length); // SHA-256 hex string length
         Assert.Equal(20, tokenService.AccessTokenExpirationMinutes);
         Assert.Equal(14, tokenService.RefreshTokenExpirationDays);
+    }
+
+    [Fact]
+    public void JwtTokenService_GeneratesRoleAndTypeIdClaims_ForAdministrator()
+    {
+        var configuration = NSubstitute.Substitute.For<IConfiguration>();
+        configuration["Jwt:SecretKey"].Returns("VeryLongSecureSecretKeyForTestingJwtTokenGeneration12345!");
+        var clock = new FakeClock(new DateTime(2026, 1, 1, 12, 0, 0, DateTimeKind.Utc));
+        var tokenService = new JwtTokenService(configuration, clock);
+
+        var adminUser = User.FromDatabase(1, "admin", "admin@gymtron.local", "dummy_hash", UserTypes.Administrator, true, clock.UtcNow);
+
+        string accessToken = tokenService.GenerateAccessToken(adminUser);
+        var handler = new JwtSecurityTokenHandler();
+        var jwt = handler.ReadJwtToken(accessToken);
+
+        var roleClaim = jwt.Claims.FirstOrDefault(c => c.Type == "role" || c.Type == ClaimTypes.Role);
+        var typeIdClaim = jwt.Claims.FirstOrDefault(c => c.Type == "type_id");
+
+        Assert.NotNull(roleClaim);
+        Assert.Equal("Administrator", roleClaim.Value);
+        Assert.NotNull(typeIdClaim);
+        Assert.Equal("2", typeIdClaim.Value);
     }
 
     [Theory]
