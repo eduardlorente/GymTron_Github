@@ -6,6 +6,26 @@ While developed as an experimental project rather than a commercial product, it 
 
 ---
 
+## 🚀 Live Demo & Project Deliverables
+
+| Resource | Target / Access | Description |
+|---|---|---|
+| **Web Dashboard** | [http://gymtron.runasp.net/](http://gymtron.runasp.net/) | Live ASP.NET Core Razor Pages application |
+| **REST API** | [http://gymtronapi.runasp.net/](http://gymtronapi.runasp.net/) | Backend Minimal API service (Health: [`/health`](http://gymtronapi.runasp.net/health)) |
+| **Android App (APK)** | [Download GymTron v1.0.0 APK](https://github.com/eduardlorente/GymTron_Github/releases/download/v1.0.0/GymTron-v1.0.0.apk) ([Release Notes](https://github.com/eduardlorente/GymTron_Github/releases/tag/v1.0.0)) | Direct download for .NET MAUI Android client |
+| **Presentation Slides** | [GymTron Pitch Deck (Google Drive PDF)](https://drive.google.com/file/d/1P7-1nvn-WrF_Zk99AvgKd5gxReZo1cHj/view?usp=sharing) | Project presentation and architecture pitch |
+| **Demo Video** | [GymTron Walkthrough & Architecture Demo (Google Drive)](https://drive.google.com/file/d/1-YGuMqkIsUArOhCqn3fI7Qoo7dgzV7RE/view?usp=sharing) | Walkthrough and live demonstration |
+
+### 🔑 Demo & Testing Credentials
+
+Use this pre-seeded account to evaluate both the live Web application and mobile App:
+
+| Username | Password | Scope & Access |
+|---|---|---|
+| `user` | `password` | Workout tracking, personal routines, exercises, body metrics |
+
+---
+
 ## Key Features
 
 * **Workout & Routine Tracking**: Design custom, multi-day training routines with specific sets, target repetitions, reserve repetitions (RIR), and rest intervals. Record live workout sessions and track completion status.
