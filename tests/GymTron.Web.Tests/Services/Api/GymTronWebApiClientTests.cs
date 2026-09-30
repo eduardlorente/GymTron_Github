@@ -189,4 +189,59 @@ public class GymTronWebApiClientTests
 
         await client.UpdateExerciseParameterAsync(1, new UpdateExerciseParameterRequest("Squat", "", "Squat", ExerciseTypes.WEIGHT, 2));
     }
+
+    [Fact]
+    public async Task Users_CrudOperations_Succeed()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            if (req.Method == HttpMethod.Get && req.RequestUri?.AbsolutePath == "/api/users")
+            {
+                return new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent("""[{"id": 1, "username": "adm", "email": "adm@gymtron.local", "typeId": 2, "isActive": true, "createdAt": "2026-01-01T00:00:00Z"}]""", Encoding.UTF8, "application/json")
+                };
+            }
+            if (req.Method == HttpMethod.Get && req.RequestUri?.AbsolutePath == "/api/users/1")
+            {
+                return new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent("""{"id": 1, "username": "adm", "email": "adm@gymtron.local", "typeId": 2, "isActive": true, "createdAt": "2026-01-01T00:00:00Z"}""", Encoding.UTF8, "application/json")
+                };
+            }
+            if (req.Method == HttpMethod.Post && req.RequestUri?.AbsolutePath == "/api/users")
+            {
+                return new HttpResponseMessage(HttpStatusCode.Created)
+                {
+                    Content = new StringContent("""{"id": 10}""", Encoding.UTF8, "application/json")
+                };
+            }
+            if (req.Method == HttpMethod.Put && req.RequestUri?.AbsolutePath == "/api/users/10")
+            {
+                return new HttpResponseMessage(HttpStatusCode.NoContent);
+            }
+            if (req.Method == HttpMethod.Delete && req.RequestUri?.AbsolutePath == "/api/users/10")
+            {
+                return new HttpResponseMessage(HttpStatusCode.NoContent);
+            }
+            return new HttpResponseMessage(HttpStatusCode.NotFound);
+        });
+
+        var client = new GymTronWebApiClient(new HttpClient(handler) { BaseAddress = new Uri("https://localhost/") });
+
+        var users = await client.GetUsersAsync();
+        Assert.Single(users);
+        Assert.Equal("adm", users[0].Username);
+        Assert.Equal(UserTypes.Administrator, users[0].TypeId);
+
+        var user = await client.GetUserByIdAsync(1);
+        Assert.NotNull(user);
+        Assert.Equal(1, user.Id);
+
+        var createdId = await client.CreateUserAsync(new CreateUserRequest("newu", "newu@gymtron.local", "Pass12345!", UserTypes.Standard));
+        Assert.Equal(10, createdId);
+
+        await client.UpdateUserAsync(10, new UpdateUserRequest("newu2", "newu2@gymtron.local", UserTypes.Administrator, true));
+        await client.DeleteUserAsync(10);
+    }
 }

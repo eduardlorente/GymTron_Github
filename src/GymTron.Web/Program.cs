@@ -14,6 +14,7 @@ builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AuthorizeFolder("/Routines");
     options.Conventions.AuthorizeFolder("/ExerciseParameters");
+    options.Conventions.AuthorizeFolder("/Users", "RequireAdmin");
     options.Conventions.AllowAnonymousToPage("/Index");
     options.Conventions.AllowAnonymousToPage("/Error");
     options.Conventions.AllowAnonymousToPage("/SetLanguage");
@@ -34,6 +35,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.Cookie.SameSite = SameSiteMode.Lax;
         options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
     });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireAdmin", policy => policy.RequireRole("Administrator"));
+});
 
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {

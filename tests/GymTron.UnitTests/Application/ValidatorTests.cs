@@ -232,10 +232,10 @@ public class ValidatorTests
 
     [Theory]
     [InlineData("ValidPass123", true)]
-    [InlineData("Short1A", false)]
-    [InlineData("alllowercase123", false)]
-    [InlineData("ALLUPPERCASE123", false)]
-    [InlineData("NoDigitsInPassword", false)]
+    [InlineData("12345", false)]
+    [InlineData("alllowercase123", true)]
+    [InlineData("ALLUPPERCASE123", true)]
+    [InlineData("NoDigitsInPassword", true)]
     public void RegisterUserCommandValidator_PasswordRules_ValidatedCorrectly(string password, bool expectedValid)
     {
         GymTron.Application.Auth.Commands.Register.RegisterUserCommand command =

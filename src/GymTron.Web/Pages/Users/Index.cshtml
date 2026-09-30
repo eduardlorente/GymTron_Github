@@ -1,0 +1,88 @@
+@page
+@model GymTron.Web.Pages.Users.IndexModel
+@using GymTron.Domain.Enums
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["Users_Index_PageTitle"];
+}
+
+<div class="gt-page-header">
+    <div>
+        <h1>@Localizer["Users_Index_Title"]</h1>
+        <p class="text-muted mb-0">@Localizer["Users_Index_Subtitle"]</p>
+    </div>
+    <div>
+        <a asp-page="Create" class="btn btn-primary">
+            <i class="bi bi-person-plus-fill"></i> @Localizer["Users_Index_CreateNew"]
+        </a>
+    </div>
+</div>
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+<div class="gt-table-container">
+    <div class="table-responsive">
+        <table class="gt-table" aria-label="@Localizer["Users_Index_Title"]">
+            <thead>
+                <tr>
+                    <th>@Localizer["Users_Index_Id"]</th>
+                    <th>@Localizer["Users_Index_Username"]</th>
+                    <th>@Localizer["Users_Index_Email"]</th>
+                    <th>@Localizer["Users_Index_Type"]</th>
+                    <th>@Localizer["Users_Index_Status"]</th>
+                    <th>@Localizer["Users_Index_CreatedAt"]</th>
+                    <th class="text-end">@Localizer["Users_Index_Actions"]</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model.Users)
+                {
+                    <tr>
+                        <td class="text-muted">#@user.Id</td>
+                        <td class="fw-semibold">@user.Username</td>
+                        <td>@user.Email</td>
+                        <td>
+                            @if (user.TypeId == UserTypes.Administrator)
+                            {
+                                <span class="gt-badge gt-badge-orange">
+                                    <i class="bi bi-shield-lock-fill"></i> @Localizer["Users_Type_Administrator"]
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="gt-badge gt-badge-blue">
+                                    <i class="bi bi-person-fill"></i> @Localizer["Users_Type_Standard"]
+                                </span>
+                            }
+                        </td>
+                        <td>
+                            @if (user.IsActive)
+                            {
+                                <span class="badge bg-success">@Localizer["Users_Status_Active"]</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">@Localizer["Users_Status_Inactive"]</span>
+                            }
+                        </td>
+                        <td>@user.CreatedAt.ToString("g")</td>
+                        <td class="text-end">
+                            <a asp-page="Edit" asp-route-id="@user.Id" class="btn btn-sm btn-outline-warning me-1" aria-label="@Localizer["Users_Index_Edit"] @user.Username">
+                                <i class="bi bi-pencil"></i> @Localizer["Users_Index_Edit"]
+                            </a>
+                            @if (user.IsActive)
+                            {
+                                <form method="post" asp-page-handler="Delete" asp-route-id="@user.Id" class="d-inline" onsubmit="return confirm('@Localizer["Users_Delete_Confirmation"]');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" aria-label="@Localizer["Users_Index_Delete"] @user.Username">
+                                        <i class="bi bi-trash"></i> @Localizer["Users_Index_Delete"]
+                                    </button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

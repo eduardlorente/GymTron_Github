@@ -104,6 +104,7 @@ CREATE TABLE `users` (
   `username` VARCHAR(100) NOT NULL,
   `email` VARCHAR(255) NOT NULL,
   `password_hash` VARCHAR(255) NOT NULL,
+  `type_id` INT NOT NULL DEFAULT 1,
   `is_active` BIT NOT NULL DEFAULT 1,
   `created_at` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
@@ -335,10 +336,17 @@ VALUES
 
 -- SEED TEST USER (Local Environment) --
 -- Credentials: Username='user' | Email='user@gymtron.local' | Password='password'
-INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `is_active`, `created_at`)
+INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `type_id`, `is_active`, `created_at`)
 VALUES 
-    (1, 'user', 'user@gymtron.local', 'GkRdnMxtr1jvD87kEmZPfw==:wRrYCQAK2CyLUFDru+eXqIK1QBi5sOXhTvuP1AhWIBc=:100000:SHA256', 1, '2026-01-01 00:00:00')
-ON DUPLICATE KEY UPDATE `password_hash` = VALUES(`password_hash`);
+    (1, 'user', 'user@gymtron.local', 'GkRdnMxtr1jvD87kEmZPfw==:wRrYCQAK2CyLUFDru+eXqIK1QBi5sOXhTvuP1AhWIBc=:100000:SHA256', 1, 1, '2026-01-01 00:00:00')
+ON DUPLICATE KEY UPDATE `password_hash` = VALUES(`password_hash`), `type_id` = VALUES(`type_id`);
+
+-- SEED ADMINISTRATOR USER (Local Environment) --
+-- Credentials: Username='administrator' | Email='administrator@gymtron.local' | Password='password'
+INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `type_id`, `is_active`, `created_at`)
+VALUES 
+    (2, 'administrator', 'administrator@gymtron.local', 'GkRdnMxtr1jvD87kEmZPfw==:wRrYCQAK2CyLUFDru+eXqIK1QBi5sOXhTvuP1AhWIBc=:100000:SHA256', 2, 1, '2026-01-01 00:00:00')
+ON DUPLICATE KEY UPDATE `password_hash` = VALUES(`password_hash`), `type_id` = VALUES(`type_id`);
 
 -- Assign initial seed routines, trainings, and body weights to test user 1
 UPDATE `routines` SET `user_id` = 1 WHERE `user_id` IS NULL;

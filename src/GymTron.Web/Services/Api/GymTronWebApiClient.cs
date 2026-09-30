@@ -5,6 +5,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using GymTron.Application.ExerciseParameters.Queries.DTO;
 using GymTron.Application.Routines.Queries.DTO;
+using GymTron.Application.Users.DTO;
 using GymTron.Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -91,6 +92,55 @@ public class GymTronWebApiClient(HttpClient httpClient) : IGymTronWebApiClient
         if (response.StatusCode == HttpStatusCode.NotFound)
         {
             throw new EntityNotFoundException($"Exercise parameter with ID {id} was not found.");
+        }
+
+        await EnsureSuccessOrThrowAsync(response, ct);
+    }
+
+    public async Task<List<UserDto>> GetUsersAsync(CancellationToken ct = default)
+    {
+        var response = await _httpClient.GetAsync("api/users", ct);
+        await EnsureSuccessOrThrowAsync(response, ct);
+        return await response.Content.ReadFromJsonAsync<List<UserDto>>(JsonOptions, ct) ?? [];
+    }
+
+    public async Task<UserDto?> GetUserByIdAsync(int id, CancellationToken ct = default)
+    {
+        var response = await _httpClient.GetAsync($"api/users/{id}", ct);
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            return null;
+        }
+
+        await EnsureSuccessOrThrowAsync(response, ct);
+        return await response.Content.ReadFromJsonAsync<UserDto>(JsonOptions, ct);
+    }
+
+    public async Task<int> CreateUserAsync(CreateUserRequest request, CancellationToken ct = default)
+    {
+        var response = await _httpClient.PostAsJsonAsync("api/users", request, ct);
+        await EnsureSuccessOrThrowAsync(response, ct);
+        var created = await response.Content.ReadFromJsonAsync<CreatedIdDto>(JsonOptions, ct);
+        return created?.Id ?? 0;
+    }
+
+    public async Task UpdateUserAsync(int id, UpdateUserRequest request, CancellationToken ct = default)
+    {
+        var response = await _httpClient.PutAsJsonAsync($"api/users/{id}", request, ct);
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            throw new EntityNotFoundException($"User with ID {id} was not found.");
+        }
+
+        await EnsureSuccessOrThrowAsync(response, ct);
+    }
+
+    public async Task DeleteUserAsync(int id, CancellationToken ct = default)
+    {
+        var response = await _httpClient.DeleteAsync($"api/users/{id}", ct);
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            throw new EntityNotFoundException($"User with ID {id} was not found.");
         }
 
         await EnsureSuccessOrThrowAsync(response, ct);

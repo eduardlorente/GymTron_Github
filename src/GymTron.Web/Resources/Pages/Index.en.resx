@@ -87,4 +87,13 @@
   <data name="Index_ViewExercises" xml:space="preserve">
     <value>View Exercises</value>
   </data>
+  <data name="Index_Users" xml:space="preserve">
+    <value>Users</value>
+  </data>
+  <data name="Index_UsersDescription" xml:space="preserve">
+    <value>Manage application users and their permissions.</value>
+  </data>
+  <data name="Index_ViewUsers" xml:space="preserve">
+    <value>View Users</value>
+  </data>
 </root>

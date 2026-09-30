@@ -5,6 +5,7 @@ using GymTron.Api.Endpoints.Exercises;
 using GymTron.Api.Endpoints.ExerciseParameters;
 using GymTron.Api.Endpoints.Routines;
 using GymTron.Api.Endpoints.Trainings;
+using GymTron.Api.Endpoints.Users;
 
 namespace GymTron.Api.Endpoints;
 
@@ -47,6 +48,13 @@ public static class EndpointExtensions
 
         // Backup
         app.MapExportBackupEndpoint();
+
+        // Users
+        app.MapListUsersEndpoint();
+        app.MapGetUserByIdEndpoint();
+        app.MapCreateUserEndpoint();
+        app.MapUpdateUserEndpoint();
+        app.MapDeleteUserEndpoint();
 
         return app;
     }

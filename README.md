@@ -12,6 +12,7 @@ While developed as an experimental project rather than a commercial product, it 
 * **Exercise Catalog & Parameterization**: Rich database of exercises categorizing movement patterns, target muscle groups, and technique execution tips.
 * **Body Metrics & Composition**: Log body weight, track Body Mass Index (BMI/IMC), and monitor long-term historical trends.
 * **Secure Authentication & Multi-Tenancy**: Built according to OWASP guidelines—JWT authentication, refresh tokens, PBKDF2 password hashing, and user-scoped data isolation (BOLA/IDOR prevention).
+* **User & Role Administration**: Administrative Backweb management (`/Users`) allowing administrators (`TypeId = 2`) to view, create, edit, and soft-delete user accounts with role assignments.
 * **Cross-Platform Experience**: Mobile client (.NET MAUI for Android & Windows) for in-gym tracking alongside a responsive Web dashboard (ASP.NET Core Razor Pages) for desktop management.
 * **Multilingual Experience**: Native localization supporting **Catalan** (default), **Spanish**, and **English**.
 
@@ -46,7 +47,8 @@ GymTron/
 │   └── GymTron.Web/            # ASP.NET Core 10 Razor Pages web application
 ├── tests/
 │   ├── GymTron.UnitTests/        # Unit & architecture tests (NetArchTest, 100% Domain coverage)
-│   └── GymTron.IntegrationTests/ # MySQL integration tests via Testcontainers
+│   ├── GymTron.IntegrationTests/ # MySQL integration tests via Testcontainers
+│   └── GymTron.Web.Tests/        # Web Razor Pages and API client tests
 ├── docker-compose.yml          # Container configuration for local MySQL database
 ├── init.sql                    # Database schema creation and initial seed data
 └── StartDockerScript.ps1       # Automation script to start the local database container
@@ -147,16 +149,15 @@ dotnet build src/GymTron.App/GymTron.App.csproj -t:Run -f net9.0-android
 
 ### 5. Default Test Credentials
 
-The database initialization script (`init.sql`) automatically provisions a seed user for local development and testing:
+The database initialization script (`init.sql`) automatically provisions seed accounts for local development and testing:
 
-| Parameter | Default Value |
-|---|---|
-| **Username** | `user` |
-| **Email** | `user@gymtron.local` |
-| **Password** | `password` |
+| Role / Type | Username | Email | Password | Permissions |
+|---|---|---|---|---|
+| **Standard User** | `user` | `user@gymtron.local` | `password` | Workouts, routines, body weights |
+| **Administrator** | `administrator` | `administrator@gymtron.local` | `password` | User Management CRUD (`/Users`) & full platform access |
 
 > [!NOTE]
-> Seed routines, workout history, and sample body measurements are linked to this user out of the box.
+> Seed routines, workout history, and sample body measurements are linked to test user 1 (`user`) out of the box. Administrative user management (`/Users`) is accessible exclusively by logging in as `administrator`.
 
 ---
 
@@ -168,12 +169,16 @@ The codebase maintains strict automated quality gates:
 # Run unit and architecture tests
 dotnet test tests/GymTron.UnitTests/GymTron.UnitTests.csproj
 
+# Run web frontend tests
+dotnet test tests/GymTron.Web.Tests/GymTron.Web.Tests.csproj
+
 # Run MySQL integration tests (requires Docker)
 dotnet test tests/GymTron.IntegrationTests/GymTron.IntegrationTests.csproj
 ```
 
 * **Unit Tests**: Full coverage of Domain logic (enforced at 100% line and branch coverage) and Application handlers (enforced at >= 80% coverage).
 * **Architecture Tests**: Automated checks preventing illegal layer references (e.g., UI directly referencing persistence).
+* **Web Tests**: Automated tests for Razor Pages models and HTTP API client implementations.
 * **Integration Tests**: Tested against real MySQL instances using Testcontainers.
 * **Static Analysis**: Roslyn analyzers (`SonarAnalyzer.CSharp`, `Meziantou.Analyzer`) with warnings treated as errors.
 * **CI/CD**: GitHub Actions workflows enforce build verification, coverage gates, security scanning (Gitleaks, vulnerable packages), and automated release publishing.

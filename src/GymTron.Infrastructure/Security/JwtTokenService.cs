@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using GymTron.Domain.Entities;
+using GymTron.Domain.Enums;
 using GymTron.Domain.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -46,6 +47,8 @@ public class JwtTokenService : ITokenService
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new(ClaimTypes.Name, user.Username),
             new(ClaimTypes.Email, user.Email),
+            new(ClaimTypes.Role, user.TypeId == UserTypes.Administrator ? "Administrator" : "Standard"),
+            new("type_id", ((int)user.TypeId).ToString()),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
