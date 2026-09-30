@@ -149,7 +149,7 @@
                         <Editor Text="{Binding Observations}" 
                                 HeightRequest="90" 
                                 TextColor="{StaticResource GymTronDark}"
-                                Placeholder="Escriu aquí les teves observacions..." />
+                                Placeholder="{ext:Translate CompleteModal_Observations_Placeholder}" />
                     </Border>
                 </VerticalStackLayout>
 

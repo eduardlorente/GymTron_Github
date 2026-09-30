@@ -73,7 +73,7 @@ public partial class BodyWeightsHistoryPageViewModel : PageBaseViewModel
             await Shell.Current.Navigation.PopModalAsync();
             await Shell.Current.Navigation.PopAsync();
 
-            IToast toast = Toast.Make("Enhorabona, nova mesura registrada correctament!");
+            IToast toast = Toast.Make(LocalizationService.GetString("BodyWeights_NewMeasurementToast"));
             await toast.Show();
         }
 

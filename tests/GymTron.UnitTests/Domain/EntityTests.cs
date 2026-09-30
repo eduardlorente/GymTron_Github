@@ -230,7 +230,6 @@ public class EntityTests
 
     [Theory]
     [InlineData(0, 0, 0)]
-    [InlineData(0, 0, 10)]
     [InlineData(10, 0, 0)]
     [InlineData(-5, 0, 10)]
     [InlineData(10, 0, -2)]
@@ -244,6 +243,7 @@ public class EntityTests
     [Theory]
     [InlineData(0, 45, 0)]
     [InlineData(80, 0, 10)]
+    [InlineData(0, 0, 10)]
     public void Exercise_New_WithValidValues_Succeeds(decimal weight, int duration, int repetitions)
     {
         Exercise exercise = Exercise.New(1, 1, "Bench Press", weight, duration, repetitions, []);

@@ -95,7 +95,7 @@
                                                 BackgroundColor="{StaticResource GymTronSurface}"
                                                 Padding="12, 8">
                                             <VerticalStackLayout Spacing="2">
-                                                <Label Text="% Grasa"
+                                                <Label Text="{ext:Translate BodyWeights_BodyFatLabel}"
                                                        FontSize="11"
                                                        TextColor="{StaticResource GymTronTextMuted}" />
                                                 <Label Text="{Binding BodyFatPercentage}"

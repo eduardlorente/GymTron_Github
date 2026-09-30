@@ -23,8 +23,19 @@ public partial class CurrentTrainingPageViewModel : PageBaseViewModel
     {
         get
         {
-            TimeSpan elapsed = DateTime.Now - StartTime;
-            return $"{elapsed.Hours:D2}:{elapsed.Minutes:D2}:{elapsed.Seconds:D2}";
+            if (_currentTraining == null || StartTime == DateTime.MinValue)
+            {
+                return "00:00:00";
+            }
+
+            TimeSpan elapsed = DateTime.UtcNow - StartTime;
+            if (elapsed < TimeSpan.Zero)
+            {
+                elapsed = TimeSpan.Zero;
+            }
+
+            int totalHours = (int)elapsed.TotalHours;
+            return $"{totalHours:D2}:{elapsed.Minutes:D2}:{elapsed.Seconds:D2}";
         }
     }
 
