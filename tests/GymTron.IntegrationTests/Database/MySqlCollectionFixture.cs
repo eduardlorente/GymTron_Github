@@ -46,6 +46,7 @@ public sealed class MySqlCollectionFixture : IAsyncLifetime
             TRUNCATE TABLE routines;
             TRUNCATE TABLE body_weights;
             TRUNCATE TABLE logs;
+            TRUNCATE TABLE users;
             SET FOREIGN_KEY_CHECKS = 1;
             """;
         await ExecuteAsync(sql);
