@@ -97,9 +97,9 @@ public class Training : AggregateRoot<int>
     {
         ArgumentNullException.ThrowIfNull(exercise);
 
-        if (exercise.DurationInSeconds <= 0 && (exercise.Weight <= 0 || exercise.CurrentRepetitions <= 0))
+        if (exercise.DurationInSeconds <= 0 && (exercise.Weight < 0 || exercise.CurrentRepetitions <= 0))
         {
-            throw new InvalidDomainOperationException("Exercise completion values must be greater than zero.");
+            throw new InvalidDomainOperationException("Exercise completion values must specify either duration greater than zero or repetitions greater than zero with non-negative weight.");
         }
 
         bool notExistsExerciseInTraining = !_completedWorkout.Any(x => x.ExerciseParametersId == exercise.ExerciseParametersId);

@@ -45,12 +45,56 @@ public class TrainingTests
     }
 
     [Fact]
+    public void CompleteExercise_WithZeroWeightAndPositiveReps_IsAccepted()
+    {
+        Training training = CreateActiveTraining();
+        Exercise bodyweightExercise = Exercise.New(training.Id, 11, "Pushups", 0, 0, 10, []);
+
+        training.CompleteExercise(bodyweightExercise, Clock);
+
+        Exercise completedExercise = Assert.Single(training.CompletedWorkout);
+        Assert.Same(bodyweightExercise, completedExercise);
+    }
+
+    [Fact]
     public void CompleteExercise_WithInvalidExecutionValues_ThrowsInvalidDomainOperationException()
     {
         Training training = CreateActiveTraining();
         Exercise invalidExercise = Exercise.FromDatabase(1, training.Id, 11, "Squat", 0, 0, 0, DateTime.UtcNow, []);
 
         Assert.Throws<InvalidDomainOperationException>(() => training.CompleteExercise(invalidExercise, Clock));
+    }
+
+    [Fact]
+    public void CompleteExercise_WithNegativeWeight_ThrowsInvalidDomainOperationException()
+    {
+        Training training = CreateActiveTraining();
+        Exercise negativeWeightExercise = Exercise.FromDatabase(1, training.Id, 11, "Squat", -1, 0, 10, DateTime.UtcNow, []);
+
+        Assert.Throws<InvalidDomainOperationException>(() => training.CompleteExercise(negativeWeightExercise, Clock));
+    }
+
+    [Fact]
+    public void Exercise_New_WithZeroWeightAndPositiveReps_IsAccepted()
+    {
+        Exercise exercise = Exercise.New(1, 11, "Pushups", 0, 0, 10, []);
+
+        Assert.Equal(0, exercise.Weight);
+        Assert.Equal(10, exercise.CurrentRepetitions);
+    }
+
+    [Fact]
+    public void Exercise_New_WithNegativeWeight_ThrowsInvalidDomainOperationException()
+    {
+        Assert.Throws<InvalidDomainOperationException>(() =>
+            Exercise.New(1, 11, "Squat", -1, 0, 10, []));
+    }
+
+    [Fact]
+    public void Exercise_New_WithZeroRepsAndZeroDuration_ThrowsInvalidDomainOperationException()
+    {
+        Assert.Throws<InvalidDomainOperationException>(() =>
+            Exercise.New(1, 11, "Squat", 0, 0, 0, []));
     }
 
     [Fact]

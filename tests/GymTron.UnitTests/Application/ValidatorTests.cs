@@ -265,8 +265,10 @@ public class ValidatorTests
 
     [Theory]
     [InlineData(50, 10, true)]
-    [InlineData(0, 10, false)]
+    [InlineData(0, 10, true)]
+    [InlineData(-1, 10, false)]
     [InlineData(-5, 10, false)]
+    [InlineData(0, 0, false)]
     [InlineData(50, 0, false)]
     [InlineData(50, -2, false)]
     public void AddExerciseToTrainingCommand_WeightAndRepsValidation(decimal weight, int reps, bool expectedValid)

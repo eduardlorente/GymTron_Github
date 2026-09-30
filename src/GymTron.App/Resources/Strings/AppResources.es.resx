@@ -247,6 +247,21 @@
   <data name="CompleteModal_Observations" xml:space="preserve">
     <value>Observaciones:</value>
   </data>
+  <data name="CompleteModal_Observations_Placeholder" xml:space="preserve">
+    <value>Escribe aquí tus observaciones...</value>
+  </data>
+  <data name="CompleteModal_ObsHard" xml:space="preserve">
+    <value>Ha sido duro</value>
+  </data>
+  <data name="CompleteModal_ObsReallyHard" xml:space="preserve">
+    <value>Ha sido muy duro</value>
+  </data>
+  <data name="CompleteModal_ObsIncreaseWeight" xml:space="preserve">
+    <value>Subir peso</value>
+  </data>
+  <data name="CompleteModal_ObsIncreaseReps" xml:space="preserve">
+    <value>Subir repeticiones</value>
+  </data>
   <data name="CompleteModal_Complete" xml:space="preserve">
     <value>Completar</value>
   </data>
@@ -277,6 +292,12 @@
   </data>
   <data name="BodyWeights_Add" xml:space="preserve">
     <value>Añadir nueva medida</value>
+  </data>
+  <data name="BodyWeights_NewMeasurementToast" xml:space="preserve">
+    <value>¡Enhorabuena, nueva medida registrada correctamente!</value>
+  </data>
+  <data name="BodyWeights_BodyFatLabel" xml:space="preserve">
+    <value>% Grasa</value>
   </data>
   
   <!-- TrainingsHistoryPage -->

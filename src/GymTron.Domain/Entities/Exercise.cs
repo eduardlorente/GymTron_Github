@@ -122,11 +122,11 @@ public class Exercise : Entity<int>
         }
 
         bool isValidDuration = duration > 0;
-        bool isValidWeightAndReps = weight > 0 && repetitions > 0;
+        bool isValidRepetitions = repetitions > 0;
 
-        if (!isValidDuration && !isValidWeightAndReps)
+        if (!isValidDuration && !isValidRepetitions)
         {
-            throw new InvalidDomainOperationException("Exercise execution must specify either duration greater than zero or weight and repetitions greater than zero.");
+            throw new InvalidDomainOperationException("Exercise execution must specify either duration greater than zero or repetitions greater than zero with non-negative weight.");
         }
     }
 

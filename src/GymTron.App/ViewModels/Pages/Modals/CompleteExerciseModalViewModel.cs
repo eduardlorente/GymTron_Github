@@ -8,11 +8,6 @@ public class CompleteExerciseModalViewModel : PageBaseViewModel
 {
 
 
-    private const string HARD_OBSERVATION = "Ha estat dur";
-    private const string REALLY_HARD_OBSERVATION = "Ha estat molt dur";
-    private const string INCREASE_WEIGHT_OBSERVATION = "Pujar pes";
-    private const string INCREASE_REPETITIONS_OBSERVATION = "Pujar repeticions";
-
 
     public bool IsDurationExercise { get; set; }
     public bool IsWeightExercise => !IsDurationExercise;
@@ -122,7 +117,7 @@ public class CompleteExerciseModalViewModel : PageBaseViewModel
         }
         else
         {
-            bool hasValidWeight = TryParseDecimal(Weight, out decimal weight) && weight > 0;
+            bool hasValidWeight = TryParseDecimal(Weight, out decimal weight) && weight >= 0;
             bool hasValidReps = int.TryParse(Repetitions?.Trim(), out int repetitions) && repetitions > 0;
 
             if (!hasValidWeight || !hasValidReps)
@@ -162,11 +157,11 @@ public class CompleteExerciseModalViewModel : PageBaseViewModel
 
         if (SelectedHardDifficulty)
         {
-            observations.Add(HARD_OBSERVATION);
+            observations.Add(LocalizationService.GetString("CompleteModal_ObsHard"));
         }
         else if (SelectedReallyHardDifficulty)
         {
-            observations.Add(REALLY_HARD_OBSERVATION);
+            observations.Add(LocalizationService.GetString("CompleteModal_ObsReallyHard"));
         }
 
         if (!string.IsNullOrWhiteSpace(Observations))
@@ -176,12 +171,12 @@ public class CompleteExerciseModalViewModel : PageBaseViewModel
 
         if (IncreaseWeight)
         {
-            observations.Add(INCREASE_WEIGHT_OBSERVATION);
+            observations.Add(LocalizationService.GetString("CompleteModal_ObsIncreaseWeight"));
         }
 
         if (IncreaseRepetitions)
         {
-            observations.Add(INCREASE_REPETITIONS_OBSERVATION);
+            observations.Add(LocalizationService.GetString("CompleteModal_ObsIncreaseReps"));
         }
 
         return observations;

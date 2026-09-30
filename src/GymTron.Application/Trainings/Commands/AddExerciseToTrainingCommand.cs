@@ -80,8 +80,8 @@ public class AddExerciseToTrainingCommandValidator : AbstractValidator<AddExerci
             RuleFor(x => x.Weight)
                 .NotNull()
                 .WithMessage("Weight is required.")
-                .GreaterThan(0)
-                .WithMessage("Weight must be greater than zero.");
+                .GreaterThanOrEqualTo(0)
+                .WithMessage("Weight must be greater than or equal to zero.");
 
             RuleFor(x => x.Repetitions)
                 .NotNull()
