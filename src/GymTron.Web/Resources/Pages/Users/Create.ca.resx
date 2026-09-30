@@ -74,7 +74,7 @@
     <value>Contrasenya</value>
   </data>
   <data name="Users_Form_PasswordHelp" xml:space="preserve">
-    <value>Mínim 10 caràcters, incloent majúscules, minúscules i un número.</value>
+    <value>Mínim 6 caràcters.</value>
   </data>
   <data name="Users_Form_Type" xml:space="preserve">
     <value>Rol / Tipus</value>

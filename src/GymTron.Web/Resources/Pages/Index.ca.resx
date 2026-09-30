@@ -87,4 +87,13 @@
   <data name="Index_ViewExercises" xml:space="preserve">
     <value>Veure Exercicis</value>
   </data>
+  <data name="Index_Users" xml:space="preserve">
+    <value>Usuaris</value>
+  </data>
+  <data name="Index_UsersDescription" xml:space="preserve">
+    <value>Gestiona els usuaris de l'aplicació i els seus permisos.</value>
+  </data>
+  <data name="Index_ViewUsers" xml:space="preserve">
+    <value>Veure Usuaris</value>
+  </data>
 </root>

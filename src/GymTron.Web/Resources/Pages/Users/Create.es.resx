@@ -74,7 +74,7 @@
     <value>Contraseña</value>
   </data>
   <data name="Users_Form_PasswordHelp" xml:space="preserve">
-    <value>Mínimo 10 caracteres, incluyendo mayúsculas, minúsculas y un número.</value>
+    <value>Mínimo 6 caracteres.</value>
   </data>
   <data name="Users_Form_Type" xml:space="preserve">
     <value>Rol / Tipo</value>

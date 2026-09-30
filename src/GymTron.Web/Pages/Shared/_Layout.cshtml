@@ -17,7 +17,7 @@
     <header>
         <nav class="navbar navbar-expand-sm gt-navbar">
             <div class="container">
-                <a class="gt-brand" asp-page="/Index">
+                <a class="gt-brand me-4" asp-page="/Index">
                     <i class="bi bi-activity"></i> GymTron
                 </a>
                 <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-label="Toggle navigation">
@@ -45,11 +45,13 @@
                         @if (User.Identity?.IsAuthenticated == true)
                         {
                             <li class="nav-item d-flex align-items-center me-2">
-                                <span class="text-light small"><i class="bi bi-person-circle"></i> @User.Identity.Name</span>
+                                <span class="text-secondary small fw-medium"><i class="bi bi-person-circle"></i> @User.Identity.Name</span>
                             </li>
                             <li class="nav-item">
                                 <form method="post" asp-page="/Account/Logout" class="d-inline">
-                                    <button type="submit" class="btn btn-sm btn-outline-light">@Localizer["Layout_Logout"]</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-box-arrow-right"></i> @Localizer["Layout_Logout"]
+                                    </button>
                                 </form>
                             </li>
                         }

@@ -75,6 +75,10 @@ public class UsersHandlerTests
         var validCommand = new CreateUserCommand(Guid.NewGuid(), "validuser", "user@gymtron.local", "StrongPass1", UserTypes.Standard);
         var validResult = validator.TestValidate(validCommand);
         validResult.ShouldNotHaveAnyValidationErrors();
+
+        var sixCharSimpleCommand = new CreateUserCommand(Guid.NewGuid(), "validuser", "user@gymtron.local", "simple", UserTypes.Standard);
+        var sixCharResult = validator.TestValidate(sixCharSimpleCommand);
+        sixCharResult.ShouldNotHaveValidationErrorFor(x => x.Password);
     }
 
     [Fact]

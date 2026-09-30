@@ -86,7 +86,7 @@
     <value>Nova contrasenya (opcional)</value>
   </data>
   <data name="Users_Form_NewPasswordHelp" xml:space="preserve">
-    <value>Deixa buit per mantenir la contrasenya actual. Mínim 10 caràcters si es modifica.</value>
+    <value>Deixa buit per mantenir la contrasenya actual. Mínim 6 caràcters si es modifica.</value>
   </data>
   <data name="Users_Form_Cancel" xml:space="preserve">
     <value>Cancel·lar</value>

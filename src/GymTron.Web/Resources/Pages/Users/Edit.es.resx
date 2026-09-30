@@ -86,7 +86,7 @@
     <value>Nueva contraseña (opcional)</value>
   </data>
   <data name="Users_Form_NewPasswordHelp" xml:space="preserve">
-    <value>Dejar en blanco para mantener la contraseña actual. Mínimo 10 caracteres si se modifica.</value>
+    <value>Dejar en blanco para mantener la contraseña actual. Mínimo 6 caracteres si se modifica.</value>
   </data>
   <data name="Users_Form_Cancel" xml:space="preserve">
     <value>Cancelar</value>

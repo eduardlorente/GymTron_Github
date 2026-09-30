@@ -43,11 +43,8 @@ public class UpdateUserCommandValidator : AbstractValidator<UpdateUserCommand>
             .NotEqual(UserTypes.Undefined).WithMessage("User type must be specified.");
 
         RuleFor(x => x.NewPassword)
-            .MinimumLength(10)
+            .MinimumLength(6)
             .MaximumLength(128)
-            .Matches(@"[A-Z]").WithMessage("Password must contain at least one uppercase letter.")
-            .Matches(@"[a-z]").WithMessage("Password must contain at least one lowercase letter.")
-            .Matches(@"[0-9]").WithMessage("Password must contain at least one number.")
             .When(x => !string.IsNullOrEmpty(x.NewPassword));
     }
 }

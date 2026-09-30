@@ -86,7 +86,7 @@
     <value>New password (optional)</value>
   </data>
   <data name="Users_Form_NewPasswordHelp" xml:space="preserve">
-    <value>Leave blank to keep existing password. Minimum 10 characters if changed.</value>
+    <value>Leave blank to keep existing password. Minimum 6 characters if changed.</value>
   </data>
   <data name="Users_Form_Cancel" xml:space="preserve">
     <value>Cancel</value>

@@ -71,10 +71,15 @@ body {
     align-items: center;
     gap: 0.5rem;
     text-decoration: none;
+    margin-right: 1.75rem;
 }
 
 .gt-brand:hover {
     color: var(--gt-primary-hover) !important;
+}
+
+.gt-navbar .navbar-nav {
+    gap: 0.25rem;
 }
 
 .gt-nav-link {

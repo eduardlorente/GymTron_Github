@@ -4,6 +4,8 @@
 @inject IViewLocalizer Localizer
 @{
     ViewData["Title"] = Localizer["Index_Title"];
+    bool isAdmin = User.IsInRole("Administrator");
+    string colClass = isAdmin ? "col-md-4" : "col-md-6";
 }
 
 <div class="gt-hero">
@@ -12,7 +14,7 @@
 </div>
 
 <div class="row g-4 mt-2">
-    <div class="col-md-6">
+    <div class="@colClass">
         <div class="gt-action-card">
             <div>
                 <div class="gt-card-icon gt-card-icon-blue">
@@ -28,7 +30,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="@colClass">
         <div class="gt-action-card">
             <div>
                 <div class="gt-card-icon gt-card-icon-teal">
@@ -44,4 +46,23 @@
             </div>
         </div>
     </div>
+    @if (isAdmin)
+    {
+        <div class="@colClass">
+            <div class="gt-action-card">
+                <div>
+                    <div class="gt-card-icon gt-card-icon-purple" style="background-color: #f3e8ff; color: #7e22ce;">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <h3 class="h4 fw-bold mb-2">@Localizer["Index_Users"]</h3>
+                    <p class="text-muted mb-4">@Localizer["Index_UsersDescription"]</p>
+                </div>
+                <div>
+                    <a asp-page="/Users/Index" class="btn btn-primary w-100 justify-content-center">
+                        <i class="bi bi-arrow-right-circle"></i> @Localizer["Index_ViewUsers"]
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
 </div>
