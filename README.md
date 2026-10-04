@@ -24,6 +24,14 @@ Use this pre-seeded account to evaluate both the live Web application and mobile
 |---|---|---|
 | `user` | `password` | Workout tracking, personal routines, exercises, body metrics |
 
+> [!NOTE]
+> **Live vs. Local Environment**:
+> While the table above points to the public cloud deployments, you can run the full containerized environment demonstrated in the video (API + MySQL + Scalar UI) locally by executing:
+> ```powershell
+> ./StartDockerScript.ps1
+> ```
+> This script builds and starts the local Docker containers and exposes the API with interactive Scalar documentation at `http://localhost:5000/scalar/v1`. See [Getting Started](#getting-started) for prerequisite setup.
+
 ---
 
 ## Key Features
@@ -119,11 +127,11 @@ cd GymTron
    MYSQL_DATABASE=gymtron
    JWT_SECRET_KEY=Your32ByteMinimumSecretKeyHere!
    ```
-2. Start the MySQL container:
+2. Start the containers (Database & API):
    ```powershell
    ./StartDockerScript.ps1
    ```
-   *Alternatively, run `docker compose up -d`.*
+   *Alternatively, run `docker compose up -d` to start the database container only.*
 
 ### 3. Application Configuration
 
