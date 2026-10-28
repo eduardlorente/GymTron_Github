@@ -123,7 +123,7 @@ public class Training : AggregateRoot<int>
         CompletedOn = new TrainingDate(clock.UtcNow);
 
         foreach (var status in _completedWorkout
-            .Where(e => e.Status.CreatedOn == default || e.Status.CreatedOn <= DateTime.MinValue)
+            .Where(e => e.Status.CreatedOn == default)
             .Select(e => e.Status))
         {
             status.Create(clock);
