@@ -61,7 +61,8 @@ public class TrainingViewModel
             Weight = e.Weight,
             DurationInSeconds = e.DurationInSeconds,
             CurrentRepetitions = e.Repetitions,
-            Observations = [.. e.Observations.Select(obs => new ObservationViewModel(obs))]
+            Observations = [.. e.Observations.Select(obs => new ObservationViewModel(obs))],
+            CreatedOn = e.CreatedOn != default ? e.CreatedOn : training.StartedOn
         })];
     }
 
@@ -103,5 +104,5 @@ public class TrainingViewModel
                 e.DurationInSeconds,
                 e.CurrentRepetitions,
                 e.Observations.Select(o => o.Comment).ToList(),
-                e.CreatedOn))]);
+                e.CreatedOn != default ? e.CreatedOn : DateTime.UtcNow))]);
 }

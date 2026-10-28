@@ -110,6 +110,22 @@ public class TrainingTests
     }
 
     [Fact]
+    public void Complete_WithCompletedExercises_SetsTimestampOnlyWhenDefault()
+    {
+        DateTime existingDate = new(2026, 1, 1, 10, 0, 0);
+        Exercise withDate = Exercise.FromDatabase(1, 1, 11, "Squat", 90, 0, 8, existingDate, []);
+        Exercise withDefaultDate = Exercise.FromDatabase(2, 1, 22, "Bench", 80, 0, 8, default, []);
+
+        Training training = Training.FromDatabase(
+            1, 1, 1, DateTime.UtcNow, null, EntityStatusTypes.ACTIVE, [], [withDate, withDefaultDate]);
+
+        training.Complete(Clock);
+
+        Assert.Equal(existingDate, withDate.Status.CreatedOn);
+        Assert.Equal(Clock.UtcNow, withDefaultDate.Status.CreatedOn);
+    }
+
+    [Fact]
     public void Complete_WhenAlreadyCompleted_IsRejected()
     {
         Training training = CreateActiveTraining();

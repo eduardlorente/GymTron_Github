@@ -1,3 +1,4 @@
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using GymTron.Domain.ValueObjects;
 
@@ -5,6 +6,11 @@ namespace GymTron.Infrastructure.Persistence.Serialization;
 
 internal static class ObservationSerializer
 {
+    private static readonly JsonSerializerOptions SerializerOptions = new()
+    {
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+    };
+
     public static string Serialize(IEnumerable<Observation> observations)
     {
         List<string> comments = observations
@@ -12,7 +18,7 @@ internal static class ObservationSerializer
             .Select(o => o.Comment)
             .ToList();
 
-        return JsonSerializer.Serialize(comments);
+        return JsonSerializer.Serialize(comments, SerializerOptions);
     }
 
     public static List<string> DeserializeComments(string? raw)

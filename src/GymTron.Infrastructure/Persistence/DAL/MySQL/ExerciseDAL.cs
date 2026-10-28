@@ -29,7 +29,7 @@ internal class ExerciseDAL(string connectionString, IDbTransactionContext? trans
             entity.Weight,
             Duration = entity.DurationInSeconds,
             Repetitions = entity.CurrentRepetitions,
-            entity.Status.CreatedOn,
+            CreatedOn = entity.Status.CreatedOn != default ? entity.Status.CreatedOn : DateTime.UtcNow,
             Observations = ObservationSerializer.Serialize(entity.Observations)
         };
 
@@ -53,12 +53,14 @@ internal class ExerciseDAL(string connectionString, IDbTransactionContext? trans
             sb.Append($"(@TId{i}, @EPId{i}, @Weight{i}, @Dur{i}, @Reps{i}, @CreatedOn{i}, @Obs{i})");
 
             var e = exercises[i];
+            DateTime createdOn = e.Status.CreatedOn != default ? e.Status.CreatedOn : DateTime.UtcNow;
+
             parameters.Add($"TId{i}", e.TrainingId);
             parameters.Add($"EPId{i}", e.ExerciseParametersId);
             parameters.Add($"Weight{i}", e.Weight);
             parameters.Add($"Dur{i}", e.DurationInSeconds);
             parameters.Add($"Reps{i}", e.CurrentRepetitions);
-            parameters.Add($"CreatedOn{i}", e.Status.CreatedOn);
+            parameters.Add($"CreatedOn{i}", createdOn);
             parameters.Add($"Obs{i}", ObservationSerializer.Serialize(e.Observations));
         }
 
@@ -87,10 +89,12 @@ internal class ExerciseDAL(string connectionString, IDbTransactionContext? trans
                             E.weight AS Weight,
                             E.duration AS DurationInSeconds,
                             E.repetitions AS Repetitions,
-                            E.created_on AS CreatedOn,
+                            (CASE WHEN E.created_on <= '0001-01-01 00:00:00' THEN COALESCE(T.completed_on, T.started_on, E.created_on) ELSE E.created_on END) AS CreatedOn,
                             E.observations AS ObservationsCSV
                          FROM 
                             exercises E
+                         LEFT JOIN 
+                            trainings T ON E.training_id = T.id
                          LEFT JOIN 
                             exercise_parameters EP ON E.exercise_parameters_id = EP.id
                          WHERE 
@@ -112,7 +116,7 @@ internal class ExerciseDAL(string connectionString, IDbTransactionContext? trans
                             E.weight AS Weight,
                             E.duration AS DurationInSeconds,
                             E.repetitions AS Repetitions,
-                            E.created_on AS CreatedOn,
+                            (CASE WHEN E.created_on <= '0001-01-01 00:00:00' THEN COALESCE(T.completed_on, T.started_on, E.created_on) ELSE E.created_on END) AS CreatedOn,
                             E.observations AS ObservationsCSV
                          FROM 
                             exercises E
@@ -123,7 +127,9 @@ internal class ExerciseDAL(string connectionString, IDbTransactionContext? trans
                          WHERE
                             (@UserId IS NULL OR T.user_id = @UserId)
                          ORDER BY 
-                            EP.name ASC, E.created_on DESC;";
+                            EP.name ASC, 
+                            (CASE WHEN E.created_on <= '0001-01-01 00:00:00' THEN COALESCE(T.completed_on, T.started_on, E.created_on) ELSE E.created_on END) DESC, 
+                            E.id DESC;";
 
         return await dbConnection.QueryAsync<ExerciseDALModel>(new CommandDefinition(query, new { UserId = userId }, cancellationToken: cancellationToken));
     }
