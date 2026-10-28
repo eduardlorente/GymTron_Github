@@ -75,7 +75,7 @@ public class AuthHttpMessageHandler(
         }
         catch
         {
-            await HandleSessionExpiredAsync();
+            // Do not expire the session on transient network errors or timeouts during refresh.
             return null;
         }
         finally

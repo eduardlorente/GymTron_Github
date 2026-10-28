@@ -11,4 +11,5 @@ public interface IRoutineRepository : IRepository<Routine>
     Task<List<RoutineProjection>> ListRoutineProjections(int? userId = null, CancellationToken cancellationToken = default);
     Task<int> Create(Routine routine, CancellationToken cancellationToken = default);
     Task Update(Routine routine, CancellationToken cancellationToken = default);
+    void InvalidateCache(int routineId, int? userId = null);
 }

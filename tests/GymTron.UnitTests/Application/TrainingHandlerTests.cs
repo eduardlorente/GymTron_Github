@@ -28,7 +28,7 @@ public class TrainingHandlerTests
         IRoutineRepository routines = Substitute.For<IRoutineRepository>();
         IExceptionLogger<StartTrainingCommand> logger = Substitute.For<IExceptionLogger<StartTrainingCommand>>();
         trainings.HasActiveTraining(1, Arg.Any<CancellationToken>()).Returns(false);
-        routines.GetById(7).Returns((Routine?)null);
+        routines.GetById(7, Arg.Any<int?>(), Arg.Any<CancellationToken>()).Returns((Routine?)null);
         StartTrainingCommandHandler handler = new(Substitute.For<GymTron.Application.Common.Events.IDomainEventDispatcher>(), trainings, routines, logger, new FakeClock());
 
         EntityNotFoundException exception = await Assert.ThrowsAsync<EntityNotFoundException>(
@@ -66,6 +66,7 @@ public class TrainingHandlerTests
         GymTron.Application.Common.Events.IDomainEventDispatcher eventDispatcher = Substitute.For<GymTron.Application.Common.Events.IDomainEventDispatcher>();
         ITrainingRepository trainings = Substitute.For<ITrainingRepository>();
         IExerciseRepository exercises = Substitute.For<IExerciseRepository>();
+        IRoutineRepository routines = Substitute.For<IRoutineRepository>();
         IUnitOfWork unitOfWork = Substitute.For<IUnitOfWork>();
         unitOfWork.ExecuteInTransactionAsync(Arg.Any<Func<CancellationToken, Task>>(), Arg.Any<CancellationToken>())
             .Returns(callInfo => callInfo.Arg<Func<CancellationToken, Task>>()(callInfo.Arg<CancellationToken>()));
@@ -73,7 +74,7 @@ public class TrainingHandlerTests
         Training training = ApplicationTestData.CreateTraining(completedWorkout: [Exercise.New(5, 11, "Squat", 90, 0, 8, [])]);
 
         IExceptionLogger<FinishTrainingCommand> logger = Substitute.For<IExceptionLogger<FinishTrainingCommand>>();
-        await new FinishTrainingCommandHandler(eventDispatcher, trainings, exercises, unitOfWork, logger, new FakeClock())
+        await new FinishTrainingCommandHandler(eventDispatcher, trainings, exercises, routines, unitOfWork, logger, new FakeClock())
             .Handle(new FinishTrainingCommand(Guid.NewGuid(), training), CancellationToken.None);
 
         Assert.True(training.Status.IsCompleted);
@@ -81,6 +82,7 @@ public class TrainingHandlerTests
         await unitOfWork.Received(1).ExecuteInTransactionAsync(Arg.Any<Func<CancellationToken, Task>>(), Arg.Any<CancellationToken>());
         await trainings.Received(1).Update(training, Arg.Any<CancellationToken>());
         await exercises.Received(1).AddRange(training.CompletedWorkout, Arg.Any<CancellationToken>());
+        routines.Received(1).InvalidateCache(training.RoutineId, training.UserId);
     }
 
     [Fact]
@@ -141,5 +143,8 @@ public class TrainingHandlerTests
         Assert.Equal(10, routineItemDto.LastRepetitions);
         Assert.Equal(45, routineItemDto.LastDuration);
         Assert.Equal(["Keep elbows tucked"], routineItemDto.LastObservations);
+        Assert.Equal("Chest exercise", routineItemDto.Description);
+        Assert.Equal("Push", routineItemDto.Pattern);
+        Assert.Equal(2, routineItemDto.ReplaysInReserve);
     }
 }

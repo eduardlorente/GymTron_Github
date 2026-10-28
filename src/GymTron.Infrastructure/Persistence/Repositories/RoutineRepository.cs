@@ -124,4 +124,9 @@ internal class RoutineRepository(IRoutineDAL routineDAL) : IRoutineRepository
             Position = item.Position,
             Type = item.ExerciseParameters.Type
         }).ToList();
+
+    public void InvalidateCache(int routineId, int? userId = null)
+    {
+        // No-op for direct repository without cache
+    }
 }

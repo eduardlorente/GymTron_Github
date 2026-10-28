@@ -67,7 +67,10 @@ public record TrainingRoutineItemDto(
     decimal? LastWeight = null,
     int? LastRepetitions = null,
     int? LastDuration = null,
-    List<string>? LastObservations = null);
+    List<string>? LastObservations = null,
+    string? Description = null,
+    string? Pattern = null,
+    int? ReplaysInReserve = null);
 
 public record TrainingExerciseDto(
     int Id,

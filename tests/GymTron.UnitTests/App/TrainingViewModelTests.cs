@@ -26,7 +26,10 @@ public class TrainingViewModelTests
             LastWeight: 82.5m,
             LastRepetitions: 10,
             LastDuration: 45,
-            LastObservations: ["Focus on eccentric phase", "Smooth lockout"]);
+            LastObservations: ["Focus on eccentric phase", "Smooth lockout"],
+            Description: "Chest movement",
+            Pattern: "Horizontal Press",
+            ReplaysInReserve: 2);
 
         TrainingDto trainingDto = new(
             Id: 100,
@@ -50,6 +53,9 @@ public class TrainingViewModelTests
         Assert.Equal(2, parameters.Observations.Count);
         Assert.Equal("Focus on eccentric phase", parameters.Observations[0].Comment);
         Assert.Equal("Smooth lockout", parameters.Observations[1].Comment);
+        Assert.Equal("Chest movement", parameters.Description);
+        Assert.Equal("Horizontal Press", parameters.Pattern);
+        Assert.Equal(2, parameters.ReplaysInReserve);
     }
 
     [Fact]
@@ -115,7 +121,10 @@ public class TrainingViewModelTests
             LastWeight: 15.0m,
             LastRepetitions: 8,
             LastDuration: 30,
-            LastObservations: ["Chest to bar"]);
+            LastObservations: ["Chest to bar"],
+            Description: "Back movement",
+            Pattern: "Vertical Pull",
+            ReplaysInReserve: 1);
 
         TrainingDto originalDto = new(
             Id: 102,
@@ -135,5 +144,38 @@ public class TrainingViewModelTests
         Assert.Equal(originalItem.LastRepetitions, convertedItem.LastRepetitions);
         Assert.Equal(originalItem.LastDuration, convertedItem.LastDuration);
         Assert.Equal(originalItem.LastObservations, convertedItem.LastObservations);
+        Assert.Equal(originalItem.Description, convertedItem.Description);
+        Assert.Equal(originalItem.Pattern, convertedItem.Pattern);
+        Assert.Equal(originalItem.ReplaysInReserve, convertedItem.ReplaysInReserve);
+    }
+
+    [Theory]
+    [InlineData(10, 10, "10")]
+    [InlineData(8, 12, "8 - 12")]
+    [InlineData(0, 15, "15")]
+    [InlineData(12, 0, "12")]
+    public void RepetitionsFormatting_WhenMinEqualsMax_FormatsSingleValue(int min, int max, string expected)
+    {
+        RangeViewModel range = new(min, max);
+        string literal = FormatRepetitions(range);
+        Assert.Equal(expected, literal);
+    }
+
+    private static string FormatRepetitions(RangeViewModel repetitions)
+    {
+        if (repetitions.Min == repetitions.Max)
+        {
+            return $"{repetitions.Min}";
+        }
+        else if (repetitions.Min == 0 && repetitions.Max > 0)
+        {
+            return $"{repetitions.Max}";
+        }
+        else if (repetitions.Max == 0 && repetitions.Min > 0)
+        {
+            return $"{repetitions.Min}";
+        }
+
+        return $"{repetitions.Min} - {repetitions.Max}";
     }
 }

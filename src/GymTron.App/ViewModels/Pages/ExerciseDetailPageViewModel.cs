@@ -189,7 +189,7 @@ public class ExerciseDetailPageViewModel : PageBaseViewModel, IQueryAttributable
                         LastWeightWithSuffix = $"{_lastWeight} kg";
                         LastRepetitions = exercise.LastRepetitions.HasValue ? exercise.LastRepetitions.Value.ToString() : "0";
                         RepetitionsTitle = "Repeticions:";
-                        Repetitions = $"{exercise.Repetitions.Min} - {exercise.Repetitions.Max}";
+                        Repetitions = BuildRepetitionsLiteral(exercise.Repetitions);
                         ReplaysInReserve = exercise.ReplaysInReserve.HasValue ? exercise.ReplaysInReserve.Value.ToString() : "0";
                     }
                 }
@@ -237,6 +237,24 @@ public class ExerciseDetailPageViewModel : PageBaseViewModel, IQueryAttributable
         await Shell.Current.Navigation.PushModalAsync(new CompleteExerciseModal(model));
     }
 
+
+    private static string BuildRepetitionsLiteral(RangeViewModel repetitions)
+    {
+        if (repetitions.Min == repetitions.Max)
+        {
+            return $"{repetitions.Min}";
+        }
+        else if (repetitions.Min == 0 && repetitions.Max > 0)
+        {
+            return $"{repetitions.Max}";
+        }
+        else if (repetitions.Max == 0 && repetitions.Min > 0)
+        {
+            return $"{repetitions.Min}";
+        }
+
+        return $"{repetitions.Min} - {repetitions.Max}";
+    }
 
     private static string BuildRestTimeLiteral(RoutineItemViewModel routineItem)
     {

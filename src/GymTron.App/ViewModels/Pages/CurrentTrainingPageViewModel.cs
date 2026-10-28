@@ -142,6 +142,8 @@ public partial class CurrentTrainingPageViewModel : PageBaseViewModel
 
     private void StartTimer()
     {
+        _timerCancellationTokenSource?.Cancel();
+        _timerCancellationTokenSource?.Dispose();
         _timerCancellationTokenSource = new CancellationTokenSource();
         CancellationToken token = _timerCancellationTokenSource.Token;
 

@@ -6,6 +6,9 @@ public class TrainingRoutineItemDto
     public int DayOfWeek { get; set; }
     public int ExerciseParametersId { get; set; }
     public string ExerciseName { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public string Pattern { get; set; } = string.Empty;
+    public int? ReplaysInReserve { get; set; }
     public int Series { get; set; }
     public int RepetitionsMin { get; set; }
     public int RepetitionsMax { get; set; }

@@ -64,8 +64,8 @@ internal class RoutineDAL(string connectionString) : IRoutineDAL
                                        FROM exercises e2 
                                        JOIN trainings t2 ON e2.training_id = t2.id 
                                        WHERE e2.exercise_parameters_id = ep.id 
-                                         AND (@UserId IS NULL OR t2.user_id = @UserId) 
-                                       ORDER BY e2.created_on DESC, e2.id DESC 
+                                         AND (@UserId IS NULL OR t2.user_id IS NULL OR t2.user_id = @UserId)
+                                       ORDER BY (CASE WHEN @UserId IS NOT NULL AND t2.user_id = @UserId THEN 1 ELSE 0 END) DESC, e2.created_on DESC, e2.id DESC
                                        LIMIT 1)
                        
                        WHERE (@RoutineId IS NULL OR r.id = @RoutineId)
