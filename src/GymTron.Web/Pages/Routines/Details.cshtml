@@ -89,7 +89,7 @@
                                             <span class="gt-badge gt-badge-blue">@item.Series series</span>
                                         </td>
                                         <td>
-                                            <span class="gt-exercise-metric">@item.RepetitionsMin - @item.RepetitionsMax reps</span>
+                                            <span class="gt-exercise-metric">@(item.RepetitionsMin == item.RepetitionsMax ? $"{item.RepetitionsMin}" : $"{item.RepetitionsMin} - {item.RepetitionsMax}") reps</span>
                                         </td>
                                         <td class="text-muted">
                                             <i class="bi bi-clock me-1"></i>@item.MinRestTimeInSeconds - @(item.MaxRestTimeInSeconds ?? item.MinRestTimeInSeconds) @Localizer["Routines_Details_Seconds"]

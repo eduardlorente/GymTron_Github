@@ -110,4 +110,19 @@ internal class CachedRoutineRepository(IRoutineRepository innerRepository,
         }
         await _innerRepository.Update(routine, cancellationToken);
     }
+
+    public void InvalidateCache(int routineId, int? userId = null)
+    {
+        _memoryCache.Remove(ALL_ROUTINES_CACHE_KEY);
+        _memoryCache.Remove(ALL_ROUTINES_PROJECTIONS_CACHE_KEY);
+        _memoryCache.Remove($"Routine_{routineId}");
+        _memoryCache.Remove($"RoutineProjection_{routineId}");
+        if (userId.HasValue)
+        {
+            _memoryCache.Remove($"{ALL_ROUTINES_CACHE_KEY}_{userId.Value}");
+            _memoryCache.Remove($"{ALL_ROUTINES_PROJECTIONS_CACHE_KEY}_{userId.Value}");
+            _memoryCache.Remove($"Routine_{routineId}_{userId.Value}");
+            _memoryCache.Remove($"RoutineProjection_{routineId}_{userId.Value}");
+        }
+    }
 }

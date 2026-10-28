@@ -25,7 +25,7 @@ internal class StartTrainingCommandHandler(IDomainEventDispatcher eventDispatche
     {
         await AvoidStartTrainingIfExistsACurrentOne(request.UserId, cancellationToken);
 
-        Routine routine = await _routineRepository.GetById(request.RoutineId, cancellationToken: cancellationToken) ?? throw new EntityNotFoundException(nameof(Routine));
+        Routine routine = await _routineRepository.GetById(request.RoutineId, request.UserId, cancellationToken: cancellationToken) ?? throw new EntityNotFoundException(nameof(Routine));
 
         if (request.UserId.HasValue && routine.UserId.HasValue && routine.UserId.Value != request.UserId.Value)
         {

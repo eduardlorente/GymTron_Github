@@ -66,7 +66,7 @@ public class StartTrainingCommandHandlerTests
         IExceptionLogger<StartTrainingCommand> logger = Substitute.For<IExceptionLogger<StartTrainingCommand>>();
         trainingRepository.HasActiveTraining(1, Arg.Any<CancellationToken>()).Returns(false);
         Routine routine = Routine.FromDatabase(7, "Routine", [CreateRoutineItem(11, 3)], userId: 1);
-        routineRepository.GetById(7, cancellationToken: Arg.Any<CancellationToken>()).Returns(routine);
+        routineRepository.GetById(7, 1, cancellationToken: Arg.Any<CancellationToken>()).Returns(routine);
         StartTrainingCommandHandler handler = new(eventDispatcher, trainingRepository, routineRepository, logger, new FakeClock());
         StartTrainingCommand command = new(Guid.NewGuid(), 7, 3, userId: 1);
         using CancellationTokenSource cts = new();
@@ -75,7 +75,7 @@ public class StartTrainingCommandHandlerTests
         await handler.Handle(command, token);
 
         await trainingRepository.Received(1).HasActiveTraining(1, token);
-        await routineRepository.Received(1).GetById(7, cancellationToken: token);
+        await routineRepository.Received(1).GetById(7, 1, cancellationToken: token);
         await trainingRepository.Received(1).Add(Arg.Any<Training>(), token);
     }
 
@@ -88,7 +88,7 @@ public class StartTrainingCommandHandlerTests
         IExceptionLogger<StartTrainingCommand> logger = Substitute.For<IExceptionLogger<StartTrainingCommand>>();
         trainingRepository.HasActiveTraining(1, Arg.Any<CancellationToken>()).Returns(false);
         Routine routine = Routine.FromDatabase(7, "Routine", [CreateRoutineItem(11, 3)], userId: 2);
-        routineRepository.GetById(7, cancellationToken: Arg.Any<CancellationToken>()).Returns(routine);
+        routineRepository.GetById(7, 1, cancellationToken: Arg.Any<CancellationToken>()).Returns(routine);
         StartTrainingCommandHandler handler = new(eventDispatcher, trainingRepository, routineRepository, logger, new FakeClock());
         StartTrainingCommand command = new(Guid.NewGuid(), 7, 3, userId: 1);
 
@@ -105,7 +105,7 @@ public class StartTrainingCommandHandlerTests
         IExceptionLogger<StartTrainingCommand> logger = Substitute.For<IExceptionLogger<StartTrainingCommand>>();
         trainingRepository.HasActiveTraining(1, Arg.Any<CancellationToken>()).Returns(false);
         Routine routine = Routine.FromDatabase(7, "Routine", [CreateRoutineItem(11, 3)], userId: 1);
-        routineRepository.GetById(7, cancellationToken: Arg.Any<CancellationToken>()).Returns(routine);
+        routineRepository.GetById(7, 1, cancellationToken: Arg.Any<CancellationToken>()).Returns(routine);
         StartTrainingCommandHandler handler = new(eventDispatcher, trainingRepository, routineRepository, logger, new FakeClock());
         StartTrainingCommand command = new(Guid.NewGuid(), 7, 3, userId: 1);
 

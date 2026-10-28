@@ -2,6 +2,7 @@ using GymTron.Application.Trainings.Queries.DTO;
 using GymTron.Domain.Aggregates;
 using GymTron.Domain.Entities;
 using GymTron.Domain.Enums;
+using GymTron.Domain.ValueObjects;
 
 namespace GymTron.Api.Endpoints.Trainings;
 
@@ -22,18 +23,18 @@ public static class TrainingMappingExtensions
                 GymTron.Domain.Entities.ExerciseParameters.FromDatabase(
                     ri.ExerciseParametersId,
                     ri.ExerciseName,
-                    string.Empty,
-                    string.Empty,
+                    ri.Description ?? string.Empty,
+                    ri.Pattern ?? string.Empty,
                     ri.Series,
                     (ri.RepetitionsMin, ri.RepetitionsMax),
                     ri.Duration ?? 0,
-                    null,
+                    ri.ReplaysInReserve,
                     (ri.MinRestTimeInSeconds, ri.MaxRestTimeInSeconds ?? 0),
-                    null,
-                    null,
-                    null,
+                    ri.LastWeight,
+                    ri.LastDuration,
+                    ri.LastRepetitions,
                     (ExerciseTypes)ri.Type,
-                    []),
+                    (ri.LastObservations ?? []).Select(o => new Observation(o)).ToList()),
                 ri.AlternatingSeries,
                 ri.Position)).ToList(),
             dto.CompletedWorkout.Select(e => Exercise.FromDatabase(
@@ -67,15 +68,22 @@ public static class TrainingMappingExtensions
                 DayOfWeek = item.DayOfWeek,
                 ExerciseParametersId = item.ExerciseParameters.Id,
                 ExerciseName = item.ExerciseParameters.Name,
+                Description = item.ExerciseParameters.Description,
+                Pattern = item.ExerciseParameters.Pattern,
                 Series = item.ExerciseParameters.Series,
                 RepetitionsMin = item.ExerciseParameters.Repetitions.Min,
                 RepetitionsMax = item.ExerciseParameters.Repetitions.Max,
                 Duration = item.ExerciseParameters.DurationInSeconds,
+                ReplaysInReserve = item.ExerciseParameters.ReplaysInReserve,
                 MinRestTimeInSeconds = item.ExerciseParameters.RestTimeInSeconds.Min,
                 MaxRestTimeInSeconds = item.ExerciseParameters.RestTimeInSeconds.Max,
                 AlternatingSeries = item.AlternatingSeries,
                 Position = item.Position,
-                Type = (int)item.ExerciseParameters.Type
+                Type = (int)item.ExerciseParameters.Type,
+                LastWeight = item.ExerciseParameters.LastWeight,
+                LastRepetitions = item.ExerciseParameters.LastRepetitions,
+                LastDuration = item.ExerciseParameters.LastDurationInSeconds > 0 ? item.ExerciseParameters.LastDurationInSeconds : null,
+                LastObservations = item.ExerciseParameters.Observations.Select(o => o.Comment).ToList()
             }).ToList(),
             CompletedWorkout = training.CompletedWorkout.Select(exercise => new TrainingExerciseDto
             {

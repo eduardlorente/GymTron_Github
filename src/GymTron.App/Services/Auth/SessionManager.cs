@@ -21,7 +21,7 @@ public class SessionManager(
     private readonly IBiometricService _biometricService = biometricService;
     private readonly ILogger<SessionManager>? _logger = logger;
 
-    public TimeSpan SessionTimeout { get; set; } = TimeSpan.FromHours(12);
+    public TimeSpan SessionTimeout { get; set; } = TimeSpan.FromHours(24);
 
     public string LastUsername
     {

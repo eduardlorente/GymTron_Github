@@ -35,6 +35,12 @@ internal class TrainingService(IGymTronApiClient apiClient) : ITrainingService
 
         _currentTraining = GetTrainingFromPreferences();
 
+        if (_currentTraining != null && _currentTraining.CompletedWorkout.Count == 0 && _currentTraining.PendingWorkout.All(p => string.IsNullOrEmpty(p.ExerciseParameters.Description)))
+        {
+            // If cached preferences came from an older version without metadata, refresh from API
+            _currentTraining = null;
+        }
+
         if (_currentTraining == null)
         {
             var training = await _apiClient.GetCurrentTrainingAsync();
@@ -72,52 +78,68 @@ internal class TrainingService(IGymTronApiClient apiClient) : ITrainingService
         RemoveCurrentTraining();
     }
 
-    public async Task CompleteTrainingExercise(int exerciseParametersId, string name, decimal weight, int repetitions, List<string> observations)
+    public Task CompleteTrainingExercise(int exerciseParametersId, string name, decimal weight, int repetitions, List<string> observations)
     {
         if (_currentTraining == null)
         {
             throw new InvalidOperationException("There is no training in progress.");
         }
 
-        var request = new AddExerciseToTrainingRequest(
-            _currentTraining.ToDto(),
-            exerciseParametersId,
-            name,
-            weight,
-            repetitions,
-            null,
-            observations);
-
-        var updatedTraining = await _apiClient.AddExerciseToTrainingAsync(request);
-
-        if (updatedTraining != null)
-        {
-            SaveCurrentTrainingIntoMemory(new TrainingViewModel(updatedTraining));
-        }
+        CompleteExerciseLocally(exerciseParametersId, name, weight, repetitions, null, observations);
+        return Task.CompletedTask;
     }
 
-    public async Task CompleteTrainingExercise(int exerciseParametersId, string name, int durationInSeconds, List<string> observations)
+    public Task CompleteTrainingExercise(int exerciseParametersId, string name, int durationInSeconds, List<string> observations)
     {
         if (_currentTraining == null)
         {
             throw new InvalidOperationException("There is no training in progress.");
         }
 
-        var request = new AddExerciseToTrainingRequest(
-            _currentTraining.ToDto(),
-            exerciseParametersId,
-            name,
-            null,
-            null,
-            durationInSeconds,
-            observations);
+        CompleteExerciseLocally(exerciseParametersId, name, null, null, durationInSeconds, observations);
+        return Task.CompletedTask;
+    }
 
-        var updatedTraining = await _apiClient.AddExerciseToTrainingAsync(request);
-
-        if (updatedTraining != null)
+    private void CompleteExerciseLocally(int exerciseParametersId, string name, decimal? weight, int? repetitions, int? durationInSeconds, List<string> observations)
+    {
+        var routineItem = _currentTraining!.PendingWorkout.FirstOrDefault(x => x.ExerciseParameters.Id == exerciseParametersId);
+        if (routineItem == null)
         {
-            SaveCurrentTrainingIntoMemory(new TrainingViewModel(updatedTraining));
+            return;
         }
+
+        _currentTraining.PendingWorkout.Remove(routineItem);
+
+        int trainingId = int.TryParse(_currentTraining.Id, out int parsedId) ? parsedId : 0;
+        var completedExercise = new ExerciseViewModel
+        {
+            Id = 0,
+            TrainingId = trainingId,
+            ExerciseParametersId = exerciseParametersId,
+            Name = name,
+            Description = routineItem.ExerciseParameters.Description,
+            Weight = weight ?? 0,
+            DurationInSeconds = durationInSeconds ?? 0,
+            CurrentRepetitions = repetitions ?? 0,
+            Observations = [.. (observations ?? []).Select(obs => new ObservationViewModel(obs))],
+            CreatedOn = DateTime.UtcNow
+        };
+        _currentTraining.CompletedWorkout.Add(completedExercise);
+
+        foreach (var remainingParams in _currentTraining.PendingWorkout
+            .Where(x => x.ExerciseParameters.Id == exerciseParametersId)
+            .Select(x => x.ExerciseParameters))
+        {
+            if (weight.HasValue) remainingParams.LastWeight = weight.Value;
+            if (repetitions.HasValue) remainingParams.LastRepetitions = repetitions.Value;
+            if (durationInSeconds.HasValue) remainingParams.LastDurationInSeconds = durationInSeconds.Value;
+            if (observations != null && observations.Count > 0)
+            {
+                remainingParams.Observations = [.. observations.Select(obs => new ObservationViewModel(obs))];
+            }
+        }
+
+        SaveCurrentTrainingIntoMemory(_currentTraining);
     }
 
     public async Task<List<TrainingHistoryItemViewModel>> ListHistory()

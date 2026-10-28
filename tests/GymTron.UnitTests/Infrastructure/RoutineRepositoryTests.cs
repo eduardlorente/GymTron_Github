@@ -290,6 +290,31 @@ public class RoutineRepositoryTests
         Assert.False(cache.TryGetValue("RoutineProjection_5_10", out _));
     }
 
+    [Fact]
+    public async Task InvalidateCache_EvictsCachedRoutinesAndProjections()
+    {
+        IRoutineDAL dal = Substitute.For<IRoutineDAL>();
+        dal.ListById(1, 10, Arg.Any<CancellationToken>()).Returns([
+            CreateRow(1, "First", 11, 1, "good;stable", 50, 8)
+        ]);
+        using MemoryCache cache = new(new MemoryCacheOptions());
+        CachedRoutineRepository repository = new(new RoutineRepository(dal), cache);
+
+        var first = await repository.GetById(1, 10);
+        Assert.NotNull(first);
+        await dal.Received(1).ListById(1, 10, Arg.Any<CancellationToken>());
+
+        var cached = await repository.GetById(1, 10);
+        Assert.NotNull(cached);
+        await dal.Received(1).ListById(1, 10, Arg.Any<CancellationToken>());
+
+        repository.InvalidateCache(1, 10);
+
+        var reloaded = await repository.GetById(1, 10);
+        Assert.NotNull(reloaded);
+        await dal.Received(2).ListById(1, 10, Arg.Any<CancellationToken>());
+    }
+
     private static RoutineFullDetailsDTO CreateRow(
         int routineId, string routineName, int exerciseId, int position, string observations,
         decimal? lastWeight, int? lastRepetitions) => new()

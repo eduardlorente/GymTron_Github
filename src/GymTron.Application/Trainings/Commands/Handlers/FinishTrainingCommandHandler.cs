@@ -9,6 +9,7 @@ namespace GymTron.Application.Trainings.Commands.Handlers;
 internal class FinishTrainingCommandHandler(IDomainEventDispatcher eventDispatcher,
                                             ITrainingRepository trainingRepository,
                                             IExerciseRepository exerciseRepository,
+                                            IRoutineRepository routineRepository,
                                             IUnitOfWork unitOfWork,
                                             IExceptionLogger<FinishTrainingCommand> logger,
                                             IClock clock)
@@ -17,6 +18,7 @@ internal class FinishTrainingCommandHandler(IDomainEventDispatcher eventDispatch
     private readonly IDomainEventDispatcher _eventDispatcher = eventDispatcher;
     private readonly ITrainingRepository _trainingRepository = trainingRepository;
     private readonly IExerciseRepository _exerciseRepository = exerciseRepository;
+    private readonly IRoutineRepository _routineRepository = routineRepository;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IClock _clock = clock;
 
@@ -29,6 +31,8 @@ internal class FinishTrainingCommandHandler(IDomainEventDispatcher eventDispatch
             await _trainingRepository.Update(request.Training, ct);
             await _exerciseRepository.AddRange(request.Training.CompletedWorkout, ct);
         }, cancellationToken);
+
+        _routineRepository.InvalidateCache(request.Training.RoutineId, request.Training.UserId);
 
         await _eventDispatcher.DispatchAndClearEvents(request.Training, cancellationToken);
     }

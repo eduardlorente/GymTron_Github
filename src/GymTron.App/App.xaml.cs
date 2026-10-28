@@ -34,11 +34,7 @@ public partial class App : Microsoft.Maui.Controls.Application
             });
         };
 
-        if (sessionManager.IsBiometricsEnabled)
-        {
-            SwitchToLogin();
-        }
-        else if (sessionManager.IsSessionActive())
+        if (sessionManager.IsSessionActive())
         {
             SwitchToShell();
         }
@@ -81,7 +77,7 @@ public partial class App : Microsoft.Maui.Controls.Application
             {
                 if (MainPage is not LoginPage)
                 {
-                    _logger.LogInformation("12-hour session expired while backgrounded. Locking app.");
+                    _logger.LogInformation("24-hour session expired while backgrounded. Locking app.");
                     SwitchToLogin();
                 }
             });
