@@ -121,6 +121,13 @@ public class Training : AggregateRoot<int>
 
         Status.Update(EntityStatusTypes.COMPLETED, clock);
         CompletedOn = new TrainingDate(clock.UtcNow);
+
+        foreach (var status in _completedWorkout
+            .Where(e => e.Status.CreatedOn == default || e.Status.CreatedOn <= DateTime.MinValue)
+            .Select(e => e.Status))
+        {
+            status.Create(clock);
+        }
     }
 
     public void Cancel(IClock clock)

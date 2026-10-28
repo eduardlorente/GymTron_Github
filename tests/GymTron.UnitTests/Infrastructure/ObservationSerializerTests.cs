@@ -20,6 +20,26 @@ public class ObservationSerializerTests
     }
 
     [Fact]
+    public void Serialize_WithAccentsAndSpecialCharacters_PreservesUtf8CharactersWithoutUnicodeEscape()
+    {
+        List<Observation> observations =
+        [
+            new("Lesió activa, vigilar"),
+            new("Més pes a la pròxima sèrie"),
+            new("Canviar per l·l o ç")
+        ];
+
+        string json = ObservationSerializer.Serialize(observations);
+
+        Assert.Equal("[\"Lesió activa, vigilar\",\"Més pes a la pròxima sèrie\",\"Canviar per l·l o ç\"]", json);
+        Assert.DoesNotContain("\\u", json);
+
+        List<string> comments = ObservationSerializer.DeserializeComments(json);
+        Assert.Equal(3, comments.Count);
+        Assert.Equal("Lesió activa, vigilar", comments[0]);
+    }
+
+    [Fact]
     public void Serialize_WithEmptyOrWhitespace_FiltersEmptyItems()
     {
         List<Observation> observations =

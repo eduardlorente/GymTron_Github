@@ -39,13 +39,13 @@ public static class TrainingMappingExtensions
                 ri.Position)).ToList(),
             dto.CompletedWorkout.Select(e => Exercise.FromDatabase(
                 e.Id,
-                e.TrainingId,
+                e.TrainingId > 0 ? e.TrainingId : dto.Id,
                 e.ExerciseParametersId,
                 e.Name,
                 e.Weight,
                 e.DurationInSeconds,
                 e.Repetitions,
-                e.CreatedOn,
+                e.CreatedOn != default ? e.CreatedOn : (dto.CompletedOn ?? dto.StartedOn),
                 e.Observations)).ToList(),
             userId ?? dto.UserId
         );

@@ -102,7 +102,7 @@ public class TrainingViewModelTests
     }
 
     [Fact]
-    public void ToDto_RoundTripsPreviousExerciseMetrics()
+    public void ToDto_RoundTripsPreviousExerciseMetricsAndCompletedExercises()
     {
         TrainingRoutineItemDto originalItem = new(
             Id: 2,
@@ -126,6 +126,18 @@ public class TrainingViewModelTests
             Pattern: "Vertical Pull",
             ReplaysInReserve: 1);
 
+        DateTime exerciseTimestamp = new(2026, 3, 3, 10, 15, 0);
+        TrainingExerciseDto completedExercise = new(
+            Id: 10,
+            TrainingId: 102,
+            ExerciseParametersId: 20,
+            Name: "Pull-ups",
+            Weight: 15.0m,
+            DurationInSeconds: 30,
+            Repetitions: 8,
+            Observations: ["Chest to bar"],
+            CreatedOn: exerciseTimestamp);
+
         TrainingDto originalDto = new(
             Id: 102,
             RoutineId: 7,
@@ -134,7 +146,7 @@ public class TrainingViewModelTests
             CompletedOn: null,
             StatusId: 2,
             PendingWorkout: [originalItem],
-            CompletedWorkout: []);
+            CompletedWorkout: [completedExercise]);
 
         TrainingViewModel vm = new(originalDto);
         TrainingDto convertedDto = vm.ToDto();
@@ -147,6 +159,12 @@ public class TrainingViewModelTests
         Assert.Equal(originalItem.Description, convertedItem.Description);
         Assert.Equal(originalItem.Pattern, convertedItem.Pattern);
         Assert.Equal(originalItem.ReplaysInReserve, convertedItem.ReplaysInReserve);
+
+        ExerciseViewModel vmExercise = Assert.Single(vm.CompletedWorkout);
+        Assert.Equal(exerciseTimestamp, vmExercise.CreatedOn);
+
+        TrainingExerciseDto convertedCompleted = Assert.Single(convertedDto.CompletedWorkout);
+        Assert.Equal(exerciseTimestamp, convertedCompleted.CreatedOn);
     }
 
     [Theory]
